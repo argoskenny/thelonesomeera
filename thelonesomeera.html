@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Lonesome Era</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            /* 設定全視窗高度 */
+            display: flex;
+            justify-content: center;
+            /* 水平置中 */
+            align-items: center;
+            /* 垂直置中 */
+            background: linear-gradient(0deg, #f48e43, #90a697, #58889C, #c4b075, #f48e43);
+            /* 背景漸層 */
+        }
+
+        .centered-image {
+            max-width: 80%;
+            /* 設定圖片的最大寬度 */
+            height: auto;
+            /* 自動調整高度以保持比例 */
+        }
+
+        #centered-text {
+            position: absolute;
+            /* Position the text absolutely within the body */
+            top: 80%;
+            /* Set the top position to 40% of the body height */
+            left: 50%;
+            /* Set the left position to 50% of the body width */
+            transform: translate(-50%, -50%);
+            /* Center the text horizontally and vertically */
+            width: 80%;
+            /* Set the width of the text container to 80% of the body width */
+            text-align: center;
+            /* Center the text within the container */
+            color: white;
+            /* Set the text color to white */
+            font-size: 1.5em;
+            /* Set the font size to 2em */
+        }
+
+        #dive-in-button {
+            position: absolute;
+            /* Position the text absolutely within the body */
+            top: 85%;
+
+            margin: 30px auto;
+            /* Add some margin above and below the button */
+            padding: 10px 20px;
+            /* Add some padding to the button */
+            background-color: #ffffff;
+            /* Blue background color */
+            color: rgb(32, 32, 32);
+            /* White text color */
+            border: none;
+            /* Remove the default button border */
+            border-radius: 50px;
+            /* Set the border radius to 50% for rounded corners */
+            cursor: pointer;
+            /* Make the cursor change to a pointer when hovering over the button */
+            text-decoration: none;
+            /* Remove any text decoration */
+            font-size: 1.2em;
+            /* Increase the font size slightly */
+        }
+    </style>
+</head>
+
+<body>
+    <img src="tle_logo.png" alt="logo" class="centered-image">
+    <div id="centered-text">
+        Come along with me<br>
+        To my little corner of the world
+    </div>
+    <a id="dive-in-button" href="selfiecat.html">DIVE IN</a>
+</body>
+
+</html>

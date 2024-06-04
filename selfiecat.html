@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfie Cat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            /* 防止出現滾動條 */
+            background-color: #00A19D;
+        }
+
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            /* 使用全視窗高度 */
+        }
+
+        .image-left,
+        .image-right {
+            position: absolute;
+            top: 0;
+            width: 20%;
+            /* 設定圖片寬度為父容器寬度的 10% */
+            height: auto;
+            /* 自動調整高度以保持比例 */
+        }
+
+        .image-left {
+            left: 0;
+        }
+
+        .image-right {
+            right: 0;
+        }
+
+        .split-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 160%;
+            height: 130%;
+            transform: translate(-50%, -50%);
+            overflow: hidden;
+        }
+
+        .split-circle .bottom-half {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background-color: #FFF8E5;
+            border-top-left-radius: 50%;
+            border-top-right-radius: 50%;
+        }
+
+        .title_logo,
+        .app_preview,
+        .appstore {
+            position: absolute;
+        }
+
+        .title_logo {
+            top: 25%;
+            left: 20%;
+            width: 30%;
+        }
+
+        .app_preview {
+            top: 18%;
+            right: 20%;
+            width: 25%;
+        }
+
+        .appstore {
+            top: 56%;
+            left: 29%;
+            width: 12%;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img src="scbg_dot1.png" alt="左上圖片" class="image-left">
+        <img src="scbg_dot2.png" alt="右上圖片" class="image-right">
+        <div class="split-circle">
+            <div class="bottom-half"></div>
+        </div>
+        <img src="title_logo.png" alt="title" class="title_logo">
+        <img src="app_preview.png" alt="apppreview" class="app_preview">
+        <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720"><img src="appstore_badge.svg" alt=""
+                class="appstore"></a>
+    </div>
+</body>
+
+</html>
