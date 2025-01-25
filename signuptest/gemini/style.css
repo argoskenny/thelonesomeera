@@ -1,0 +1,279 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+.container {
+    display: flex;
+    max-width: 1200px;
+    margin: 50px auto;
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.left-section {
+    width: 40%;
+    padding: 60px;
+    background-color: #fff;
+}
+
+.logo {
+    font-size: 2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 30px;
+}
+
+.left-section h1 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.features {
+    margin-top: 30px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    color: #555;
+}
+
+.icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0.7;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    background-color: #673ab7;
+    /* Example color */
+}
+
+.icon.shield {
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.icon.zap {
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.icon.percent {
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 5L5 19M5 5L19 19M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19 5L5 19M5 5L19 19M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.icon.bar-chart {
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20V10M18 20V4M6 20V16M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 20V10M18 20V4M6 20V16M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.icon.thumbs-up {
+    mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 9V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V9M2 9H9.09M22 9H15M9 18H22M9 9C9 11.2091 7.20914 13 5 13C2.79086 13 1 11.2091 1 9C1 6.79086 2.79086 5 5 5C7.20914 5 9 6.79086 9 9ZM15 9C15 11.2091 16.7909 13 19 13C21.2091 13 23 11.2091 23 9C23 6.79086 21.2091 5 19 5C16.7909 5 15 6.79086 15 9ZM9 18C9 20.2091 10.7909 22 13 22C15.2091 22 17 20.2091 17 18C17 15.7909 15.2091 14 13 14C10.7909 14 9 15.7909 9 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M14 9V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V9M2 9H9.09M22 9H15M9 18H22M9 9C9 11.2091 7.20914 13 5 13C2.79086 13 1 11.2091 1 9C1 6.79086 2.79086 5 5 5C7.20914 5 9 6.79086 9 9ZM15 9C15 11.2091 16.7909 13 19 13C21.2091 13 23 11.2091 23 9C23 6.79086 21.2091 5 19 5C16.7909 5 15 6.79086 15 9ZM9 18C9 20.2091 10.7909 22 13 22C15.2091 22 17 20.2091 17 18C17 15.7909 15.2091 14 13 14C10.7909 14 9 15.7909 9 18Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+
+.right-section {
+    width: 60%;
+    padding: 60px;
+}
+
+.already-using {
+    text-align: right;
+    margin-bottom: 30px;
+    color: #777;
+}
+
+.already-using a {
+    color: #673ab7;
+    text-decoration: none;
+}
+
+.already-using a:hover {
+    text-decoration: underline;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: bold;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    /* Important for padding to be inside the width */
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #673ab7;
+    box-shadow: 0 0 5px rgba(103, 58, 183, 0.3);
+}
+
+.validation-message {
+    color: #e74c3c;
+    font-size: 0.9em;
+    margin-top: 5px;
+    display: none;
+    /* Hidden by default */
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: #ffebee;
+    border: 1px solid #e57373;
+    padding: 8px 12px;
+    border-radius: 5px;
+    z-index: 1;
+}
+
+.input-group.error input {
+    border-color: #e74c3c;
+}
+
+.input-group.error .validation-message {
+    display: block;
+    /* Show error message when error class is added */
+}
+
+.signup-button {
+    background-color: #673ab7;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+    background-color: #512da8;
+}
+
+.checkbox-group {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: auto;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    color: #555;
+    user-select: none;
+    /* Prevent text selection during click */
+}
+
+.checkbox-group a {
+    color: #673ab7;
+    text-decoration: none;
+}
+
+.checkbox-group a:hover {
+    text-decoration: underline;
+}
+
+
+.password-group {
+    position: relative;
+    /* For positioning the toggle icon */
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7H10.21L12 8.79L13.79 7H22V17H2M2 7L11.14 16.14M22 7L12.86 16.14M12 16.9L10.21 15H2M12 16.9L13.79 15H22" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+    background-size: contain;
+    background-repeat: no-repeat;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.password-toggle.visible {
+    background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 7H10.21L12 8.79L13.79 7H22V17H2M2 7L11.14 16.14M22 7L12.86 16.14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+}
+
+.password-strength {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    font-size: 0.9em;
+    display: none;
+    /* Hidden by default, shown when password field is focused */
+}
+
+.password-group input:focus+.password-strength {
+    display: block;
+}
+
+.strength-bar {
+    background-color: #ddd;
+    height: 8px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    /* To clip the indicator */
+}
+
+.strength-indicator {
+    height: 100%;
+    width: 0%;
+    /* Initial width is 0 */
+    background-color: #4caf50;
+    /* Default strong color */
+    border-radius: 4px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+    text-align: center;
+    color: #777;
+}
+
+/* Strength level colors */
+.strength-indicator.weak {
+    background-color: #e57373;
+}
+
+.strength-indicator.medium {
+    background-color: #ffca28;
+}
+
+.strength-indicator.strong {
+    background-color: #4caf50;
+}

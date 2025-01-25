@@ -1,0 +1,219 @@
+以下是根據設計圖製作的註冊頁面程式碼：
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S0L - Sign Up</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        h1 { color: #2d3748; }
+        h2 { color: #4a5568; }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            color: #718096;
+        }
+
+        form {
+            margin-top: 1.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            margin-top: 0.5rem;
+        }
+
+        .error-tooltip {
+            display: none;
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateX(100%) translateY(-50%);
+            background: #fed7d7;
+            color: #c53030;
+            padding: 0.5rem;
+            border-radius: 4px;
+            font-size: 0.875rem;
+            white-space: nowrap;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #48bb78;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .password-feedback {
+            color: #48bb78;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .terms {
+            text-align: center;
+            margin: 1rem 0;
+            color: #718096;
+        }
+
+        hr {
+            border: 1px solid #e2e8f0;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>S0L</h1>
+    <h2>Create an account</h2>
+    
+    <ul class="feature-list">
+        <li>- [ ] Secure payments through reliable partners</li>
+        <li>- [ ] Fast transfers</li>
+        <li>- [ ] Fair commissions</li>
+        <li>- [ ] Best available rates</li>
+        <li>- [ ] Convenience</li>
+    </ul>
+
+    <hr>
+
+    <form id="signupForm">
+        <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" id="fullName" required>
+            <div class="error-tooltip">此欄位不能為空</div>
+        </div>
+
+        <div class="input-group">
+            <label>Email</label>
+            <input type="email" id="email" required>
+            <div class="error-tooltip">此欄位不能為空</div>
+        </div>
+
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" required>
+            <div class="error-tooltip">此欄位不能為空</div>
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" required>
+            <div class="error-tooltip">需要大寫字母和特殊符號</div>
+            <div class="password-feedback">Strong password</div>
+        </div>
+
+        <button type="submit">Sign up</button>
+    </form>
+
+    <p class="terms">I agree to our Terms of Service and Privacy Policy</p>
+
+    <script>
+        const form = document.getElementById('signupForm');
+        const inputs = document.querySelectorAll('input');
+        const passwordInput = document.getElementById('password');
+        const passwordFeedback = document.querySelector('.password-feedback');
+
+        function validatePassword(password) {
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+            return hasUpperCase && hasSpecialChar;
+        }
+
+        function showError(input, message) {
+            const tooltip = input.nextElementSibling;
+            tooltip.style.display = 'block';
+            tooltip.textContent = message;
+        }
+
+        function hideError(input) {
+            const tooltip = input.nextElementSibling;
+            tooltip.style.display = 'none';
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => {
+                if (input.value.trim() === '') {
+                    showError(input, '此欄位不能為空');
+                } else {
+                    hideError(input);
+                    
+                    if (input === passwordInput) {
+                        if (!validatePassword(input.value)) {
+                            showError(input, '需要大寫字母和特殊符號');
+                            passwordFeedback.style.color = '#c53030';
+                        } else {
+                            hideError(input);
+                            passwordFeedback.style.color = '#48bb78';
+                        }
+                    }
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (input.value.trim() === '') {
+                    showError(input, '此欄位不能為空');
+                    isValid = false;
+                }
+                
+                if (input === passwordInput && !validatePassword(input.value)) {
+                    showError(input, '需要大寫字母和特殊符號');
+                    isValid = false;
+                }
+            });
+
+            if (isValid) {
+                // 提交表單
+                alert('註冊成功！');
+                form.reset();
+            }
+        });
+    </script>
+</body>
+</html>
+```
+
+主要功能說明：
+1. 輸入框失去焦點時自動驗證
+2. 密碼驗證包含：
+   - 至少一個大寫字母
+   - 至少一個特殊符號
+3. 錯誤提示會在輸入框右側顯示
+4. 密碼強度即時反饋
+5. 表單提交時會進行最終驗證
+6. 所有欄位必填驗證
+7. 響應式設計
+
+注意事項：
+- 特殊符號包括：!@#$%^&*()_+-=[]{};':"\|,.<>/?
+- 錯誤提示使用紅色背景和文字
+- 密碼符合要求時顯示綠色提示
+- 表單提交成功後會重置表單
+- 電話號碼輸入使用HTML5的tel類型
+- 電子郵件使用HTML5的email類型驗證

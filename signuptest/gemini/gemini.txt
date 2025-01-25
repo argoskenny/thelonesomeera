@@ -1,0 +1,597 @@
+好的，請參考以下 HTML、CSS 和 JavaScript 程式碼。我將程式碼分成三個區塊，您可以將它們分別儲存為 index.html, style.css, 和 script.js 檔案，並確保它們在同一個目錄下，或者您也可以將
+CSS 和 JavaScript 程式碼直接嵌入到 HTML 檔案中。
+
+index.html:
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>建立帳戶</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="logo">SOL</div>
+            <h1>建立帳戶</h1>
+            <div class="features">
+                <div class="feature-item"><i class="icon shield"></i> Secure payments through reliable partners</div>
+                <div class="feature-item"><i class="icon zap"></i> Fast transfers</div>
+                <div class="feature-item"><i class="icon percent"></i> Fair commissions</div>
+                <div class="feature-item"><i class="icon bar-chart"></i> Best available rates</div>
+                <div class="feature-item"><i class="icon thumbs-up"></i> Convenience</div>
+            </div>
+        </div>
+        <div class="right-section">
+            <div class="already-using">Already using? <a href="#">Sign in</a></div>
+            <form id="signup-form">
+                <div class="input-group">
+                    <label for="full-name">Full Name</label>
+                    <input type="text" id="full-name" name="full-name" placeholder="John Doe">
+                    <div class="validation-message" id="full-name-error"></div>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="johndoe@email.com">
+                    <div class="validation-message" id="email-error"></div>
+                </div>
+                <div class="input-group">
+                    <label for="phone-number">Phone Number</label>
+                    <input type="tel" id="phone-number" name="phone-number" placeholder="+1 (999) 287-12-20">
+                    <div class="validation-message" id="phone-number-error"></div>
+                </div>
+                <div class="input-group password-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password">
+                    <span class="password-toggle" id="password-toggle"></span>
+                    <div class="validation-message" id="password-error"></div>
+                    <div class="password-strength" id="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-indicator" id="strength-indicator"></div>
+                        </div>
+                        <div class="strength-text" id="strength-text"></div>
+                    </div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms">
+                    <label for="terms">I agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy
+                            Policy</a></label>
+                </div>
+                <button type="submit" class="signup-button">Sign up</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
+content_copy
+download
+Use code with caution.
+Html
+
+style.css:
+
+body {
+font-family: sans-serif;
+margin: 0;
+padding: 0;
+background-color: #f7f7f7;
+color: #333;
+}
+
+.container {
+display: flex;
+max-width: 1200px;
+margin: 50px auto;
+background-color: #fff;
+border-radius: 10px;
+overflow: hidden;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.left-section {
+width: 40%;
+padding: 60px;
+background-color: #fff;
+}
+
+.logo {
+font-size: 2em;
+font-weight: bold;
+color: #333;
+margin-bottom: 30px;
+}
+
+.left-section h1 {
+font-size: 2.5em;
+margin-bottom: 20px;
+color: #222;
+}
+
+.features {
+margin-top: 30px;
+}
+
+.feature-item {
+display: flex;
+align-items: center;
+margin-bottom: 15px;
+color: #555;
+}
+
+.icon {
+display: inline-block;
+width: 20px;
+height: 20px;
+margin-right: 10px;
+background-size: contain;
+background-repeat: no-repeat;
+opacity: 0.7;
+mask-size: contain;
+mask-repeat: no-repeat;
+-webkit-mask-size: contain;
+-webkit-mask-repeat: no-repeat;
+background-color: #673ab7; /* Example color */
+}
+
+.icon.shield { mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>'); -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 1L3 5V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V5L12 1Z" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>'); }
+.icon.zap { mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>'); -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>'); }
+.icon.percent { mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 5L5 19M5 5L19 19M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>'); -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M19 5L5 19M5 5L19 19M12 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>'); }
+.icon.bar-chart { mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 20V10M18 20V4M6 20V16M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>'); -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 20V10M18 20V4M6 20V16M3 20H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" />
+</svg>'); }
+.icon.thumbs-up { mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M14 9V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V9M2 9H9.09M22 9H15M9 18H22M9 9C9 11.2091 7.20914 13 5 13C2.79086 13 1 11.2091 1 9C1 6.79086 2.79086 5 5 5C7.20914 5 9 6.79086 9 9ZM15 9C15 11.2091 16.7909 13 19 13C21.2091 13 23 11.2091 23 9C23 6.79086 21.2091 5 19 5C16.7909 5 15 6.79086 15 9ZM9 18C9 20.2091 10.7909 22 13 22C15.2091 22 17 20.2091 17 18C17 15.7909 15.2091 14 13 14C10.7909 14 9 15.7909 9 18Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>'); -webkit-mask-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none"
+    xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M14 9V5C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5V9M2 9H9.09M22 9H15M9 18H22M9 9C9 11.2091 7.20914 13 5 13C2.79086 13 1 11.2091 1 9C1 6.79086 2.79086 5 5 5C7.20914 5 9 6.79086 9 9ZM15 9C15 11.2091 16.7909 13 19 13C21.2091 13 23 11.2091 23 9C23 6.79086 21.2091 5 19 5C16.7909 5 15 6.79086 15 9ZM9 18C9 20.2091 10.7909 22 13 22C15.2091 22 17 20.2091 17 18C17 15.7909 15.2091 14 13 14C10.7909 14 9 15.7909 9 18Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>'); }
+
+
+.right-section {
+width: 60%;
+padding: 60px;
+}
+
+.already-using {
+text-align: right;
+margin-bottom: 30px;
+color: #777;
+}
+
+.already-using a {
+color: #673ab7;
+text-decoration: none;
+}
+
+.already-using a:hover {
+text-decoration: underline;
+}
+
+.input-group {
+margin-bottom: 20px;
+}
+
+.input-group label {
+display: block;
+margin-bottom: 8px;
+color: #555;
+font-weight: bold;
+}
+
+.input-group input {
+width: 100%;
+padding: 12px;
+border: 1px solid #ddd;
+border-radius: 5px;
+font-size: 1em;
+box-sizing: border-box; /* Important for padding to be inside the width */
+}
+
+.input-group input:focus {
+outline: none;
+border-color: #673ab7;
+box-shadow: 0 0 5px rgba(103, 58, 183, 0.3);
+}
+
+.validation-message {
+color: #e74c3c;
+font-size: 0.9em;
+margin-top: 5px;
+display: none; /* Hidden by default */
+position: absolute;
+right: 0;
+top: 0;
+background-color: #ffebee;
+border: 1px solid #e57373;
+padding: 8px 12px;
+border-radius: 5px;
+z-index: 1;
+}
+
+.input-group.error input {
+border-color: #e74c3c;
+}
+
+.input-group.error .validation-message {
+display: block; /* Show error message when error class is added */
+}
+
+.signup-button {
+background-color: #673ab7;
+color: white;
+padding: 12px 20px;
+border: none;
+border-radius: 5px;
+font-size: 1.1em;
+cursor: pointer;
+width: 100%;
+transition: background-color 0.3s ease;
+}
+
+.signup-button:hover {
+background-color: #512da8;
+}
+
+.checkbox-group {
+margin-bottom: 20px;
+display: flex;
+align-items: center;
+}
+
+.checkbox-group input[type="checkbox"] {
+width: auto;
+margin-right: 10px;
+cursor: pointer;
+}
+
+.checkbox-group label {
+color: #555;
+user-select: none; /* Prevent text selection during click */
+}
+
+.checkbox-group a {
+color: #673ab7;
+text-decoration: none;
+}
+
+.checkbox-group a:hover {
+text-decoration: underline;
+}
+
+
+.password-group {
+position: relative; /* For positioning the toggle icon */
+}
+
+.password-toggle {
+position: absolute;
+right: 10px;
+top: 50%;
+transform: translateY(-50%);
+width: 24px;
+height: 24px;
+background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2 7H10.21L12 8.79L13.79 7H22V17H2M2 7L11.14 16.14M22 7L12.86 16.14M12 16.9L10.21 15H2M12 16.9L13.79 15H22"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+</svg>');
+background-size: contain;
+background-repeat: no-repeat;
+cursor: pointer;
+opacity: 0.6;
+}
+
+.password-toggle.visible {
+background-image: url('data:image/svg+xml,<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M2 7H10.21L12 8.79L13.79 7H22V17H2M2 7L11.14 16.14M22 7L12.86 16.14" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" />
+</svg>');
+}
+
+.password-strength {
+margin-top: 10px;
+padding: 10px;
+background-color: #f0f0f0;
+border-radius: 5px;
+font-size: 0.9em;
+display: none; /* Hidden by default, shown when password field is focused */
+}
+
+.password-group input:focus + .password-strength {
+display: block;
+}
+
+.strength-bar {
+background-color: #ddd;
+height: 8px;
+border-radius: 4px;
+margin-bottom: 5px;
+overflow: hidden; /* To clip the indicator */
+}
+
+.strength-indicator {
+height: 100%;
+width: 0%; /* Initial width is 0 */
+background-color: #4caf50; /* Default strong color */
+border-radius: 4px;
+transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+text-align: center;
+color: #777;
+}
+
+/* Strength level colors */
+.strength-indicator.weak { background-color: #e57373; }
+.strength-indicator.medium { background-color: #ffca28; }
+.strength-indicator.strong { background-color: #4caf50; }
+content_copy
+download
+Use code with caution.
+Css
+
+script.js:
+
+document.addEventListener('DOMContentLoaded', function() {
+const form = document.getElementById('signup-form');
+const fullNameInput = document.getElementById('full-name');
+const emailInput = document.getElementById('email');
+const phoneNumberInput = document.getElementById('phone-number');
+const passwordInput = document.getElementById('password');
+const termsCheckbox = document.getElementById('terms');
+
+const fullNameError = document.getElementById('full-name-error');
+const emailError = document.getElementById('email-error');
+const phoneNumberError = document.getElementById('phone-number-error');
+const passwordError = document.getElementById('password-error');
+
+const passwordToggle = document.getElementById('password-toggle');
+let passwordVisible = false;
+
+const strengthIndicator = document.getElementById('strength-indicator');
+const strengthText = document.getElementById('strength-text');
+const passwordStrengthContainer = document.getElementById('password-strength');
+
+
+form.addEventListener('submit', function(event) {
+event.preventDefault(); // Prevent default form submission
+
+let isValid = true;
+
+// Reset error messages and styles
+resetValidation(fullNameInput, fullNameError);
+resetValidation(emailInput, emailError);
+resetValidation(phoneNumberInput, phoneNumberError);
+resetValidation(passwordInput, passwordError);
+
+// Validate Full Name
+if (fullNameInput.value.trim() === '') {
+showError(fullNameInput, fullNameError, 'Full Name cannot be empty.');
+isValid = false;
+}
+
+// Validate Email
+if (emailInput.value.trim() === '') {
+showError(emailInput, emailError, 'Email cannot be empty.');
+isValid = false;
+} else if (!isValidEmail(emailInput.value.trim())) {
+showError(emailInput, emailError, 'Invalid email format.');
+isValid = false;
+}
+
+// Validate Phone Number
+if (phoneNumberInput.value.trim() === '') {
+showError(phoneNumberInput, phoneNumberError, 'Phone Number cannot be empty.');
+isValid = false;
+}
+
+// Validate Password
+if (passwordInput.value.trim() === '') {
+showError(passwordInput, passwordError, 'Password cannot be empty.');
+isValid = false;
+} else if (!isValidPassword(passwordInput.value.trim())) {
+showError(passwordInput, passwordError, 'Password must contain at least one uppercase letter and one special symbol.');
+isValid = false;
+}
+
+if (!termsCheckbox.checked) {
+alert('Please agree to the Terms of Service and Privacy Policy.'); // Simple alert for terms agreement
+isValid = false;
+}
+
+
+if (isValid) {
+alert('Sign up successful!'); // Replace with actual form submission logic
+// form.submit(); // Uncomment this to actually submit the form if needed
+}
+});
+
+function resetValidation(inputElement, errorElement) {
+inputElement.parentElement.classList.remove('error');
+errorElement.textContent = '';
+}
+
+function showError(inputElement, errorElement, message) {
+inputElement.parentElement.classList.add('error');
+errorElement.textContent = message;
+}
+
+function isValidEmail(email) {
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+return emailRegex.test(email);
+}
+
+function isValidPassword(password) {
+const uppercaseRegex = /[A-Z]/;
+const specialSymbolRegex = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/;
+    return uppercaseRegex.test(password) && specialSymbolRegex.test(password);
+    }
+
+
+    // Password visibility toggle
+    passwordToggle.addEventListener('click', function() {
+    passwordVisible = !passwordVisible;
+    if (passwordVisible) {
+    passwordInput.type = 'text';
+    passwordToggle.classList.add('visible');
+    } else {
+    passwordInput.type = 'password';
+    passwordToggle.classList.remove('visible');
+    }
+    });
+
+
+    // Password strength check
+    passwordInput.addEventListener('input', function() {
+    const password = passwordInput.value;
+    let strength = 0;
+    if (password.length > 6) strength++; // Basic length check
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++; // Mix of case
+    if (/[0-9]/.test(password)) strength++; // Contains numbers
+    if (/[^a-zA-Z0-9]/.test(password)) strength++; // Contains special characters
+
+    updateStrengthMeter(strength);
+    });
+
+    function updateStrengthMeter(strengthLevel) {
+    let strengthPercentage = 0;
+    let strengthColor = '#e57373'; // Weak default color
+    let strengthMessage = 'Weak';
+
+    switch (strengthLevel) {
+    case 0: strengthPercentage = 0; strengthMessage = 'Very Weak'; strengthColor = '#e57373'; break;
+    case 1: strengthPercentage = 25; strengthMessage = 'Weak'; strengthColor = '#e57373'; break;
+    case 2: strengthPercentage = 50; strengthMessage = 'Medium'; strengthColor = '#ffca28'; break;
+    case 3: strengthPercentage = 75; strengthMessage = 'Strong'; strengthColor = '#4caf50'; break;
+    case 4: strengthPercentage = 100; strengthMessage = 'Strong'; strengthColor = '#4caf50'; break;
+    }
+
+    strengthIndicator.style.width = `${strengthPercentage}%`;
+    strengthIndicator.className = `strength-indicator ${getStrengthClass(strengthLevel)}`; // Update class for color
+    strengthText.textContent = strengthMessage;
+    }
+
+    function getStrengthClass(strengthLevel) {
+    if (strengthLevel <= 1) return 'weak' ; if (strengthLevel===2) return 'medium' ; return 'strong' ; // strengthLevel>
+        = 3 is considered strong
+        }
+
+
+        });
+        content_copy
+        download
+        Use code with caution.
+        JavaScript
+
+        步驟:
+
+        儲存檔案: 將上面的程式碼分別儲存為 index.html, style.css, 和 script.js 在同一個資料夾中。
+
+        開啟 HTML 檔案: 使用瀏覽器開啟 index.html 檔案。
+
+        功能說明:
+
+        HTML 結構:
+
+        分為左右兩部分，左邊顯示標題和功能列表，右邊是註冊表單。
+
+        表單包含姓名、Email、電話號碼和密碼輸入框。
+
+        包含一個同意條款和隱私政策的複選框。
+
+        使用 <form> 元素和提交按鈕。
+
+            CSS 樣式:
+
+            基本佈局和樣式，模仿了設計圖的風格。
+
+            包含了輸入框、按鈕、錯誤訊息框等的樣式。
+
+            使用了絕對定位來放置驗證錯誤訊息框在輸入框的右側。
+
+            加入了密碼可見性切換按鈕的樣式。
+
+            加入了密碼強度指示器的樣式。
+
+            JavaScript 程式碼:
+
+            表單驗證:
+
+            在表單提交時觸發驗證。
+
+            驗證姓名、Email、電話號碼和密碼是否為空。
+
+            驗證 Email 格式是否正確。
+
+            驗證密碼是否包含至少一個大寫字母和一個特殊符號。
+
+            如果驗證失敗，會在對應的輸入框右側顯示錯誤訊息框，並阻止表單提交。
+
+            密碼可見性切換:
+
+            點擊密碼輸入框後面的眼睛圖示，可以切換密碼的顯示與隱藏。
+
+            密碼強度指示:
+
+            即時監聽密碼輸入框的輸入事件。
+
+            根據密碼的複雜度（長度、大小寫、數字、特殊符號）計算密碼強度。
+
+            使用進度條和文字提示來顯示密碼強度。
+
+            注意事項:
+
+            圖示: CSS 程式碼中使用了 SVG 內聯圖示，您無需額外準備圖示檔案。
+
+            響應式設計: 這個範例沒有特別針對響應式設計進行優化，如果需要在不同螢幕尺寸下有更好的表現，您可能需要添加媒體查詢 (Media Queries) 在 CSS 中。
+
+            後端處理: 這個範例只包含了前端的驗證和介面，實際的註冊功能需要後端伺服器來處理資料儲存和帳戶創建。
+
+            密碼強度算法: 密碼強度指示器的算法是一個簡化的版本，實際應用中可能需要更複雜的算法來更準確地評估密碼強度。
+
+            錯誤訊息位置: 錯誤訊息框的位置在不同螢幕尺寸下可能需要調整，以確保不會遮擋其他元素。
+
+            希望這個範例能夠幫助您！如果您有任何問題或需要進一步的調整，請隨時提出。
