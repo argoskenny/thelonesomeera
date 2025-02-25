@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商業寫作資源</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e67e22;
+            --light-color: #ecf0f1;
+            --dark-color: #34495e;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: var(--dark-color);
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        nav {
+            background-color: var(--dark-color);
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 1rem 1.5rem;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        .section-content {
+            margin-top: 1.5rem;
+        }
+
+        .link-card {
+            background-color: var(--light-color);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .link-card i {
+            margin-right: 1rem;
+            color: var(--secondary-color);
+            font-size: 1.5rem;
+        }
+
+        .link-card a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            flex-grow: 1;
+        }
+
+        .link-card a:hover {
+            text-decoration: underline;
+        }
+
+        .example-item {
+            background-color: var(--light-color);
+            border-left: 4px solid var(--secondary-color);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 4px 4px 0;
+            position: relative;
+        }
+
+        .example-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .example-content {
+            white-space: pre-wrap;
+            font-family: 'Courier New', Courier, monospace;
+            background-color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--primary-color);
+        }
+
+        .success-message {
+            display: none;
+            background-color: #2ecc71;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+
+            nav a {
+                width: 100%;
+                text-align: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            section {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>商業寫作資源中心</h1>
+    </header>
+
+    <nav>
+        <a href="#ppt-section">PPT</a>
+        <a href="#lecture-section">講義</a>
+        <a href="#prompt-examples">Prompt Examples</a>
+        <a href="#other-examples">Other Examples</a>
+    </nav>
+
+    <div class="container">
+        <section id="ppt-section">
+            <h2>PPT</h2>
+            <div class="section-content">
+                <div class="link-card">
+                    <i>📊</i>
+                    <a href="https://gamma.app/docs/AI--rsp0z50i1afsy65" target="_blank">AI 簡報</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="lecture-section">
+            <h2>講義</h2>
+            <div class="section-content">
+                <div class="link-card">
+                    <i>📝</i>
+                    <a href="https://docs.google.com/document/d/16e6rLKDu07VwHWylSctD79QNnqRDq6drXk0CBXDwfdM/edit?usp=sharing"
+                        target="_blank">講義文件</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="prompt-examples">
+            <h2>Prompt Examples</h2>
+            <div class="section-content">
+                <div class="example-item">
+                    <div class="example-title">Business Collaboration Invitation</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">Subject: Partnership Opportunity in High-Quality Casting Solutions
+                        Dear Mr. James Richardson,
+                        I hope this email finds you well. I am reaching out to introduce CastTech Industries, a leading
+                        provider of precision casting solutions with a strong reputation for quality and reliability.
+                        With years of experience in the traditional casting industry, we specialize in investment
+                        casting, sand casting, and die casting, catering to a wide range of industries, including
+                        automotive, aerospace, and industrial machinery.
+                        We would love the opportunity to explore potential collaboration and discuss how our expertise
+                        can support your manufacturing needs. Please let us know a convenient time for a meeting or a
+                        call at your earliest convenience.
+                        Looking forward to your response.
+                        Best regards,
+                        Michael Harrison
+                        Business Development Manager
+                        CastTech Industries
+                        📞 +1 (312) 555-7890
+                        📧 michael.harrison@casttech.com
+                        🌐 www.casttech.com</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">Trade Show Invitation</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">Subject: Exclusive Invitation: Meet Us at Metal Expo 2025
+                        Dear Ms. Linda Collins,
+                        We are pleased to invite you to visit our booth at Metal Expo 2025, taking place at Chicago
+                        Convention Center from March 10–12, 2025. As a leading manufacturer in the traditional casting
+                        industry, we will be showcasing our latest innovations in high-precision metal casting and
+                        advanced alloy solutions.
+                        This will be a great opportunity to discuss your business needs and explore how our high-quality
+                        casting solutions can benefit your production processes. Our team of experts will be available
+                        to provide insights and answer any questions you may have.
+                        Please let us know if you would like to schedule a dedicated meeting during the event. We look
+                        forward to welcoming you at Booth #C21.
+                        Best regards,
+                        Daniel Thompson
+                        Sales Director
+                        Elite Castings Inc.
+                        📞 +1 (917) 555-2025
+                        📧 daniel.thompson@elitecastings.com
+                        🌐 www.elitecastings.com</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">Invitation for a Factory Visit</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">Subject: Invitation to Visit Our Casting Facility
+                        Dear Mr. Robert Mitchell,
+                        At Precision Foundry Solutions, we take pride in our advanced traditional casting techniques and
+                        commitment to delivering high-quality metal components. To provide you with a firsthand
+                        experience of our capabilities, we would like to invite you to visit our manufacturing facility
+                        in Houston, Texas.
+                        During the visit, you will have the opportunity to:
+                        • Tour our production lines and quality control processes
+                        • Gain insights into our state-of-the-art casting techniques
+                        • Discuss potential business collaboration tailored to your needs
+                        Please let us know your preferred date and time, and we will be happy to arrange the visit
+                        accordingly. We look forward to hosting you at our facility.
+                        Best regards,
+                        Sarah Evans
+                        Operations Manager
+                        Precision Foundry Solutions
+                        📞 +1 (281) 555-3412
+                        📧 sarah.evans@precisionfoundry.com
+                        🌐 www.precisionfoundry.com</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">Business Proposal for Supplying Casting Components</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">Subject: Proposal for High-Quality Casting Component Supply
+                        Dear Mr. Thomas Baker,
+                        I am writing to introduce IronWorks Casting Ltd. as a trusted supplier of precision casting
+                        components for automotive, heavy machinery, and energy sectors. With over 30 years of expertise
+                        in traditional casting processes, we specialize in delivering durable and cost-effective
+                        solutions tailored to meet industry standards.
+                        Our capabilities include:
+                        • Sand casting, lost wax casting, and die casting
+                        • Materials: aluminum, stainless steel, ductile iron, and brass
+                        • Strict quality control ensuring compliance with ISO 9001 & ASTM standards
+                        We believe our expertise and production capacity can add value to your supply chain. Please let
+                        us know a suitable time for a discussion, and we would be delighted to present a customized
+                        proposal.
+                        Looking forward to your response.
+                        Best regards,
+                        Kevin Anderson
+                        Head of Sales
+                        IronWorks Casting Ltd.
+                        📞 +1 (415) 555-9823
+                        📧 kevin.anderson@ironworks.com
+                        🌐 www.ironworks.com</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品回覆信範例</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一封回覆信，解釋 鱗片石墨 金鉛-385 的材質成分、抗拉強度，以及表面處理方式，並強調公司品質檢測流程。
+                        以下為產品參考資料：
+                        產品名稱
+                        鱗片石墨 金鉛-385
+                        產品說明
+                        鱗片石墨-385
+                        含碳量:85%以上
+                        特性
+                        單一產品
+                        化學成分
+                        FC固定碳量 88.38%
+                        ASH 灰 9.68%
+                        VOLATILE揮發分 1.94%
+                        MOISTURE水分 0.29%
+                        -325 MESH粒度 89.8%
+                        尺寸
+                        300目
+                        包裝方式
+                        20kg/袋
+                        用途
+                        1、耐火材料
+                        鱗片石墨廣泛用於治金工業的高級耐火材料與塗料。如鎂碳磚、坩堝等。軍事工業火工材料安定劑、冶煉工業脫硫增速劑、輕工業的鉛筆芯、電氣工業的碳刷、電池工業的電極、化肥工業的催化劑等。鱗片石墨經過深入加工，又可以生產出石墨乳，用於潤滑劑、脫模劑、拉絲劑、導電塗料等。還可以生產膨脹石墨，用於柔性石墨製品原料，如柔性石墨密封件及柔性石墨復材料製品等。
+                        2、塗料
+                        鱗片石墨作為塗料的功能填料主要用於防腐塗料、防火塗料和導電塗料。
+                        作為防腐材料，它和炭黑、滑石粉及油料等製成的防鏽底漆，具有良好的耐化學品和溶劑腐蝕性能。
+
+                        用作防火填料的是可膨脹石墨，它是以天然石墨鱗片為原料，經化學或電化學處理而得到的一種石墨層間化合物。可膨脹石墨在受熱條件下，體積急劇膨脹(最高可達300倍)窒息了火焰，同時生成膨脹物，達到隔絕火焰，延遲或中斷火焰蔓延的作用，且本身不燃，柔軟性好，表面能高，炭化層強度好。但是膨脹體的體積和用量要選擇適宜。試驗表明，150um的顆粒、30%的膨脹倍數、5%的用量最為合適。
+                        鱗片石墨可直接作為碳類導電填料亦可製成復合導電填料用於導電塗料。但由於石墨鱗片的添加量較大，會使塗料的性能變脆而使其應用受到一定限制。因此，採取措施進一步提高石墨的導電性，有效降低石墨鱗片的添加量。
+                        備註說明
+                        性狀:外觀黑色,金屬光澤
+                        沸點:無
+                        密度:1.8g/ml
+                        溶解度:不溶於水
+                        粘度:固形狀</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">商務信件翻譯請求</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請將以下商務信件翻譯為[英語/日語/德語]，保持專業且自然的語氣。
+                        主旨：關於 CNC 精密零件供應合作洽談
+                        尊敬的 王經理，
+                        您好！我是李浩然，來自精工機械有限公司，我們專注於高精度金屬加工與工業設備製造。目前，我們正在尋找CNC
+                        精密零件的長期合作供應商，以滿足我們近期擴大產能的需求。我們對貴公司——匠心工業股份有限公司在精密零件加工領域的專業技術深感興趣，希望能進一步探討合作機會。
+                        我們希望了解以下內容，以便評估合作可行性：
+                        1. 產品規格與技術參數 – 是否可以提供貴公司 CNC 精密零件的產品目錄或技術資料？
+                        2. 價格與訂購條件 – 是否可提供報價單，包括 MOQ（最低訂購量）、付款條件及長期合作方案？
+                        3. 交貨期與供應能力 – 貴公司平均交貨週期如何？是否能應對大批量生產需求？
+                        4. 品質認證與檢驗標準 – 貴公司是否通過 ISO 9001、RoHS 或其他品質管理體系認證？
+                        若貴公司有興趣進一步洽談，請問是否方便安排一次會議或視訊通話，以便詳細討論合作細節？
+                        期待您的回覆，也希望有機會與貴公司建立長期的合作關係。若有任何問題，請隨時與我聯繫。
+                        敬祝 商祺！
+                        李浩然
+                        業務經理
+                        精工機械有限公司
+                        電話：+886-912-345-678
+                        電子郵件：lihaoran@jinggong.com
+                        公司網址：www.jinggong.com</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="other-examples">
+            <h2>Other Examples</h2>
+            <div class="section-content">
+                <div class="example-item">
+                    <div class="example-title">詢價信</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一封詢價信，對象是 台灣材料企業，詢問 矽鐵 的價格、最低訂購量、交貨期及付款條件，語氣正式且有禮貌。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品回覆信</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一封回覆信，解釋 產品 的材質成分與特色，並強調公司品質檢測流程。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">感謝信</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一封感謝信，感謝客戶在過去一年對我們鑄造產品的支持，並邀請他們參觀我們最新的生產線。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品介紹</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫我們產品與主要功能與特色，強調我們的優勢。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">職位描述</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">為我們的生產高級工程師撰寫一份詳細的職位描述，包括主要職責、所需技能和資格，特別針對傳統鑄造工業的需求。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">安全操作規範</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫一段關於工廠安全操作規範的員工手冊內容，涵蓋設備操作、工業防護和緊急應對措施。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">技術人員培訓計劃</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">為新入職的鑄造／鍛造模具技術人員制定為期一週的培訓計劃，包括熔爐操作、模具製作和品質檢測等主題。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">績效評估模板</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">提供一份適用於鑄造工人的績效評估模板，包含生產效率、品質控制和安全合規的評估標準。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品新聞稿</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫一份關於我們新型耐高溫鑄件的新聞稿，強調其工藝改進、材料優勢和市場應用。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">設備操作手冊</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫我們最新數位控制熔爐的使用指南，包含安全啟動步驟、故障排除和維護建議。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">市場調查問卷</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">設計一份針對鑄造產業客戶的市場調查問卷，以了解他們對不同金屬材料和加工技術的需求。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產線調整公告</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫一則關於工廠產線升級計劃的內部公告，包含新設備導入時間表和員工培訓計劃。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品性能對比報告</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫我們新型耐磨鑄件與傳統鑄件的性能比較，強調其強度提升和使用壽命延長。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產業合作提案</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">為潛在合作夥伴撰寫一份技術合作提案，介紹我們如何提供高品質鑄造解決方案。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">年度生產報告摘要</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">撰寫公司年度生產報告的執行摘要，概述產能變化、技術改進和市場成長情況。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">基本產品介紹</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">
+                        請撰寫一份產品介紹，介紹我們的【球墨鑄鐵閥體】，適用於【管道流體控制】，材質為【QT450-10】。請說明其高強度、耐腐蝕特性，以及精密加工帶來的密封性能優勢。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">技術與工藝亮點</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一篇關於【高鉻合金耐磨鑄件】的技術介紹，說明我們採用【精密砂模鑄造】技術，並經過【淬火+回火】熱處理，以提升耐磨性與抗衝擊性。
+                    </div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">市場營銷型介紹</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一份市場推廣文案，介紹我們的【高強度鋁合金鑄件】，強調其【輕量化設計】、【高精度加工】、【耐腐蝕性】，並適用於【汽車與航太產業】。
+                    </div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品應用案例</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一篇案例分享，描述我們的【耐高溫鑄鋼零件】如何在【發電廠渦輪機組】中發揮作用，提高耐熱壽命並減少維護成本。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品認證與品質保證</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一份品質保證聲明，介紹我們的【精密鑄鋼零件】如何通過【ISO 9001與EN
+                        10204認證】，並經歷【超聲波檢測與硬度測試】以確保穩定品質。</div>
+                </div>
+
+                <div class="example-item">
+                    <div class="example-title">產品環保與可持續發展</div>
+                    <button class="copy-btn">複製</button>
+                    <div class="example-content">請撰寫一篇介紹我們的【可回收鋁合金鑄件】如何降低碳足跡，並符合【歐盟RoHS與REACH環保標準】。</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="success-message" id="copySuccess">已複製到剪貼簿！</div>
+
+    <footer>
+        <p>© 2025 商業寫作資源中心 | 提供專業商務寫作範例與資源</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const copyButtons = document.querySelectorAll('.copy-btn');
+            const successMessage = document.getElementById('copySuccess');
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const content = this.nextElementSibling.textContent;
+                    navigator.clipboard.writeText(content).then(() => {
+                        // Show success message
+                        successMessage.style.display = 'block';
+                        successMessage.style.opacity = '1';
+
+                        // Hide after 2 seconds
+                        setTimeout(() => {
+                            successMessage.style.opacity = '0';
+                            setTimeout(() => {
+                                successMessage.style.display = 'none';
+                            }, 300);
+                        }, 2000);
+                    });
+                });
+            });
+
+            // Smooth scrolling for navigation
+            document.querySelectorAll('nav a').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 60,
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
