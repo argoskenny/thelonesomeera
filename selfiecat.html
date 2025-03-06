@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Selfie Cat</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -14,11 +16,11 @@
             background-color: #00A19D;
         }
 
-        .container {
+        .container-fluid {
             position: relative;
             width: 100%;
             height: 100vh;
-            /* 使用全視窗高度 */
+            padding: 0;
         }
 
         .image-left,
@@ -64,6 +66,7 @@
         .app_preview,
         .appstore {
             position: absolute;
+            transition: all 0.3s ease;
         }
 
         .title_logo {
@@ -83,11 +86,60 @@
             left: 29%;
             width: 12%;
         }
+
+        /* Tablet and smaller devices */
+        @media (max-width: 1024px) {
+            .title_logo {
+                top: 15%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 70%;
+            }
+
+            .app_preview {
+                top: 45%;
+                right: 50%;
+                transform: translateX(50%);
+                width: 60%;
+            }
+
+            .appstore {
+                top: 80%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 45%;
+            }
+
+            .image-left,
+            .image-right {
+                width: 25%;
+            }
+        }
+
+        /* Mobile devices */
+        @media (max-width: 576px) {
+            .title_logo {
+                width: 80%;
+            }
+
+            .app_preview {
+                width: 70%;
+            }
+
+            .appstore {
+                width: 50%;
+            }
+
+            .image-left,
+            .image-right {
+                width: 30%;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div class="container-fluid">
         <img src="scbg_dot1.png" alt="左上圖片" class="image-left">
         <img src="scbg_dot2.png" alt="右上圖片" class="image-right">
         <div class="split-circle">
@@ -95,9 +147,14 @@
         </div>
         <img src="title_logo.png" alt="title" class="title_logo">
         <img src="app_preview.png" alt="apppreview" class="app_preview">
-        <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720"><img src="appstore_badge.svg" alt=""
-                class="appstore"></a>
+        <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720">
+            <img src="appstore_badge.svg" alt="Download on App Store" class="appstore">
+        </a>
     </div>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 
 </html>
