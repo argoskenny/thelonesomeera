@@ -4,153 +4,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selfie Cat</title>
+    <title>Selfie Cat - AI-Powered Cat Selfie App | Make Your Cat a Superstar</title>
+    <meta name="description"
+        content="Turn playtime into priceless memories with Selfie Cat! The AI-powered app that captures adorable selfies of your cat as they play with fun, interactive toys on screen.">
+    <meta name="keywords" content="cat selfie app, pet photography, cat photos, cat games, pet app, cat entertainment">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://selfiecat.app/">
+    <meta property="og:title" content="Selfie Cat - AI-Powered Cat Selfie App">
+    <meta property="og:description"
+        content="Turn playtime into priceless memories! Capture adorable selfies of your cat automatically as they play with interactive toys.">
+    <meta property="og:image" content="https://selfiecat.app/app_preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://selfiecat.app/">
+    <meta property="twitter:title" content="Selfie Cat - AI-Powered Cat Selfie App">
+    <meta property="twitter:description"
+        content="Turn playtime into priceless memories! Capture adorable selfies of your cat automatically as they play with interactive toys.">
+    <meta property="twitter:image" content="https://selfiecat.app/app_preview.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://selfiecat.app/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MobileApplication",
+      "name": "Selfie Cat",
+      "applicationCategory": "Photography App",
+      "operatingSystem": "iOS",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "AI-powered app that captures adorable selfies of your cat as they play with interactive on-screen toys.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1000"
+      }
+    }
+    </script>
     <style>
         body {
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            /* 防止出現滾動條 */
+            color: #333;
+            background-color: #fff;
+        }
+
+        .navbar {
+            padding: 1rem 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+
+        .navbar-nav {
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            color: #333;
+            font-weight: 500;
+            margin: 0 10px;
+        }
+
+        .download-btn {
             background-color: #00A19D;
+            color: white;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
         }
 
-        .container-fluid {
+        .download-btn:hover {
+            background-color: #008F8C;
+            color: white;
+        }
+
+        .hero-section {
+            background-color: #00A19D;
+            color: white;
+            padding: 6rem 0;
             position: relative;
-            width: 100%;
-            height: 100vh;
-            padding: 0;
+            overflow: hidden;
         }
 
-        .image-left,
-        .image-right {
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .app-preview-img {
+            max-width: 100%;
+            border-radius: 20px;
+        }
+
+        .how-to-img {
+            height: 100%;
+            width: auto;
+            border-radius: 20px;
+            object-fit: contain;
+        }
+
+        .how-to-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .equal-height-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .equal-height-row>[class*='col-'] {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-store-badge {
+            height: 50px;
+            margin-top: 1rem;
+        }
+
+        .features-section {
+            padding: 5rem 0;
+            background-color: #FFF8E5;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card h3 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-block {
+            padding: 0.5rem 0;
+        }
+
+        .step-block h3 {
+            font-size: 1.25rem;
+            color: #00A19D;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-block p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            padding: 5rem 0;
+            text-align: center;
+            background-color: #00A19D;
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-text {
+            font-family: 'Permanent Marker', cursive;
+            color: #FFF8E5;
+            display: inline-block;
+            margin-left: 15px;
+            transform: rotate(-5deg);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: rotate(-5deg) translateY(0);
+            }
+
+            50% {
+                transform: rotate(-5deg) translateY(-10px);
+            }
+        }
+
+        .footer {
+            padding: 2rem 0;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .footer-links a {
+            color: #333;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Decorative elements */
+        .bg-dot {
             position: absolute;
-            top: 0;
-            width: 20%;
-            /* 設定圖片寬度為父容器寬度的 10% */
-            height: auto;
-            /* 自動調整高度以保持比例 */
+            width: 200px;
+            opacity: 0.2;
         }
 
-        .image-left {
+        .bg-dot-1 {
+            top: 0;
             left: 0;
         }
 
-        .image-right {
+        .bg-dot-2 {
+            top: 0;
             right: 0;
         }
 
-        .split-circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 160%;
-            height: 130%;
-            transform: translate(-50%, -50%);
-            overflow: hidden;
-        }
-
-        .split-circle .bottom-half {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50%;
-            background-color: #FFF8E5;
-            border-top-left-radius: 50%;
-            border-top-right-radius: 50%;
-        }
-
-        .title_logo,
-        .app_preview,
-        .appstore {
-            position: absolute;
-            transition: all 0.3s ease;
-        }
-
-        .title_logo {
-            top: 25%;
-            left: 20%;
-            width: 30%;
-        }
-
-        .app_preview {
-            top: 18%;
-            right: 20%;
-            width: 25%;
-        }
-
-        .appstore {
-            top: 56%;
-            left: 29%;
-            width: 12%;
-        }
-
-        /* Tablet and smaller devices */
-        @media (max-width: 1024px) {
-            .title_logo {
-                top: 15%;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 70%;
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
             }
 
-            .app_preview {
-                top: 45%;
-                right: 50%;
-                transform: translateX(50%);
-                width: 60%;
+            .hero-section {
+                padding: 4rem 0;
             }
 
-            .appstore {
-                top: 80%;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 45%;
-            }
-
-            .image-left,
-            .image-right {
-                width: 25%;
+            .app-preview-container {
+                margin-top: 3rem;
             }
         }
 
-        /* Mobile devices */
-        @media (max-width: 576px) {
-            .title_logo {
-                width: 80%;
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
             }
 
-            .app_preview {
-                width: 70%;
+            .section-title {
+                font-size: 2rem;
             }
 
-            .appstore {
-                width: 50%;
+            .feature-card {
+                padding: 1.5rem;
             }
 
-            .image-left,
-            .image-right {
-                width: 30%;
+            .col-md-4 {
+                margin-bottom: 20px;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="container-fluid">
-        <img src="scbg_dot1.png" alt="左上圖片" class="image-left">
-        <img src="scbg_dot2.png" alt="右上圖片" class="image-right">
-        <div class="split-circle">
-            <div class="bottom-half"></div>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="title_logo.png" alt="Selfie Cat">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="download-btn" href="https://apps.apple.com/us/app/selfie-cat/id1071984720">Free
+                            Download</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-        <img src="title_logo.png" alt="title" class="title_logo">
-        <img src="app_preview.png" alt="apppreview" class="app_preview">
-        <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720">
-            <img src="appstore_badge.svg" alt="Download on App Store" class="appstore">
-        </a>
-    </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1 class="hero-title">Snap Purr-fect Selfies with Your Cat! 🐱📸</h1>
+                    <p class="hero-subtitle">Turn playtime into priceless memories! Selfie Cat captures adorable selfies
+                        of your furry friend as they interact with fun, on-screen toys. Ready to make your cat a
+                        superstar?</p>
+                    <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720">
+                        <img src="appstore_badge.svg" alt="Download on App Store" class="app-store-badge">
+                    </a>
+                </div>
+                <div class="col-lg-6 app-preview-container text-center">
+                    <img src="app_preview.png" alt="Selfie Cat App Preview" class="app-preview-img">
+                </div>
+            </div>
+        </div>
+        <img src="scbg_dot1.png" alt="Decorative Element" class="bg-dot bg-dot-1">
+        <img src="scbg_dot2.png" alt="Decorative Element" class="bg-dot bg-dot-2">
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="section-title">Amazing Features</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>🎾 Playtime Fun</h3>
+                        <p>Laser pointers, bouncing balls, colorful fireworks, and swimming fish!
+                            Selfie Cat keeps your feline entertained with exciting digital toys designed to grab their
+                            attention.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>📸 Auto-Snap Magic</h3>
+                        <p>Your cat taps, we snap!
+                            Selfie Cat automatically takes a photo every time your cat touches the screen—no extra
+                            effort needed!</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>🌟 Share the Cuteness</h3>
+                        <p>Show off your kitty's best moments!
+                            Easily save and share your cat's hilarious and heartwarming selfies with friends on social
+                            media.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="features-section bg-white" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How Selfie Cat Works</h2>
+            <div class="row equal-height-row align-items-stretch">
+                <div class="col-lg-6">
+                    <div class="feature-card">
+                        <div class="step-block mb-4">
+                            <h3>1️⃣ Pick a Toy</h3>
+                            <p class="mb-0">Choose from four fun-filled toys: Laser Pointer, Balls, Fireworks, or
+                                Fishes.</p>
+                        </div>
+
+                        <div class="step-block mb-4">
+                            <h3>2️⃣ Let Your Cat Play</h3>
+                            <p class="mb-0">Place your device in front of your cat and watch them interact with the
+                                screen.</p>
+                        </div>
+
+                        <div class="step-block mb-4">
+                            <h3>3️⃣ Snap & Save</h3>
+                            <p class="mb-0">Every tap triggers a selfie—capture their cutest reactions effortlessly!</p>
+                        </div>
+
+                        <div class="step-block">
+                            <h3>4️⃣ Share the Fun</h3>
+                            <p class="mb-0">Spread the joy by posting your cat's best snapshots online!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="how_to.png" alt="How Selfie Cat Works" class="how-to-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Try Selfie Cat Today <span class="highlight-text">FOR FREE!!</span></h2>
+            <p class="mb-4">Take perfect selfies every time</p>
+            <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720">
+                <img src="appstore_badge.svg" alt="Download on App Store" class="app-store-badge">
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links mb-3">
+                <a href="https://www.privacypolicies.com/live/68fce540-fa44-4de3-926f-314b56e70c3d">Privacy Policy</a> |
+                <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSdPD9G6UDUUZj2o-GIi1f8Jt0JKzfCoWsoYETwDDPhH7Uv-2g/viewform">Contact
+                    Support</a>
+            </div>
+            <p>Copyright © 2025 Selfie Cat. Made with ❤️</p>
+        </div>
+    </footer>
 
     <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
