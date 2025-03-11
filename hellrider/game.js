@@ -13,6 +13,18 @@ class Game {
             backgroundColor: 0x333333
         });
 
+        // 按鈕位置設定
+        this.buttonConfig = {
+            x: 300,
+            width: 200,
+            height: 50,
+            positions: {
+                normal: 350,
+                hard: 420,
+                extreme: 490
+            }
+        };
+
         // 添加 canvas 到容器
         document.getElementById('game-container').appendChild(this.app.view);
 
@@ -311,17 +323,18 @@ class Game {
             const y = e.clientY - rect.top;
 
             if (this.currentState === 'welcome') {
-                if (x >= 300 && x <= 500) {
-                    if (y >= 350 && y <= 400) {
+                if (x >= this.buttonConfig.x && x <= this.buttonConfig.x + this.buttonConfig.width) {
+                    if (y >= this.buttonConfig.positions.normal && y <= this.buttonConfig.positions.normal + this.buttonConfig.height) {
                         this.startGame('normal');
-                    } else if (y >= 400 && y <= 450) {
+                    } else if (y >= this.buttonConfig.positions.hard && y <= this.buttonConfig.positions.hard + this.buttonConfig.height) {
                         this.startGame('hard');
-                    } else if (y >= 450 && y <= 500) {
+                    } else if (y >= this.buttonConfig.positions.extreme && y <= this.buttonConfig.positions.extreme + this.buttonConfig.height) {
                         this.startGame('extreme');
                     }
                 }
             } else if (this.currentState === 'gameOver') {
-                if (x >= 300 && x <= 500 && y >= 400 && y <= 450) {
+                if (x >= this.buttonConfig.x && x <= this.buttonConfig.x + this.buttonConfig.width &&
+                    y >= this.buttonConfig.positions.normal && y <= this.buttonConfig.positions.normal + this.buttonConfig.height) {
                     this.returnToTitle();
                 }
             }
@@ -400,9 +413,9 @@ class Game {
         title.y = 200;
 
         // 難度按鈕
-        const normalButton = this.createButton('普通模式', 300, 350, 200, 50);
-        const hardButton = this.createButton('困難模式', 300, 420, 200, 50);
-        const extremeButton = this.createButton('極限模式', 300, 490, 200, 50);
+        const normalButton = this.createButton('普通模式', this.buttonConfig.x, this.buttonConfig.positions.normal, this.buttonConfig.width, this.buttonConfig.height);
+        const hardButton = this.createButton('困難模式', this.buttonConfig.x, this.buttonConfig.positions.hard, this.buttonConfig.width, this.buttonConfig.height);
+        const extremeButton = this.createButton('極限模式', this.buttonConfig.x, this.buttonConfig.positions.extreme, this.buttonConfig.width, this.buttonConfig.height);
 
         this.welcomeContainer.addChild(overlay);
         this.welcomeContainer.addChild(title);
@@ -445,7 +458,7 @@ class Game {
         scoreText.y = this.app.screen.height / 2;
 
         // 返回按鈕
-        const button = this.createButton('回到標題', 300, 400, 200, 50);
+        const button = this.createButton('回到標題', this.buttonConfig.x, this.buttonConfig.positions.normal, this.buttonConfig.width, this.buttonConfig.height);
 
         this.gameOverContainer.addChild(overlay);
         this.gameOverContainer.addChild(gameOverText);
