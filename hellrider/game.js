@@ -146,7 +146,10 @@ class Game {
             loop: true,
             volume: 0.3,
             html5: true,
-            preload: false
+            preload: false,
+            sprite: {
+                loop: [0, 1000]
+            }
         });
 
         // 爆炸音效
@@ -530,7 +533,7 @@ class Game {
         // 使用 setTimeout 確保音效加載有時間完成
         setTimeout(() => {
             this.sounds.bgMusic.play();
-            this.sounds.engine.play();
+            this.sounds.engine.play('loop');
         }, 100);
 
         // 開始生成 AI 車輛
