@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOX Survival</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #gameContainer {
+            width: 100%;
+            height: 100%;
+            max-width: 1024px;
+            max-height: 768px;
+            position: relative;
+            aspect-ratio: 4/3;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: all;
+            color: white;
+            font-family: Arial, sans-serif;
+            z-index: 10;
+        }
+
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background-color: white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 11;
+        }
+
+        #stats {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 18px;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+            z-index: 11;
+        }
+
+        #startScreen,
+        #gameOverScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.9);
+            pointer-events: auto;
+            z-index: 1000;
+        }
+
+        #gameOverScreen {
+            display: none;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 15px 30px;
+            font-size: 28px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            pointer-events: auto;
+            z-index: 1001;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+            transition: all 0.2s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.8);
+        }
+
+        #startScreen h1 {
+            font-size: 64px;
+            color: #ff0055;
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #ff0055;
+        }
+
+        #startScreen p {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            text-align: center;
+            max-width: 80%;
+        }
+
+        h2 {
+            font-size: 24px;
+            margin: 10px 0;
+        }
+
+        #errorMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 80%;
+            display: none;
+            color: white;
+            text-align: center;
+            z-index: 1000;
+            pointer-events: auto;
+        }
+
+        #errorMessage a {
+            color: #00ffaa;
+            text-decoration: underline;
+            pointer-events: auto;
+        }
+
+        #webglInfo {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            color: yellow;
+            font-size: 12px;
+        }
+
+        #controlsInfo {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            color: white;
+            font-size: 14px;
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas"></canvas>
+        <div id="ui">
+            <div id="crosshair"></div>
+            <div id="stats">
+                <div id="timer">Time: 0s</div>
+                <div id="kills">Kills: 0</div>
+            </div>
+            <div id="startScreen">
+                <h1>SOX SURVIVAL</h1>
+                <p style="color: white; font-size: 18px; margin-bottom: 20px;">點擊「開始遊戲」按鈕後，請點擊畫面以啟用滑鼠控制</p>
+                <button id="startButton" style="display: block;">開始遊戲</button>
+            </div>
+            <div id="gameOverScreen">
+                <h1>GAME OVER</h1>
+                <h2 id="finalTime">Survived: 0s</h2>
+                <h2 id="finalKills">Kills: 0</h2>
+                <button id="restartButton">再玩一次</button>
+            </div>
+            <div id="errorMessage"></div>
+            <div id="webglInfo"></div>
+            <div id="controlsInfo">
+                控制方式:<br>
+                WASD - 移動<br>
+                滑鼠 - 視角控制<br>
+                左鍵 - 射擊<br>
+                Shift - 加速<br>
+                ESC - 解鎖滑鼠
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Three.js and modules with error handling -->
+    <script>
+        // Initialize UI elements
+        function initializeUI() {
+            const ui = document.getElementById('ui');
+            const startScreen = document.getElementById('startScreen');
+            const startButton = document.getElementById('startButton');
+            const gameOverScreen = document.getElementById('gameOverScreen');
+
+            // Force UI to be visible
+            if (ui) {
+                ui.style.display = 'block';
+                ui.style.visibility = 'visible';
+                console.log('UI container initialized');
+            }
+
+            // Ensure start screen is visible
+            if (startScreen) {
+                startScreen.style.display = 'flex';
+                startScreen.style.visibility = 'visible';
+                console.log('Start screen initialized');
+            }
+
+            // Ensure start button is visible and clickable
+            if (startButton) {
+                startButton.style.display = 'block';
+                startButton.style.visibility = 'visible';
+                console.log('Start button initialized');
+
+                // Add click event listener
+                startButton.addEventListener('click', function () {
+                    console.log('Start button clicked');
+                });
+            }
+        }
+
+        // Call initializeUI when DOM is loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeUI);
+        } else {
+            initializeUI();
+        }
+
+        // Also try initializing on window load
+        window.addEventListener('load', initializeUI);
+
+        // Check WebGL support before loading Three.js
+        function checkWebGLSupport() {
+            try {
+                const canvas = document.createElement('canvas');
+                const webglInfo = document.getElementById('webglInfo');
+
+                // Try WebGL 2 first
+                let gl = canvas.getContext('webgl2');
+                if (gl) {
+                    webglInfo.textContent = 'WebGL 2 supported';
+                    return true;
+                }
+
+                // Fall back to WebGL 1
+                gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    webglInfo.textContent = 'WebGL 1 supported';
+                    return true;
+                }
+
+                webglInfo.textContent = 'WebGL not supported';
+                return false;
+            } catch (e) {
+                if (document.getElementById('webglInfo')) {
+                    document.getElementById('webglInfo').textContent = 'WebGL detection error: ' + e.message;
+                }
+                return false;
+            }
+        }
+
+        // Check WebGL support
+        const webglSupported = checkWebGLSupport();
+        if (!webglSupported) {
+            showError('WebGL Not Supported',
+                'Your browser does not support WebGL, which is required to run this game.<br>' +
+                'Try using a more recent browser or updating your graphics drivers.<br>' +
+                '<a href="fallback.html">Try simplified version</a>');
+        }
+
+        // Check Pointer Lock API support
+        function checkPointerLockSupport() {
+            return 'pointerLockElement' in document ||
+                'mozPointerLockElement' in document ||
+                'webkitPointerLockElement' in document;
+        }
+
+        const pointerLockSupported = checkPointerLockSupport();
+        if (!pointerLockSupported) {
+            showError('Pointer Lock Not Supported',
+                '您的瀏覽器不支持指針鎖定API，這是FPS遊戲所必需的。<br>' +
+                '請嘗試使用更新的瀏覽器。<br>' +
+                '<a href="fallback.html">嘗試簡化版本</a>');
+        }
+
+        // Error handling function
+        function handleScriptError(scriptName, fallbackURL) {
+            console.error(`Failed to load script: ${scriptName}`);
+
+            if (fallbackURL) {
+                console.log(`Trying fallback for ${scriptName}: ${fallbackURL}`);
+
+                const script = document.createElement('script');
+                script.src = fallbackURL;
+                script.onerror = () => {
+                    console.error(`Fallback also failed for: ${scriptName}`);
+                    showError('Script Loading Error',
+                        `Failed to load ${scriptName}.<br>` +
+                        `Please check your internet connection and try refreshing the page.<br>` +
+                        `<a href="fallback.html">Try simplified version</a>`);
+                };
+                document.body.appendChild(script);
+            } else {
+                showError('Script Loading Error',
+                    `Failed to load ${scriptName}.<br>` +
+                    `Please check your internet connection and try refreshing the page.<br>` +
+                    `<a href="fallback.html">Try simplified version</a>`);
+            }
+        }
+
+        function showError(title, message) {
+            const errorMsg = document.getElementById('errorMessage');
+            if (errorMsg) {
+                errorMsg.style.display = 'block';
+                errorMsg.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+            }
+        }
+    </script>
+
+    <!-- Primary Three.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"
+        onerror="handleScriptError('Three.js', 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js')"></script>
+
+    <!-- Try multiple sources for PointerLockControls -->
+    <script>
+        window.addEventListener('load', function () {
+            // Check if THREE is available
+            if (typeof THREE !== 'undefined') {
+                // Check if PointerLockControls is already loaded
+                if (!THREE.PointerLockControls) {
+                    console.log('Manually loading PointerLockControls...');
+
+                    // Define PointerLockControls manually if we need to
+                    THREE.PointerLockControls = function (camera, domElement) {
+                        this.camera = camera;
+                        this.domElement = domElement;
+
+                        // Store camera direction and target
+                        this.isLocked = false;
+
+                        // Connect event listeners
+                        this.connect = function () {
+                            document.addEventListener('mousemove', this.onMouseMove.bind(this));
+                            this.domElement.ownerDocument.addEventListener('pointerlockchange', this.onPointerlockChange.bind(this));
+                            this.domElement.ownerDocument.addEventListener('mozpointerlockchange', this.onPointerlockChange.bind(this));
+                            this.domElement.ownerDocument.addEventListener('webkitpointerlockchange', this.onPointerlockChange.bind(this));
+                        };
+
+                        // Define basic methods needed for the game
+                        this.lock = function () {
+                            if (this.domElement.requestPointerLock) {
+                                this.domElement.requestPointerLock();
+                            } else if (this.domElement.mozRequestPointerLock) {
+                                this.domElement.mozRequestPointerLock();
+                            } else if (this.domElement.webkitRequestPointerLock) {
+                                this.domElement.webkitRequestPointerLock();
+                            }
+                        };
+
+                        this.unlock = function () {
+                            if (document.exitPointerLock) {
+                                document.exitPointerLock();
+                            } else if (document.mozExitPointerLock) {
+                                document.mozExitPointerLock();
+                            } else if (document.webkitExitPointerLock) {
+                                document.webkitExitPointerLock();
+                            }
+                        };
+
+                        this.onMouseMove = function (event) {
+                            if (this.isLocked) {
+                                const movementX = event.movementX || event.mozMovementX || event.webkitMovementX || 0;
+                                const movementY = event.movementY || event.mozMovementY || event.webkitMovementY || 0;
+
+                                // Rotate camera based on mouse movement
+                                this.camera.rotation.y -= movementX * 0.002;
+                                this.camera.rotation.x -= movementY * 0.002;
+
+                                // Clamp vertical rotation
+                                this.camera.rotation.x = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, this.camera.rotation.x));
+                            }
+                        };
+
+                        this.onPointerlockChange = function () {
+                            this.isLocked =
+                                this.domElement.ownerDocument.pointerLockElement === this.domElement ||
+                                this.domElement.ownerDocument.mozPointerLockElement === this.domElement ||
+                                this.domElement.ownerDocument.webkitPointerLockElement === this.domElement;
+
+                            console.log('Pointer lock changed in control:', this.isLocked);
+                        };
+
+                        // Movement methods
+                        this.moveForward = function (distance) {
+                            const direction = new THREE.Vector3(0, 0, -1);
+                            direction.applyQuaternion(this.camera.quaternion);
+                            direction.y = 0; // Keep movement in xz plane
+                            direction.normalize();
+
+                            this.camera.position.addScaledVector(direction, distance);
+                        };
+
+                        this.moveRight = function (distance) {
+                            const direction = new THREE.Vector3(1, 0, 0);
+                            direction.applyQuaternion(this.camera.quaternion);
+                            direction.y = 0; // Keep movement in xz plane
+                            direction.normalize();
+
+                            this.camera.position.addScaledVector(direction, distance);
+                        };
+
+                        // Initialize the controller
+                        this.connect();
+                    };
+
+                    console.log('Custom PointerLockControls loaded');
+                }
+            } else {
+                console.error('THREE is not defined - cannot load PointerLockControls');
+                showError('Script Loading Error',
+                    'THREE.js core library failed to load.<br>' +
+                    'Please check your internet connection and try refreshing the page.<br>' +
+                    '<a href="fallback.html">Try simplified version</a>');
+            }
+        });
+    </script>
+
+    <!-- Try loading from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/examples/js/controls/PointerLockControls.js"></script>
+
+    <!-- Game script -->
+    <script src="./js/game.js" onerror="handleScriptError('game.js')"></script>
+</body>
+
+</html>
