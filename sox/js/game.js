@@ -332,7 +332,6 @@ class EnemyManager {
         this.scene = scene;
         this.lastSpawnTime = 0;
     }
-    // 根據遊戲時間與生成倍率產生敵人
     spawnEnemies() {
         const now = Date.now();
         if (now - State.lastEnemySpawn < Config.enemySpawnRate / State.spawnMultiplier) return;
@@ -376,36 +375,103 @@ class EnemyManager {
             mesh.position.y = enemyType === 'cylinder' || enemyType === 'cone' ? 0.75 : 0.5;
             mesh.castShadow = true;
             this.scene.add(mesh);
+            // 初始化時新增新屬性：attracted、launched 與 velocity
             State.enemies.push({
                 mesh: mesh,
                 type: enemyType,
                 health: enemyConfig.health,
-                speed: enemyConfig.speed
+                speed: enemyConfig.speed,
+                attracted: false,         // 是否被吸引
+                launched: false,          // 是否已發射
+                velocity: new THREE.Vector3() // 發射時的速度向量
             });
         }
     }
-    // 更新所有敵人的位置、碰撞檢測與造成傷害
+    // ── EnemyManager 更新敵人行為的修改部分 ──
     updateEnemies(delta, camera, audioManager, cityManager, gameInstance) {
+        // 更新每一個 enemy 的狀態
         for (let i = State.enemies.length - 1; i >= 0; i--) {
             const enemy = State.enemies[i];
+
+            // 處理被吸引但尚未發射的 enemy
+            if (enemy.attracted && !enemy.launched) {
+                const offset = new THREE.Vector3();
+                camera.getWorldDirection(offset);
+                offset.multiplyScalar(2); // 靠近玩家前方 2 單位
+                enemy.mesh.position.copy(camera.position.clone().add(offset));
+                continue;
+            } else if (enemy.launched) {
+                // 處理發射狀態的 enemy
+
+                // 加入重力效果（向下加速度）
+                const gravity = 20; // 可根據需求調整
+                enemy.velocity.y -= gravity * delta;
+
+                // 計算預期新位置
+                let newPosition = enemy.mesh.position.clone().addScaledVector(enemy.velocity, delta);
+
+                // 檢查地面碰撞（假設地板在 y=0，enemy 高度約 1，所以最低 y 為 0.5）
+                const enemyHalfHeight = 0.5;
+                if (newPosition.y < enemyHalfHeight) {
+                    newPosition.y = enemyHalfHeight;
+                    enemy.velocity.y = 0;
+                }
+
+                // 檢查與建築物的水平碰撞（以 enemy 半徑約 0.5，並加上建築物邊界裕量）
+                for (const building of State.buildings) {
+                    const halfWidth = building.width / 2 + 0.5;
+                    const halfDepth = building.depth / 2 + 0.5;
+                    if (
+                        newPosition.x >= building.position.x - halfWidth &&
+                        newPosition.x <= building.position.x + halfWidth &&
+                        newPosition.z >= building.position.z - halfDepth &&
+                        newPosition.z <= building.position.z + halfDepth
+                    ) {
+                        // 遇到建築物，取消水平位移並將水平速度歸零
+                        newPosition.x = enemy.mesh.position.x;
+                        newPosition.z = enemy.mesh.position.z;
+                        enemy.velocity.x = 0;
+                        enemy.velocity.z = 0;
+                    }
+                }
+
+                // 如果水平與垂直速度皆近似為 0，開始計時
+                if (Math.abs(enemy.velocity.x) < 0.01 && Math.abs(enemy.velocity.z) < 0.01 && enemy.velocity.y === 0) {
+                    if (!enemy.stoppedTime) {
+                        enemy.stoppedTime = Date.now();
+                    } else if (Date.now() - enemy.stoppedTime > 1000) {
+                        // 靜止 1 秒後從場景移除
+                        gameInstance.scene.remove(enemy.mesh);
+                        State.enemies.splice(i, 1);
+                        continue;
+                    }
+                } else {
+                    enemy.stoppedTime = null;
+                }
+
+                // 更新 enemy 位置
+                enemy.mesh.position.copy(newPosition);
+                continue;
+            }
+
+            // 正常 enemy 行為（未吸引、未發射）
             const direction = new THREE.Vector3().subVectors(camera.position, enemy.mesh.position).normalize();
             const enemySpeed = enemy.speed * delta;
-            const newPosition = enemy.mesh.position.clone();
+            let newPosition = enemy.mesh.position.clone();
             newPosition.x += direction.x * enemySpeed;
             newPosition.z += direction.z * enemySpeed;
-            const adjustedPosition = cityManager.checkCollision(newPosition, 0.5);
-            enemy.mesh.position.copy(adjustedPosition);
+            newPosition = cityManager.checkCollision(newPosition, 0.5);
+            enemy.mesh.position.copy(newPosition);
             enemy.mesh.lookAt(camera.position);
-            const distance = enemy.mesh.position.distanceTo(camera.position);
+
+            // 與玩家碰撞（只處理未被吸引的 enemy）
             const collisionDistance = Config.playerRadius + 1.0;
-            if (distance < collisionDistance) {
-                // 與玩家碰撞，移除敵人並造成傷害
+            if (enemy.mesh.position.distanceTo(camera.position) < collisionDistance && !enemy.attracted) {
                 gameInstance.scene.remove(enemy.mesh);
                 State.enemies.splice(i, 1);
                 State.playerHP -= 10;
                 State.lastDamageTime = Date.now();
                 audioManager.playDamageSound();
-                // 更新HP
                 gameInstance.uiManager.updateUI();
                 if (State.playerHP <= 0) {
                     State.playerHP = 0;
@@ -414,6 +480,30 @@ class EnemyManager {
                     return;
                 }
             }
+        }
+
+        // ── 檢查發射中 enemy 與其他 enemy 之間的碰撞 ──
+        // 當發射中的 enemy 與任一其它 enemy 的距離小於 collisionThreshold 時，兩者皆消失
+        let indicesToRemove = new Set();
+        const collisionThreshold = 1; // 可依需求調整碰撞距離
+        for (let i = 0; i < State.enemies.length; i++) {
+            const enemyA = State.enemies[i];
+            if (!enemyA.launched) continue; // 只針對發射中的 enemy 檢查
+            for (let j = 0; j < State.enemies.length; j++) {
+                if (i === j) continue;
+                const enemyB = State.enemies[j];
+                if (enemyA.mesh.position.distanceTo(enemyB.mesh.position) < collisionThreshold) {
+                    indicesToRemove.add(i);
+                    indicesToRemove.add(j);
+                }
+            }
+        }
+        // 依照從大到小的順序移除，以免索引錯亂
+        const sortedIndices = Array.from(indicesToRemove).sort((a, b) => b - a);
+        for (let index of sortedIndices) {
+            const enemy = State.enemies[index];
+            gameInstance.scene.remove(enemy.mesh);
+            State.enemies.splice(index, 1);
         }
     }
 }
@@ -598,6 +688,8 @@ class InputHandler {
         // 滑鼠事件
         document.addEventListener('mousedown', e => this.handleMouseDown(e));
         document.addEventListener('mouseup', e => this.handleMouseUp(e));
+        // 禁止右鍵開啟預設選單
+        document.addEventListener('contextmenu', e => e.preventDefault());
         // 指針鎖定變更
         document.addEventListener('pointerlockchange', () => this.handlePointerLockChange());
     }
@@ -638,6 +730,11 @@ class InputHandler {
     handleMouseDown(e) {
         if (e.button === 0) { // 左鍵射擊
             State.mouseDown = true;
+        } else if (e.button === 2) { // 右鍵吸引/發射
+            // 呼叫遊戲新增的吸引/發射處理方法
+            if (window.game) {
+                window.game.handleAttractAndLaunch();
+            }
         }
     }
     handleMouseUp(e) {
@@ -691,6 +788,9 @@ class Game {
         this.enemyManager = new EnemyManager(this.scene);
         this.bulletManager = new BulletManager(this.scene);
 
+        // 新增屬性：記錄當前被吸引的敵人（一次僅能有一個）
+        this.attractedEnemy = null;
+
         // 初始化光源與地板
         this.setupLights();
         this.createFloor();
@@ -719,6 +819,41 @@ class Game {
             this.scene.add(light);
         });
     }
+
+    // 新增方法：處理右鍵吸引/發射功能
+    handleAttractAndLaunch() {
+        // 若已有敵人被吸引中，則發射該敵人
+        if (this.attractedEnemy) {
+            const launchSpeed = 50; // 可根據需求調整發射速度
+            const direction = new THREE.Vector3();
+            this.camera.getWorldDirection(direction);
+            // 設定發射狀態與發射速度
+            this.attractedEnemy.launched = true;
+            this.attractedEnemy.attracted = false;
+            this.attractedEnemy.velocity.copy(direction).multiplyScalar(launchSpeed);
+            // 清除記錄，等待下一次吸引
+            this.attractedEnemy = null;
+        } else {
+            // 若沒有被吸引的敵人，找出距離最近的一個敵人（距離必須在 100 單位內）
+            let nearestEnemy = null;
+            let minDistance = Infinity;
+            const playerPos = this.camera.position;
+            for (let enemy of State.enemies) {
+                if (!enemy.attracted && !enemy.launched) {
+                    const distance = enemy.mesh.position.distanceTo(playerPos);
+                    if (distance < 100 && distance < minDistance) {
+                        nearestEnemy = enemy;
+                        minDistance = distance;
+                    }
+                }
+            }
+            if (nearestEnemy) {
+                nearestEnemy.attracted = true;
+                this.attractedEnemy = nearestEnemy;
+            }
+        }
+    }
+
     // 建立地板與網格輔助線
     createFloor() {
         const gridHelper = new THREE.GridHelper(100, 100, 0x444444, 0x222222);
