@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 骰子遊戲</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #result {
+            font-size: 24px;
+            margin: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container"></div>
+    <button id="rollButton">投擲骰子</button>
+    <div id="result"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        camera.position.z = 5;
+
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const materials = [
+            new THREE.MeshBasicMaterial({ color: 0xff0000 }), // 右面 (3)
+            new THREE.MeshBasicMaterial({ color: 0x00ff00 }), // 左面 (4)
+            new THREE.MeshBasicMaterial({ color: 0x0000ff }), // 頂面 (2)
+            new THREE.MeshBasicMaterial({ color: 0xffff00 }), // 底面 (5)
+            new THREE.MeshBasicMaterial({ color: 0xff00ff }), // 背面 (6)
+            new THREE.MeshBasicMaterial({ color: 0x00ffff })  // 正面 (1)
+        ];
+        const dice = new THREE.Mesh(geometry, materials);
+        scene.add(dice);
+
+        dice.rotation.x = Math.random() * Math.PI * 2;
+        dice.rotation.y = Math.random() * Math.PI * 2;
+        dice.rotation.z = Math.random() * Math.PI * 2;
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        const rollButton = document.getElementById('rollButton');
+        let angularVelocity = new THREE.Vector3(0, 0, 0);
+        let isRolling = false;
+
+        rollButton.addEventListener('click', () => {
+            if (!isRolling) {
+                isRolling = true;
+                rollButton.disabled = true;
+                angularVelocity.set(
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5,
+                    (Math.random() - 0.5) * 0.5
+                );
+            }
+        });
+
+        const faces = [
+            { normal: new THREE.Vector3(0, 0, 1), value: 1 },
+            { normal: new THREE.Vector3(0, 0, -1), value: 6 },
+            { normal: new THREE.Vector3(0, 1, 0), value: 2 },
+            { normal: new THREE.Vector3(0, -1, 0), value: 5 },
+            { normal: new THREE.Vector3(1, 0, 0), value: 3 },
+            { normal: new THREE.Vector3(-1, 0, 0), value: 4 }
+        ];
+
+        function determineFaceUp() {
+            let maxDot = -1;
+            let faceUpValue = null;
+
+            faces.forEach(face => {
+                const worldNormal = face.normal.clone().applyQuaternion(dice.quaternion);
+                const dot = worldNormal.dot(new THREE.Vector3(0, 1, 0));
+                if (dot > maxDot) {
+                    maxDot = dot;
+                    faceUpValue = face.value;
+                }
+            });
+
+            document.getElementById('result').innerText = `骰子點數: ${faceUpValue}`;
+            rollButton.disabled = false;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (isRolling) {
+                dice.rotation.x += angularVelocity.x;
+                dice.rotation.y += angularVelocity.y;
+                dice.rotation.z += angularVelocity.z;
+                angularVelocity.multiplyScalar(0.99);
+                if (angularVelocity.length() < 0.001) {
+                    isRolling = false;
+                    determineFaceUp();
+                }
+            }
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+
+</html>

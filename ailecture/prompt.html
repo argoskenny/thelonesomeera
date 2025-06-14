@@ -43,6 +43,10 @@
         .card-header {
             background-color: #f1f8ff;
             font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
         }
 
         .link-card {
@@ -64,9 +68,6 @@
         }
 
         .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             background-color: #6c757d;
             color: white;
             border: none;
@@ -74,6 +75,7 @@
             padding: 5px 10px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-left: 10px;
         }
 
         .copy-btn:hover {
@@ -134,12 +136,24 @@
                     role="tab" aria-controls="ppt" aria-selected="true">PPT</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="lecture-tab" data-bs-toggle="tab" data-bs-target="#lecture" type="button"
-                    role="tab" aria-controls="lecture" aria-selected="false">講義</button>
+                <button class="nav-link" id="gpt-basic-tab" data-bs-toggle="tab" data-bs-target="#gpt-basic"
+                    type="button" role="tab" aria-controls="gpt-basic" aria-selected="false">GPT基本應用</button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="prompt-tab" data-bs-toggle="tab" data-bs-target="#prompt" type="button"
-                    role="tab" aria-controls="prompt" aria-selected="false">提示範例</button>
+                <button class="nav-link" id="knowledge-tab" data-bs-toggle="tab" data-bs-target="#knowledge"
+                    type="button" role="tab" aria-controls="knowledge" aria-selected="false">企業知識庫應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video" type="button"
+                    role="tab" aria-controls="video" aria-selected="false">影片生成應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="music-tab" data-bs-toggle="tab" data-bs-target="#music" type="button"
+                    role="tab" aria-controls="music" aria-selected="false">音樂生成應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="agent-tab" data-bs-toggle="tab" data-bs-target="#agent" type="button"
+                    role="tab" aria-controls="agent" aria-selected="false">AI agent</button>
             </li>
         </ul>
 
@@ -164,28 +178,8 @@
                 </div>
             </div>
 
-            <!-- Lecture Section -->
-            <div class="tab-pane fade" id="lecture" role="tabpanel" aria-labelledby="lecture-tab">
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card">
-                            <div class="card-body link-card">
-                                <div>
-                                    <h4>完整講義文件</h4>
-                                    <p class="text-muted mb-0">Google Docs 線上文件</p>
-                                </div>
-                                <a href="https://docs.google.com/document/d/16e6rLKDu07VwHWylSctD79QNnqRDq6drXk0CBXDwfdM/edit?usp=sharing"
-                                    target="_blank" class="btn btn-primary text-white">
-                                    <i class="fas fa-file-alt me-2"></i>查看講義
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Prompt Examples Section -->
-            <div class="tab-pane fade" id="prompt" role="tabpanel" aria-labelledby="prompt-tab">
+            <!-- GPT Basic Section -->
+            <div class="tab-pane fade" id="gpt-basic" role="tabpanel" aria-labelledby="gpt-basic-tab">
                 <div class="row mb-4">
                     <div class="col-12">
                         <div class="alert alert-info" role="alert">
@@ -193,18 +187,18 @@
                         </div>
                     </div>
                 </div>
-
+                <!-- Move all existing prompt examples here -->
                 <!-- Example 1 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                商業合作邀請
-                            </div>
-                            <div class="card-body">
+                                <span>商業合作邀請</span>
                                 <button class="copy-btn" data-content="example1">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre id="example1">Subject: Partnership Opportunity in High-Quality Casting Solutions
 Dear Mr. James Richardson,
 I hope this email finds you well. I am reaching out to introduce CastTech Industries, a leading provider of precision casting solutions with a strong reputation for quality and reliability.
@@ -228,12 +222,12 @@ CastTech Industries
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                展會邀請
-                            </div>
-                            <div class="card-body">
+                                <span>展會邀請</span>
                                 <button class="copy-btn" data-content="example2">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre id="example2">Subject: Exclusive Invitation: Meet Us at Metal Expo 2025
 Dear Ms. Linda Collins,
 We are pleased to invite you to visit our booth at Metal Expo 2025, taking place at Chicago Convention Center from March 10–12, 2025. As a leading manufacturer in the traditional casting industry, we will be showcasing our latest innovations in high-precision metal casting and advanced alloy solutions.
@@ -250,81 +244,16 @@ Elite Castings Inc.
                         </div>
                     </div>
                 </div>
-
-                <!-- Example 3 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                工廠參訪邀請
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="example3">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="example3">Subject: Invitation to Visit Our Casting Facility
-Dear Mr. Robert Mitchell,
-At Precision Foundry Solutions, we take pride in our advanced traditional casting techniques and commitment to delivering high-quality metal components. To provide you with a firsthand experience of our capabilities, we would like to invite you to visit our manufacturing facility in Houston, Texas.
-During the visit, you will have the opportunity to:
-	•	Tour our production lines and quality control processes
-	•	Gain insights into our state-of-the-art casting techniques
-	•	Discuss potential business collaboration tailored to your needs
-Please let us know your preferred date and time, and we will be happy to arrange the visit accordingly. We look forward to hosting you at our facility.
-Best regards,
-Sarah Evans
-Operations Manager
-Precision Foundry Solutions
-📞 +1 (281) 555-3412
-📧 sarah.evans@precisionfoundry.com
-🌐 www.precisionfoundry.com</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 4 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                商業提案
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="example4">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="example4">Subject: Proposal for High-Quality Casting Component Supply
-Dear Mr. Thomas Baker,
-I am writing to introduce IronWorks Casting Ltd. as a trusted supplier of precision casting components for automotive, heavy machinery, and energy sectors. With over 30 years of expertise in traditional casting processes, we specialize in delivering durable and cost-effective solutions tailored to meet industry standards.
-Our capabilities include:
-	•	Sand casting, lost wax casting, and die casting
-	•	Materials: aluminum, stainless steel, ductile iron, and brass
-	•	Strict quality control ensuring compliance with ISO 9001 & ASTM standards
-We believe our expertise and production capacity can add value to your supply chain. Please let us know a suitable time for a discussion, and we would be delighted to present a customized proposal.
-Looking forward to your response.
-Best regards,
-Kevin Anderson
-Head of Sales
-IronWorks Casting Ltd.
-📞 +1 (415) 555-9823
-📧 kevin.anderson@ironworks.com
-🌐 www.ironworks.com</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 5 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                鱗片石墨材料回覆信件提示
-                            </div>
-                            <div class="card-body">
+                                <span>鱗片石墨材料回覆信件提示</span>
                                 <button class="copy-btn" data-content="example5">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre id="example5">請撰寫一封回覆信，解釋 鱗片石墨 金鉛-385 的材質成分、抗拉強度，以及表面處理方式，並強調公司品質檢測流程。
 以下為產品參考資料：
 產品名稱
@@ -363,414 +292,343 @@ MOISTURE水分 0.29%
                         </div>
                     </div>
                 </div>
-
-                <!-- Example 6 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                商務信件翻譯提示
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="example6">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="example6">請將以下商務信件翻譯為[英語/日語/德語]，保持專業且自然的語氣。
-主旨：關於 CNC 精密零件供應合作洽談
-尊敬的 王經理，
-您好！我是李浩然，來自精工機械有限公司，我們專注於高精度金屬加工與工業設備製造。目前，我們正在尋找CNC 精密零件的長期合作供應商，以滿足我們近期擴大產能的需求。我們對貴公司——匠心工業股份有限公司在精密零件加工領域的專業技術深感興趣，希望能進一步探討合作機會。
-我們希望了解以下內容，以便評估合作可行性：
-	1.	產品規格與技術參數 – 是否可以提供貴公司 CNC 精密零件的產品目錄或技術資料？
-	2.	價格與訂購條件 – 是否可提供報價單，包括 MOQ（最低訂購量）、付款條件及長期合作方案？
-	3.	交貨期與供應能力 – 貴公司平均交貨週期如何？是否能應對大批量生產需求？
-	4.	品質認證與檢驗標準 – 貴公司是否通過 ISO 9001、RoHS 或其他品質管理體系認證？
-若貴公司有興趣進一步洽談，請問是否方便安排一次會議或視訊通話，以便詳細討論合作細節？
-期待您的回覆，也希望有機會與貴公司建立長期的合作關係。若有任何問題，請隨時與我聯繫。
-敬祝 商祺！
-李浩然
-業務經理
-精工機械有限公司
-電話：+886-912-345-678
-電子郵件：lihaoran@jinggong.com
-公司網址：www.jinggong.com</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Example 7 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                信件整理提示
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="example7">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="example7">請以表格整理這些信件，其中要包含寄件人的所有資料，並將信件內容重點摘要，使用繁體中文</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 1 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                詢價信
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example1">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example1">請撰寫一封詢價信，對象是 台灣材料企業，詢問 矽鐵 的價格、最低訂購量、交貨期及付款條件，語氣正式且有禮貌。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 2 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                回覆信
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example2">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example2">請撰寫一封回覆信，解釋 產品 的材質成分與特色，並強調公司品質檢測流程。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 3 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                感謝信
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example3">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example3">請撰寫一封感謝信，感謝客戶在過去一年對我們鑄造產品的支持，並邀請他們參觀我們最新的生產線。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 4 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                產品功能與特色
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example4">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example4">撰寫我們產品與主要功能與特色，強調我們的優勢。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 5 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                職位描述
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example5">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example5">為我們的生產高級工程師撰寫一份詳細的職位描述，包括主要職責、所需技能和資格，特別針對傳統鑄造工業的需求。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 6 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                員工手冊內容
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example6">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example6">撰寫一段關於工廠安全操作規範的員工手冊內容，涵蓋設備操作、工業防護和緊急應對措施。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 7 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                培訓計劃
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example7">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example7">為新入職的鑄造／鍛造模具技術人員制定為期一週的培訓計劃，包括熔爐操作、模具製作和品質檢測等主題。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 8 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                績效評估模板
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example8">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example8">提供一份適用於鑄造工人的績效評估模板，包含生產效率、品質控制和安全合規的評估標準。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 9 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                新聞稿
-                            </div>
-                            <div class="card-body">
+                                <span>新聞稿</span>
                                 <button class="copy-btn" data-content="other-example9">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre id="other-example9">撰寫一份關於我們新型耐高溫鑄件的新聞稿，強調其工藝改進、材料優勢和市場應用。</pre>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Other Example 10 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                操作手冊
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example10">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example10">撰寫我們最新數位控制熔爐的使用指南，包含安全啟動步驟、故障排除和維護建議。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 11 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                市場調查問卷
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example11">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example11">設計一份針對鑄造產業客戶的市場調查問卷，以了解他們對不同金屬材料和加工技術的需求。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 12 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                產線調整公告
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example12">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example12">撰寫一則關於工廠產線升級計劃的內部公告，包含新設備導入時間表和員工培訓計劃。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 13 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                性能對比報告
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example13">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example13">撰寫我們新型耐磨鑄件與傳統鑄件的性能比較，強調其強度提升和使用壽命延長。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 14 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                合作提案
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example14">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example14">為潛在合作夥伴撰寫一份技術合作提案，介紹我們如何提供高品質鑄造解決方案。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 15 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                生產報告摘要
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example15">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre id="other-example15">撰寫公司年度生產報告的執行摘要，概述產能變化、技術改進和市場成長情況。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 16 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                產品介紹
-                            </div>
-                            <div class="card-body">
+                                <span>產品介紹</span>
                                 <button class="copy-btn" data-content="other-example16">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre
                                     id="other-example16">請撰寫一份產品介紹，介紹我們的【球墨鑄鐵閥體】，適用於【管道流體控制】，材質為【QT450-10】。請說明其高強度、耐腐蝕特性，以及精密加工帶來的密封性能優勢。</pre>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Other Example 17 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                技術與工藝亮點
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example17">
-                                    <i class="fas fa-copy"></i> 複製
-                                </button>
-                                <pre
-                                    id="other-example17">請撰寫一篇關於【高鉻合金耐磨鑄件】的技術介紹，說明我們採用【精密砂模鑄造】技術，並經過【淬火+回火】熱處理，以提升耐磨性與抗衝擊性。</pre>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Other Example 18 -->
-                <div class="row">
-                    <div class="col-12">
-                        <div class="card content-card prompt-example">
-                            <div class="card-header">
-                                市場營銷型介紹
-                            </div>
-                            <div class="card-body">
+                                <span>市場營銷型介紹</span>
                                 <button class="copy-btn" data-content="other-example18">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre
                                     id="other-example18">請撰寫一份市場推廣文案，介紹我們的【高強度鋁合金鑄件】，強調其【輕量化設計】、【高精度加工】、【耐腐蝕性】，並適用於【汽車與航太產業】。</pre>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- Other Example 19 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                產品應用案例
-                            </div>
-                            <div class="card-body">
+                                <span>產品應用案例</span>
                                 <button class="copy-btn" data-content="other-example19">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
+                            </div>
+                            <div class="card-body">
                                 <pre id="other-example19">請撰寫一篇案例分享，描述我們的【耐高溫鑄鋼零件】如何在【發電廠渦輪機組】中發揮作用，提高耐熱壽命並減少維護成本。</pre>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Other Example 20 -->
+            <!-- Knowledge Base Section -->
+            <div class="tab-pane fade" id="knowledge" role="tabpanel" aria-labelledby="knowledge-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                產品認證與品質保證
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example20">
+                                <span>研磨材料查詢</span>
+                                <button class="copy-btn" data-content="knowledge-example1">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
-                                <pre
-                                    id="other-example20">請撰寫一份品質保證聲明，介紹我們的【精密鑄鋼零件】如何通過【ISO 9001與EN 10204認證】，並經歷【超聲波檢測與硬度測試】以確保穩定品質。</pre>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example1">有賣研磨材料嗎？</pre>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Other Example 21 -->
+                <!-- Example 2 -->
                 <div class="row">
                     <div class="col-12">
                         <div class="card content-card prompt-example">
                             <div class="card-header">
-                                環保與可持續發展
-                            </div>
-                            <div class="card-body">
-                                <button class="copy-btn" data-content="other-example21">
+                                <span>手提100研磨片產品說明</span>
+                                <button class="copy-btn" data-content="knowledge-example2">
                                     <i class="fas fa-copy"></i> 複製
                                 </button>
-                                <pre id="other-example21">請撰寫一篇介紹我們的【可回收鋁合金鑄件】如何降低碳足跡，並符合【歐盟RoHS與REACH環保標準】。</pre>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example2">手提100研磨片可以詳細介紹說明一下嗎？</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>石川除渣劑產品說明</span>
+                                <button class="copy-btn" data-content="knowledge-example3">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example3">請詳細介紹說明一下 石川除渣劑 4號</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 4 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>鑄造材料產品列表</span>
+                                <button class="copy-btn" data-content="knowledge-example4">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example4">鑄造材料類型的產品有哪些？</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Generation Section -->
+            <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>工業場景</span>
+                                <button class="copy-btn" data-content="video-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="video-example1">✅ 中文優化版：
+
+一座未來感十足的高度自動化智慧工廠，內部充滿機械臂、自動化輸送帶、AI 控制中心與閃爍的數據面板，機器人有條不紊地進行組裝作業，整個空間明亮整潔、充滿科幻科技氛圍。
+
+⸻
+
+✅ 英文優化版（如果是輸入給 AI 模型，建議用英文）：
+
+A highly automated futuristic smart factory, filled with robotic arms, automated conveyor belts, and an AI-controlled operations center. Digital dashboards display real-time data as 
+robots efficiently assemble products. The environment is clean, brightly lit, and exudes a sleek, high-tech, sci-fi atmosphere.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>自然風景</span>
+                                <button class="copy-btn" data-content="video-example2">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="video-example2">✅ 中文優化版：
+
+在夕陽餘暉的照耀下，一個被青翠山巒環繞的綠意盎然山谷，溫暖的金橘色陽光灑在草地與樹林上，空氣清新，遠處的山嵐輕柔飄渺，整個環境寧靜祥和、如詩如畫。
+
+⸻
+
+✅ 英文優化版（給 AI 模型用）：
+
+A lush green valley surrounded by gentle mountains, bathed in the warm golden-orange glow of the setting sun. The soft light reflects off the trees and grass, while distant mist gently floats between the hills. The atmosphere is serene, peaceful, and picturesque, evoking a sense of harmony with nature.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>城市景觀</span>
+                                <button class="copy-btn" data-content="video-example3">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="video-example3">✅ 中文優化版：
+
+一個沐浴在陽光下的歐洲海港小鎮，色彩繽紛的石造房屋沿著蜿蜒的海岸排列，紅瓦屋頂在藍天映襯下格外鮮明，港口停泊著小型漁船與遊艇，海風輕拂，街道上人們悠閒地散步，整個小鎮洋溢著溫暖、寧靜的地中海風情。
+
+⸻
+
+✅ 英文優化版（給 AI 模型用）：
+
+A charming European seaside town bathed in sunlight. Colorful stone houses with red-tiled roofs line the winding coastline, glowing under a clear blue sky. Small fishing boats and yachts rest in the peaceful harbor, while gentle sea breezes sway the palm trees. Locals stroll along cobblestone streets, creating a warm and relaxed Mediterranean atmosphere.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Music Generation Section -->
+            <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>古典音樂</span>
+                                <button class="copy-btn" data-content="music-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="music-example1">19世紀浪漫主義風格的宏大古典交響樂，強烈的弦樂與銅管交織，展現宮廷盛宴般的華麗氛圍。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>搖滾音樂</span>
+                                <button class="copy-btn" data-content="music-example2">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="music-example2">節奏強烈、鼓點有力的現代搖滾樂，電吉他主導，帶有強烈能量與衝擊感，適合運動影片或動作場景。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Agent Section -->
+            <div class="tab-pane fade" id="agent" role="tabpanel" aria-labelledby="agent-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>產品網站開發</span>
+                                <button class="copy-btn" data-content="agent-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="agent-example1">
+產品名稱
+鱗片石墨 金鉛-285
+產品說明
+鱗片石墨-285
+含碳量: 90%以上
+特性
+單一產品
+化學成分
+FC固定碳量 91.26%
+ASH 灰 7.94%
+VOLATILE揮發分 1.25%
+MOISTURE水分 0.31%
+-200 MESH粒度 85.1%
+尺寸
+200目
+包裝方式
+25kg/袋 外加噸包。
+用途
+1、耐火材料
+鱗片石墨廣泛用於治金工業的高級耐火材料與塗料。如鎂碳磚、坩堝等。軍事工業火工材料安定劑、冶煉工業脫硫增速劑、輕工業的鉛筆芯、電氣工業的碳刷、電池工業的電極、化肥工業的催化劑等。鱗片石墨經過深入加工，又可以生產出石墨乳，用於潤滑劑、脫模劑、拉絲劑、導電塗料等。還可以生產膨脹石墨，用於柔性石墨製品原料，如柔性石墨密封件及柔性石墨復材料製品等。
+2、塗料
+     鱗片石墨作為塗料的功能填料主要用於防腐塗料、防火塗料和導電塗料。
+作為防腐材料，它和炭黑、滑石粉及油料等製成的防鏽底漆，具有良好的耐化學品和溶劑腐蝕性能。
+ 
+用作防火填料的是可膨脹石墨，它是以天然石墨鱗片為原料，經化學或電化學處理而得到的一種石墨層間化合物。可膨脹石墨在受熱條件下，體積急劇膨脹(最高可達300倍)窒息了火焰，同時生成膨脹物，達到隔絕火焰，延遲或中斷火焰蔓延的作用，且本身不燃，柔軟性好，表面能高，炭化層強度好。但是膨脹體的體積和用量要選擇適宜。試驗表明，150um的顆粒、30%的膨脹倍數、5%的用量最為合適。
+鱗片石墨可直接作為碳類導電填料亦可製成復合導電填料用於導電塗料。但由於石墨鱗片的添加量較大，會使塗料的性能變脆而使其應用受到一定限制。因此，採取措施進一步提高石墨的導電性，有效降低石墨鱗片的添加量。
+備註說明
+性狀:外觀黑色,金屬光澤
+沸點:無
+密度:1.8g/ml
+溶解度:不溶於水
+粘度:固形狀
+存放於通風乾燥處，防潮。
+
+製作說明：
+請使用html css javascript 製作一個
+一頁式的產品介紹網站</pre>
                             </div>
                         </div>
                     </div>
@@ -798,19 +656,30 @@ MOISTURE水分 0.29%
             document.querySelectorAll('.copy-btn').forEach(button => {
                 button.addEventListener('click', function () {
                     const contentId = this.getAttribute('data-content');
-                    const content = document.getElementById(contentId).textContent;
+                    const content = document.getElementById(contentId).textContent.trim();
 
-                    navigator.clipboard.writeText(content).then(() => {
+                    // Create temporary textarea
+                    const textarea = document.createElement('textarea');
+                    textarea.value = content;
+                    document.body.appendChild(textarea);
+
+                    // Select and copy the text
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
                         // Show toast notification
                         const toastEl = document.querySelector('.toast');
                         const toast = new bootstrap.Toast(toastEl, {
                             delay: 2000
                         });
                         toast.show();
-                    }).catch(err => {
+                    } catch (err) {
                         console.error('無法複製文字: ', err);
                         alert('複製失敗，請手動選取文字進行複製。');
-                    });
+                    }
+
+                    // Remove the temporary textarea
+                    document.body.removeChild(textarea);
                 });
             });
         });
