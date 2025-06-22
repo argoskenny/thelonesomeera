@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小明</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-size: 24px;
+        }
+
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sound-button {
+            position: relative;
+            background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            border: none;
+            border-radius: 15px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 
+                5px 5px 10px rgba(0, 0, 0, 0.2),
+                -5px -5px 10px rgba(255, 255, 255, 0.7),
+                inset 0 0 0 rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            min-height: 120px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+        }
+
+        .sound-button:active {
+            transform: translateY(2px);
+            box-shadow: 
+                2px 2px 5px rgba(0, 0, 0, 0.3),
+                -2px -2px 5px rgba(255, 255, 255, 0.5),
+                inset 2px 2px 5px rgba(0, 0, 0, 0.1),
+                inset -2px -2px 5px rgba(255, 255, 255, 0.8);
+        }
+
+        .sound-button:hover {
+            background: linear-gradient(145deg, #e8e8e8, #d1d1d1);
+        }
+
+        .button-icon {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .button-text {
+            text-align: center;
+            line-height: 1.2;
+            word-break: keep-all;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+                margin: 10px;
+            }
+            
+            .sound-button {
+                padding: 15px 10px;
+                min-height: 100px;
+                font-size: 12px;
+            }
+            
+            .button-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            h1 {
+                font-size: 20px;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* 載入動畫 */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* 播放中的視覺回饋 */
+        .playing {
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="button-grid">
+            <button class="sound-button" data-sound="answerme.mp3">
+                <img src="xiaoming/assets/imgs/answerme.png" alt="回答我" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">回答我</span>
+            </button>
+            
+            <button class="sound-button" data-sound="lookinmyeyes.mp3">
+                <img src="xiaoming/assets/imgs/lookinmyeyes.png" alt="Look in my eyes" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">Look in my eyes</span>
+            </button>
+            
+            <button class="sound-button" data-sound="tellme.mp3">
+                <img src="xiaoming/assets/imgs/tellme.png" alt="Why" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">Why</span>
+            </button>
+            
+            <button class="sound-button" data-sound="sleepwindog.mp3">
+                <img src="xiaoming/assets/imgs/sleepwindog.png" alt="躺贏狗" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">躺贏狗</span>
+            </button>
+            
+            <button class="sound-button" data-sound="mvp.mp3">
+                <img src="xiaoming/assets/imgs/mvp.png" alt="MVP" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">MVP</span>
+            </button>
+            
+            <button class="sound-button" data-sound="opene.mp3">
+                <img src="xiaoming/assets/imgs/opene.png" alt="就開個E" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">就開個E</span>
+            </button>
+            
+            <button class="sound-button" data-sound="cancancan.mp3">
+                <img src="xiaoming/assets/imgs/cancancan.png" alt="能能能" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">能能能</span>
+            </button>
+            
+            <button class="sound-button" data-sound="burnyou.mp3">
+                <img src="xiaoming/assets/imgs/burnyou.png" alt="燒死你啊" class="button-icon" onerror="this.style.display='none'">
+                <span class="button-text">燒死你啊</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 音效管理類別 - 管理所有聲音播放功能
+        class SoundManager {
+            constructor() {
+                this.currentAudio = null; // 追蹤目前播放的音效
+                this.audioCache = new Map(); // 快取音效檔案
+                this.init();
+            }
+
+            // 初始化音效管理器
+            init() {
+                // 預載入所有音效檔案
+                const soundFiles = [
+                    'answerme.mp3', 'lookinmyeyes.mp3', 'tellme.mp3', 'sleepwindog.mp3',
+                    'mvp.mp3', 'opene.mp3', 'cancancan.mp3', 'burnyou.mp3'
+                ];
+
+                // 為每個音效檔案建立 Audio 物件並快取
+                soundFiles.forEach(file => {
+                    const audio = new Audio(`xiaoming/assets/sounds/${file}`);
+                    audio.preload = 'auto';
+                    // 添加錯誤處理
+                    audio.addEventListener('error', () => {
+                        console.error(`無法載入音效檔案: ${file}`);
+                    });
+                    this.audioCache.set(file, audio);
+                });
+
+                // 綁定按鈕事件
+                this.bindEvents();
+            }
+
+            // 綁定所有按鈕的點擊事件
+            bindEvents() {
+                const buttons = document.querySelectorAll('.sound-button');
+                
+                buttons.forEach(button => {
+                    // 點擊事件
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        this.playSound(button);
+                    });
+
+                    // 觸控回饋效果
+                    button.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        button.style.transform = 'translateY(2px)';
+                    });
+
+                    button.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        setTimeout(() => {
+                            button.style.transform = '';
+                        }, 100);
+                    });
+                });
+            }
+
+            // 播放指定按鈕的音效
+            playSound(button) {
+                const soundFile = button.dataset.sound;
+                
+                if (!soundFile) {
+                    console.error('找不到音效檔案名稱');
+                    return;
+                }
+
+                // 停止目前播放的音效
+                if (this.currentAudio && !this.currentAudio.paused) {
+                    this.currentAudio.pause();
+                    this.currentAudio.currentTime = 0;
+                }
+
+                // 移除所有按鈕的播放狀態
+                document.querySelectorAll('.sound-button').forEach(btn => {
+                    btn.classList.remove('playing');
+                });
+
+                // 從快取中取得音效檔案
+                const audio = this.audioCache.get(soundFile);
+                
+                if (!audio) {
+                    console.error(`找不到音效檔案: ${soundFile}`);
+                    this.showError(`找不到音效檔案: ${soundFile}`);
+                    return;
+                }
+
+                // 重置音效播放位置
+                audio.currentTime = 0;
+                
+                // 設定目前播放的音效
+                this.currentAudio = audio;
+                
+                // 添加播放中的視覺效果
+                button.classList.add('playing');
+                
+                // 播放音效
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            console.log(`正在播放: ${soundFile}`);
+                        })
+                        .catch(error => {
+                            console.error('播放音效時發生錯誤:', error);
+                            button.classList.remove('playing');
+                            this.showError('播放音效失敗，請檢查音效檔案');
+                        });
+                }
+
+                // 音效播放結束後移除視覺效果
+                audio.addEventListener('ended', () => {
+                    button.classList.remove('playing');
+                    this.currentAudio = null;
+                }, { once: true }); // 使用 once: true 避免重複綁定
+            }
+
+            // 顯示錯誤訊息
+            showError(message) {
+                const errorDiv = document.createElement('div');
+                errorDiv.textContent = message;
+                errorDiv.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(255, 0, 0, 0.8);
+                    color: white;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    z-index: 1000;
+                    font-size: 14px;
+                `;
+                
+                document.body.appendChild(errorDiv);
+                
+                // 3秒後自動移除錯誤訊息
+                setTimeout(() => {
+                    if (document.body.contains(errorDiv)) {
+                        document.body.removeChild(errorDiv);
+                    }
+                }, 3000);
+            }
+        }
+
+        // 頁面載入完成後初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            new SoundManager();
+            
+            // 防止頁面滾動（手機版優化）
+            document.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+            }, { passive: false });
+        });
+
+        // 全域錯誤處理
+        window.addEventListener('error', (e) => {
+            console.error('頁面發生錯誤:', e.error);
+        });
+    </script>
+</body>
+</html> 
