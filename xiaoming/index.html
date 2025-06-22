@@ -88,6 +88,65 @@
             touch-action: manipulation;
         }
 
+        /* 音效控制按鈕樣式 */
+        .audio-control {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .audio-toggle-button {
+            background: linear-gradient(145deg, #ff6b6b, #ee5a52);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 
+                3px 3px 6px rgba(0, 0, 0, 0.2),
+                -3px -3px 6px rgba(255, 255, 255, 0.1);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .audio-toggle-button:hover {
+            background: linear-gradient(145deg, #ff5252, #e53935);
+            transform: translateY(-1px);
+        }
+
+        .audio-toggle-button:active {
+            transform: translateY(1px);
+            box-shadow: 
+                1px 1px 3px rgba(0, 0, 0, 0.3),
+                -1px -1px 3px rgba(255, 255, 255, 0.1);
+        }
+
+        .audio-toggle-button.enabled {
+            background: linear-gradient(145deg, #4caf50, #43a047);
+        }
+
+        .audio-toggle-button.enabled:hover {
+            background: linear-gradient(145deg, #45a049, #388e3c);
+        }
+
+        .audio-icon {
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .audio-text {
+            font-size: 12px;
+            line-height: 1;
+        }
+
         .button-icon {
             width: 50px;
             height: 50px;
@@ -186,6 +245,14 @@
                 <span class="button-text">燒死你啊</span>
             </button>
         </div>
+        
+        <!-- 音效控制按鈕 -->
+        <div class="audio-control">
+            <button class="audio-toggle-button" id="audioToggle">
+                <span class="audio-icon">🔇</span>
+                <span class="audio-text">啟用音效</span>
+            </button>
+        </div>
     </div>
 
     <script>
@@ -198,6 +265,8 @@
                 this.isMobile = this.detectMobile(); // 偵測是否為行動裝置
                 this.isIOS = this.detectIOS(); // 偵測是否為 iOS
                 this.needsUnlock = this.isMobile || this.isIOS; // 是否需要解鎖音效
+                this.audioEnabled = false; // 音效是否啟用
+                this.audioToggleButton = null; // 音效控制按鈕
                 this.init();
             }
 
@@ -250,14 +319,138 @@
                 // 綁定按鈕事件
                 this.bindEvents();
                 
+                // 初始化音效控制按鈕
+                this.initAudioToggle();
+                
                 // 只有行動裝置或 iOS 才需要音效解鎖
                 if (this.needsUnlock) {
                     this.unlockAudioForMobile();
                 } else {
                     // 桌面裝置直接設為已解鎖
                     this.isAudioUnlocked = true;
-                    console.log('桌面裝置，音效已啟用');
+                    console.log('桌面裝置，音效已解鎖');
                 }
+            }
+
+            // 初始化音效控制按鈕
+            initAudioToggle() {
+                this.audioToggleButton = document.getElementById('audioToggle');
+                if (!this.audioToggleButton) return;
+
+                // 根據裝置類型決定是否顯示音效控制按鈕
+                if (this.needsUnlock) {
+                    // 行動裝置顯示音效控制按鈕
+                    this.audioToggleButton.style.display = 'inline-flex';
+                    this.updateAudioToggleButton();
+                } else {
+                    // 桌面裝置隱藏音效控制按鈕，直接啟用音效
+                    this.audioToggleButton.style.display = 'none';
+                    this.audioEnabled = true;
+                }
+
+                // 綁定音效控制按鈕事件
+                this.bindAudioToggleEvents();
+            }
+
+            // 更新音效控制按鈕的狀態
+            updateAudioToggleButton() {
+                if (!this.audioToggleButton) return;
+
+                const icon = this.audioToggleButton.querySelector('.audio-icon');
+                const text = this.audioToggleButton.querySelector('.audio-text');
+
+                if (this.audioEnabled) {
+                    this.audioToggleButton.classList.add('enabled');
+                    icon.textContent = '🔊';
+                    text.textContent = '音效已啟用';
+                } else {
+                    this.audioToggleButton.classList.remove('enabled');
+                    icon.textContent = '🔇';
+                    text.textContent = '啟用音效';
+                }
+            }
+
+            // 綁定音效控制按鈕事件
+            bindAudioToggleEvents() {
+                if (!this.audioToggleButton) return;
+
+                if (this.isMobile) {
+                    // 行動裝置使用觸控事件
+                    this.audioToggleButton.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.toggleAudio();
+                    }, { passive: false });
+
+                    // 防止 click 事件重複觸發
+                    this.audioToggleButton.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+                } else {
+                    // 桌面裝置使用點擊事件
+                    this.audioToggleButton.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        this.toggleAudio();
+                    });
+                }
+            }
+
+            // 切換音效狀態
+            toggleAudio() {
+                if (!this.audioEnabled) {
+                    // 啟用音效
+                    this.enableAudio();
+                } else {
+                    // 關閉音效
+                    this.disableAudio();
+                }
+            }
+
+            // 啟用音效
+            enableAudio() {
+                if (this.needsUnlock && !this.isAudioUnlocked) {
+                    // 需要解鎖的裝置：播放靜音音效來解鎖
+                    const silentAudio = new Audio();
+                    silentAudio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//tQxAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+                    silentAudio.volume = 0.01;
+                    
+                    silentAudio.play().then(() => {
+                        this.isAudioUnlocked = true;
+                        this.audioEnabled = true;
+                        this.updateAudioToggleButton();
+                        console.log('音效已啟用並解鎖');
+                                         }).catch(() => {
+                         console.log('音效啟用失敗');
+                         // 更新按鈕狀態但不顯示錯誤
+                         this.updateAudioToggleButton();
+                     });
+                } else {
+                    // 不需要解鎖的裝置直接啟用
+                    this.audioEnabled = true;
+                    this.updateAudioToggleButton();
+                    console.log('音效已啟用');
+                }
+            }
+
+            // 關閉音效
+            disableAudio() {
+                this.audioEnabled = false;
+                this.updateAudioToggleButton();
+                
+                // 停止目前播放的音效
+                if (this.currentAudio && !this.currentAudio.paused) {
+                    this.currentAudio.pause();
+                    this.currentAudio.currentTime = 0;
+                }
+                
+                // 移除所有按鈕的播放狀態
+                document.querySelectorAll('.sound-button').forEach(btn => {
+                    btn.classList.remove('playing');
+                });
+                
+                console.log('音效已關閉');
             }
 
             // 行動裝置音效解鎖 - 必須在用戶互動後才能播放音效
@@ -383,6 +576,13 @@
                     return;
                 }
 
+                // 檢查音效是否啟用
+                if (!this.audioEnabled) {
+                    console.log('音效未啟用，忽略播放請求');
+                    // 可以選擇性地顯示提示，但不強制
+                    return;
+                }
+
                 // 停止目前播放的音效
                 if (this.currentAudio && !this.currentAudio.paused) {
                     this.currentAudio.pause();
@@ -403,26 +603,13 @@
                     return;
                 }
 
-                // 只有需要解鎖的裝置才進行解鎖處理
+                // 檢查是否需要解鎖（行動裝置且尚未解鎖）
                 if (this.needsUnlock && !this.isAudioUnlocked) {
-                    console.log('行動裝置音效尚未解鎖，嘗試解鎖...');
-                    // 嘗試播放靜音音效來解鎖
-                    const silentAudio = new Audio();
-                    silentAudio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//tQxAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
-                    silentAudio.volume = 0.01;
-                    silentAudio.play().then(() => {
-                        this.isAudioUnlocked = true;
-                        console.log('行動裝置音效解鎖成功，重新播放');
-                        // 解鎖後重新播放
-                        this.playActualSound(audio, button, soundFile);
-                    }).catch(() => {
-                        console.log('音效解鎖失敗');
-                        this.showError('請先點擊任意位置啟用音效');
-                    });
+                    console.log('行動裝置音效尚未解鎖，請先啟用音效');
                     return;
                 }
 
-                // 桌面裝置或已解鎖的行動裝置直接播放
+                // 播放音效
                 this.playActualSound(audio, button, soundFile);
             }
 
