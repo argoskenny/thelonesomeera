@@ -134,42 +134,42 @@
     <div class="container">
         <div class="button-grid">
             <button class="sound-button" data-sound="answerme.mp3">
-                <img src="xiaoming/assets/imgs/answerme.png" alt="回答我" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/answerme.png" alt="回答我" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">回答我</span>
             </button>
             
             <button class="sound-button" data-sound="lookinmyeyes.mp3">
-                <img src="xiaoming/assets/imgs/lookinmyeyes.png" alt="Look in my eyes" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/lookinmyeyes.png" alt="Look in my eyes" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">Look in my eyes</span>
             </button>
             
             <button class="sound-button" data-sound="tellme.mp3">
-                <img src="xiaoming/assets/imgs/tellme.png" alt="Why" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/tellme.png" alt="Why" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">Why</span>
             </button>
             
             <button class="sound-button" data-sound="sleepwindog.mp3">
-                <img src="xiaoming/assets/imgs/sleepwindog.png" alt="躺贏狗" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/sleepwindog.png" alt="躺贏狗" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">躺贏狗</span>
             </button>
             
             <button class="sound-button" data-sound="mvp.mp3">
-                <img src="xiaoming/assets/imgs/mvp.png" alt="MVP" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/mvp.png" alt="MVP" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">MVP</span>
             </button>
             
             <button class="sound-button" data-sound="opene.mp3">
-                <img src="xiaoming/assets/imgs/opene.png" alt="就開個E" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/opene.png" alt="就開個E" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">就開個E</span>
             </button>
             
             <button class="sound-button" data-sound="cancancan.mp3">
-                <img src="xiaoming/assets/imgs/cancancan.png" alt="能能能" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/cancancan.png" alt="能能能" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">能能能</span>
             </button>
             
             <button class="sound-button" data-sound="burnyou.mp3">
-                <img src="xiaoming/assets/imgs/burnyou.png" alt="燒死你啊" class="button-icon" onerror="this.style.display='none'">
+                <img src="../assets/xiaoming/imgs/burnyou.png" alt="燒死你啊" class="button-icon" onerror="this.style.display='none'">
                 <span class="button-text">燒死你啊</span>
             </button>
         </div>
@@ -194,7 +194,7 @@
 
                 // 為每個音效檔案建立 Audio 物件並快取
                 soundFiles.forEach(file => {
-                    const audio = new Audio(`xiaoming/assets/sounds/${file}`);
+                    const audio = new Audio(`../assets/xiaoming/sounds/${file}`);
                     audio.preload = 'auto';
                     // 添加錯誤處理
                     audio.addEventListener('error', () => {
