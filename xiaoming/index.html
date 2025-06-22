@@ -75,6 +75,19 @@
             background: linear-gradient(145deg, #e8e8e8, #d1d1d1);
         }
 
+        .sound-button.active {
+            background: linear-gradient(145deg, #d1d1d1, #e8e8e8);
+        }
+
+        /* iOS 觸控優化 */
+        .sound-button {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            touch-action: manipulation;
+        }
+
         .button-icon {
             width: 50px;
             height: 50px;
@@ -181,7 +194,23 @@
             constructor() {
                 this.currentAudio = null; // 追蹤目前播放的音效
                 this.audioCache = new Map(); // 快取音效檔案
+                this.isAudioUnlocked = false; // 音效解鎖狀態
+                this.isMobile = this.detectMobile(); // 偵測是否為行動裝置
+                this.isIOS = this.detectIOS(); // 偵測是否為 iOS
+                this.needsUnlock = this.isMobile || this.isIOS; // 是否需要解鎖音效
                 this.init();
+            }
+
+            // 偵測是否為行動裝置
+            detectMobile() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                       (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+            }
+
+            // 偵測是否為 iOS
+            detectIOS() {
+                return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
             }
 
             // 初始化音效管理器
@@ -195,16 +224,72 @@
                 // 為每個音效檔案建立 Audio 物件並快取
                 soundFiles.forEach(file => {
                     const audio = new Audio(`../assets/xiaoming/sounds/${file}`);
-                    audio.preload = 'auto';
+                    
+                    // 根據裝置類型設定預載入策略
+                    if (this.isMobile) {
+                        audio.preload = 'metadata'; // 行動裝置使用 metadata 節省流量
+                    } else {
+                        audio.preload = 'auto'; // 桌面裝置使用 auto 獲得更好體驗
+                    }
+                    
+                    audio.load(); // 強制載入
+                    
                     // 添加錯誤處理
                     audio.addEventListener('error', () => {
                         console.error(`無法載入音效檔案: ${file}`);
                     });
+                    
+                    // 載入完成處理
+                    audio.addEventListener('canplaythrough', () => {
+                        console.log(`音效檔案載入完成: ${file}`);
+                    });
+                    
                     this.audioCache.set(file, audio);
                 });
 
                 // 綁定按鈕事件
                 this.bindEvents();
+                
+                // 只有行動裝置或 iOS 才需要音效解鎖
+                if (this.needsUnlock) {
+                    this.unlockAudioForMobile();
+                } else {
+                    // 桌面裝置直接設為已解鎖
+                    this.isAudioUnlocked = true;
+                    console.log('桌面裝置，音效已啟用');
+                }
+            }
+
+            // 行動裝置音效解鎖 - 必須在用戶互動後才能播放音效
+            unlockAudioForMobile() {
+                const unlockAudio = () => {
+                    if (this.isAudioUnlocked) return;
+                    
+                    // 創建一個靜音的音效來解鎖行動裝置音效
+                    const silentAudio = new Audio();
+                    silentAudio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//tQxAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+                    silentAudio.volume = 0.01;
+                    
+                    const playPromise = silentAudio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            this.isAudioUnlocked = true;
+                            console.log('行動裝置音效已解鎖');
+                            
+                            // 移除事件監聽器
+                            document.removeEventListener('touchstart', unlockAudio);
+                            document.removeEventListener('touchend', unlockAudio);
+                            document.removeEventListener('click', unlockAudio);
+                        }).catch(error => {
+                            console.log('音效解鎖失敗:', error);
+                        });
+                    }
+                };
+                
+                // 監聽用戶的第一次互動
+                document.addEventListener('touchstart', unlockAudio);
+                document.addEventListener('touchend', unlockAudio);
+                document.addEventListener('click', unlockAudio);
             }
 
             // 綁定所有按鈕的點擊事件
@@ -212,24 +297,80 @@
                 const buttons = document.querySelectorAll('.sound-button');
                 
                 buttons.forEach(button => {
-                    // 點擊事件
-                    button.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.playSound(button);
-                    });
+                    if (this.isMobile) {
+                        // 行動裝置事件處理
+                        this.bindMobileEvents(button);
+                    } else {
+                        // 桌面裝置事件處理
+                        this.bindDesktopEvents(button);
+                    }
+                });
+            }
 
-                    // 觸控回饋效果
-                    button.addEventListener('touchstart', (e) => {
-                        e.preventDefault();
-                        button.style.transform = 'translateY(2px)';
-                    });
+            // 綁定行動裝置事件
+            bindMobileEvents(button) {
+                // 觸控開始事件
+                button.addEventListener('touchstart', (e) => {
+                    e.preventDefault();
+                    button.style.transform = 'translateY(2px)';
+                    button.classList.add('active');
+                }, { passive: false });
 
-                    button.addEventListener('touchend', (e) => {
-                        e.preventDefault();
-                        setTimeout(() => {
-                            button.style.transform = '';
-                        }, 100);
-                    });
+                // 觸控結束事件
+                button.addEventListener('touchend', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    setTimeout(() => {
+                        button.style.transform = '';
+                        button.classList.remove('active');
+                    }, 100);
+                    
+                    // 行動裝置在觸控結束時播放音效
+                    this.playSound(button);
+                }, { passive: false });
+
+                // 觸控取消事件
+                button.addEventListener('touchcancel', (e) => {
+                    e.preventDefault();
+                    button.style.transform = '';
+                    button.classList.remove('active');
+                }, { passive: false });
+
+                // 點擊事件作為備用
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                });
+            }
+
+            // 綁定桌面裝置事件
+            bindDesktopEvents(button) {
+                // 點擊事件 - 桌面裝置主要使用
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.playSound(button);
+                });
+
+                // 滑鼠按下事件
+                button.addEventListener('mousedown', (e) => {
+                    e.preventDefault();
+                    button.style.transform = 'translateY(2px)';
+                    button.classList.add('active');
+                });
+
+                // 滑鼠放開事件
+                button.addEventListener('mouseup', (e) => {
+                    e.preventDefault();
+                    button.style.transform = '';
+                    button.classList.remove('active');
+                });
+
+                // 滑鼠離開事件（處理拖拽離開的情況）
+                button.addEventListener('mouseleave', (e) => {
+                    button.style.transform = '';
+                    button.classList.remove('active');
                 });
             }
 
@@ -262,6 +403,31 @@
                     return;
                 }
 
+                // 只有需要解鎖的裝置才進行解鎖處理
+                if (this.needsUnlock && !this.isAudioUnlocked) {
+                    console.log('行動裝置音效尚未解鎖，嘗試解鎖...');
+                    // 嘗試播放靜音音效來解鎖
+                    const silentAudio = new Audio();
+                    silentAudio.src = 'data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABIADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDV1dXV1dXV1dXV1dXV1dXV1dXV1dXV1dXV6urq6urq6urq6urq6urq6urq6urq6urq6v////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAASDs90hvAAAAAAAAAAAAAAAAAAAA//tQxAAAAANIAAAAAExBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV';
+                    silentAudio.volume = 0.01;
+                    silentAudio.play().then(() => {
+                        this.isAudioUnlocked = true;
+                        console.log('行動裝置音效解鎖成功，重新播放');
+                        // 解鎖後重新播放
+                        this.playActualSound(audio, button, soundFile);
+                    }).catch(() => {
+                        console.log('音效解鎖失敗');
+                        this.showError('請先點擊任意位置啟用音效');
+                    });
+                    return;
+                }
+
+                // 桌面裝置或已解鎖的行動裝置直接播放
+                this.playActualSound(audio, button, soundFile);
+            }
+
+            // 實際播放音效的方法
+            playActualSound(audio, button, soundFile) {
                 // 重置音效播放位置
                 audio.currentTime = 0;
                 
@@ -270,6 +436,10 @@
                 
                 // 添加播放中的視覺效果
                 button.classList.add('playing');
+                
+                // 設定音量和其他屬性
+                audio.volume = 1.0;
+                audio.muted = false;
                 
                 // 播放音效
                 const playPromise = audio.play();
@@ -282,7 +452,18 @@
                         .catch(error => {
                             console.error('播放音效時發生錯誤:', error);
                             button.classList.remove('playing');
-                            this.showError('播放音效失敗，請檢查音效檔案');
+                            
+                            // 錯誤處理
+                            if (error.name === 'NotAllowedError') {
+                                if (this.needsUnlock) {
+                                    this.showError('請允許播放音效或重新點擊');
+                                    this.isAudioUnlocked = false; // 重置解鎖狀態
+                                } else {
+                                    this.showError('瀏覽器阻止音效播放，請檢查設定');
+                                }
+                            } else {
+                                this.showError('播放音效失敗，請檢查音效檔案');
+                            }
                         });
                 }
 
@@ -325,9 +506,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             new SoundManager();
             
-            // 防止頁面滾動（手機版優化）
+            // 防止頁面滾動（手機版優化） - 但允許按鈕區域的觸控
             document.addEventListener('touchmove', (e) => {
-                e.preventDefault();
+                // 只在非按鈕區域防止滾動
+                if (!e.target.closest('.sound-button')) {
+                    e.preventDefault();
+                }
             }, { passive: false });
         });
 
