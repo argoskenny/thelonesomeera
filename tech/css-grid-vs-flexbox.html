@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="詳細比較 CSS Grid 和 Flexbox 的使用場景，透過實際案例說明如何選擇合適的布局方案">
+    <meta name="keywords" content="CSS Grid,Flexbox,CSS布局,響應式設計,前端開發">
+    <title>CSS Grid 與 Flexbox：何時使用哪一個？ | The Lonesome Era</title>
+    <link rel="stylesheet" href="article.css">
+    <link rel="icon" href="../favicon.ico">
+</head>
+<body>
+    <div class="article-container">
+        <a href="../index.html#articles" class="back-button">
+            ← 返回文章列表
+        </a>
+        
+        <h1 class="article-title">CSS Grid 與 Flexbox：何時使用哪一個？</h1>
+        
+        <div class="article-meta">
+            <span class="article-date">2024年3月5日</span>
+            <span class="article-category">CSS</span>
+            <span class="article-reading-time">約 10 分鐘閱讀</span>
+        </div>
+        
+        <div class="article-content">
+            <p>CSS Grid 和 Flexbox 是現代 CSS 布局的兩大支柱，但許多開發者仍然困惑於何時使用哪一個。通過在 <strong>The Lonesome Era</strong> 網站開發中的實際應用，我將分享如何根據不同場景選擇最適合的布局方案。</p>
+
+            <h2>核心差異：一維 vs 二維</h2>
+            
+            <blockquote>
+                <p>Flexbox 是一維布局系統，Grid 是二維布局系統</p>
+            </blockquote>
+            
+            <p>這是理解兩者差異的關鍵：</p>
+            
+            <ul>
+                <li><strong>Flexbox</strong>：沿著主軸（main axis）進行一維布局</li>
+                <li><strong>Grid</strong>：同時處理行和列的二維布局</li>
+            </ul>
+
+            <h3>Flexbox：完美的組件內布局</h3>
+            
+            <pre><code class="language-css">/* 導航欄布局 - Flexbox 的經典應用 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+/* 卡片內容布局 */
+.card-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.card-content h3 {
+    margin-bottom: auto; /* 推送其他內容到底部 */
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+}</code></pre>
+
+            <h3>Grid：強大的頁面級布局</h3>
+            
+            <pre><code class="language-css">/* 內容網格 - Grid 的理想場景 */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+/* 複雜的頁面布局 */
+.page-layout {
+    display: grid;
+    grid-template-areas:
+        "header header header"
+        "sidebar main aside"
+        "footer footer footer";
+    grid-template-columns: 250px 1fr 200px;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+.header { grid-area: header; }
+.sidebar { grid-area: sidebar; }
+.main { grid-area: main; }
+.aside { grid-area: aside; }
+.footer { grid-area: footer; }</code></pre>
+
+            <h2>實戰決策樹</h2>
+            
+            <p>以下是我在實際開發中使用的決策流程：</p>
+
+            <h3>選擇 Flexbox 的情況</h3>
+            
+            <ul>
+                <li>✅ 導航欄和選單</li>
+                <li>✅ 按鈕群組</li>
+                <li>✅ 卡片內容布局</li>
+                <li>✅ 居中對齊元素</li>
+                <li>✅ 等高列布局</li>
+                <li>✅ 動態內容分配</li>
+            </ul>
+
+            <pre><code class="language-css">/* 實例：完美居中 */
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* 實例：等高卡片 */
+.card-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.card {
+    flex: 1; /* 等寬分配 */
+    display: flex;
+    flex-direction: column;
+}
+
+/* 實例：響應式導航 */
+.nav-menu {
+    display: flex;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        flex-direction: column;
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--bg-color);
+        padding: 2rem 0;
+    }
+}</code></pre>
+
+            <h3>選擇 Grid 的情況</h3>
+            
+            <ul>
+                <li>✅ 整體頁面布局</li>
+                <li>✅ 卡片網格</li>
+                <li>✅ 複雜的二維布局</li>
+                <li>✅ 不規則網格</li>
+                <li>✅ 重疊元素布局</li>
+            </ul>
+
+            <pre><code class="language-css">/* 實例：響應式卡片網格 */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+}
+
+/* 實例：複雜的文章布局 */
+.article-layout {
+    display: grid;
+    grid-template-columns: 1fr min(65ch, 100%) 1fr;
+    grid-template-areas:
+        ". header ."
+        ". content ."
+        ". sidebar .";
+    gap: 2rem;
+}
+
+.article-header { grid-area: header; }
+.article-content { grid-area: content; }
+.article-sidebar { grid-area: sidebar; }
+
+/* 實例：不規則網格 */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 200px);
+    gap: 1rem;
+}
+
+.feature-item:nth-child(1) {
+    grid-column: 1 / 3;
+    grid-row: 1 / 3;
+}
+
+.feature-item:nth-child(2) {
+    grid-column: 3 / 5;
+    grid-row: 1 / 2;
+}</code></pre>
+
+            <h2>組合使用：最佳實踐</h2>
+            
+            <p>在實際專案中，Grid 和 Flexbox 經常需要組合使用：</p>
+
+            <pre><code class="language-css">/* 外層使用 Grid 定義整體布局 */
+.page-container {
+    display: grid;
+    grid-template-areas:
+        "header"
+        "main"
+        "footer";
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+/* 內層使用 Flexbox 處理組件細節 */
+.header {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+}
+
+.main {
+    grid-area: main;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    background: var(--card-bg);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.card-content {
+    flex: 1;
+    padding: 0 1rem 1rem;
+}</code></pre>
+
+            <h2>響應式設計中的應用</h2>
+            
+            <h3>Grid 的響應式超能力</h3>
+            
+            <pre><code class="language-css">/* 自適應網格 - 無需媒體查詢 */
+.auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+/* 使用 clamp() 的響應式網格 */
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 30vw, 400px), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+}
+
+/* 複雜的響應式布局 */
+.complex-layout {
+    display: grid;
+    gap: 1rem;
+    grid-template-areas:
+        "header header"
+        "main sidebar"
+        "footer footer";
+    grid-template-columns: 2fr 1fr;
+}
+
+@media (max-width: 768px) {
+    .complex-layout {
+        grid-template-areas:
+            "header"
+            "main"
+            "sidebar"
+            "footer";
+        grid-template-columns: 1fr;
+    }
+}</code></pre>
+
+            <h3>Flexbox 的響應式技巧</h3>
+            
+            <pre><code class="language-css">/* 響應式導航選單 */
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+@media (max-width: 768px) {
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: var(--bg-color);
+        padding: 2rem 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .nav-menu.open {
+        transform: translateX(0);
+    }
+}
+
+/* 響應式卡片布局 */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.card {
+    flex: 1 1 300px; /* 最小寬度 300px，可伸縮 */
+    max-width: 400px;
+}</code></pre>
+
+            <h2>效能考量</h2>
+            
+            <h3>Grid 的效能優勢</h3>
+            
+            <ul>
+                <li><strong>減少重排</strong>：Grid 的二維計算更高效</li>
+                <li><strong>原生響應式</strong>：減少 JavaScript 計算</li>
+                <li><strong>GPU 加速</strong>：現代瀏覽器優化良好</li>
+            </ul>
+
+            <h3>Flexbox 的效能特點</h3>
+            
+            <ul>
+                <li><strong>動態內容</strong>：內容變化時重新計算</li>
+                <li><strong>嵌套影響</strong>：深層嵌套可能影響效能</li>
+                <li><strong>適合小範圍</strong>：組件級布局效能良好</li>
+            </ul>
+
+            <h2>常見陷阱與解決方案</h2>
+            
+            <h3>Grid 常見問題</h3>
+            
+            <pre><code class="language-css">/* ❌ 問題：Grid 項目內容溢出 */
+.grid-item {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+/* ✅ 解決：設定最小尺寸 */
+.grid-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+/* ❌ 問題：Grid 在 Safari 中的兼容性 */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* ✅ 解決：使用 autoprefixer 或手動前綴 */
+.grid-container {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: (minmax(200px, 1fr))[auto-fit];
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}</code></pre>
+
+            <h3>Flexbox 常見問題</h3>
+            
+            <pre><code class="language-css">/* ❌ 問題：Flex 項目不等高 */
+.flex-container {
+    display: flex;
+}
+
+.flex-item {
+    background: var(--bg-color);
+}
+
+/* ✅ 解決：使用 align-items */
+.flex-container {
+    display: flex;
+    align-items: stretch; /* 預設值，確保等高 */
+}
+
+/* ❌ 問題：Flex 項目縮放問題 */
+.flex-item {
+    flex: 1;
+    min-width: 200px; /* 可能導致溢出 */
+}
+
+/* ✅ 解決：正確設定 flex 屬性 */
+.flex-item {
+    flex: 1 1 200px; /* grow shrink basis */
+    min-width: 0; /* 允許縮小 */
+}</code></pre>
+
+            <h2>實戰案例分析</h2>
+            
+            <p>讓我們看看 The Lonesome Era 網站中的實際應用：</p>
+
+            <h3>主頁布局策略</h3>
+            
+            <pre><code class="language-css">/* 整體頁面使用 Grid */
+.main-content {
+    display: grid;
+    gap: 0;
+}
+
+/* 每個區塊內部使用 Flexbox */
+.content-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 0;
+}
+
+.section-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+/* 內容網格使用 Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* 卡片內部使用 Flexbox */
+.content-card {
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 1.5rem;
+}
+
+.card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+}</code></pre>
+
+            <h2>未來展望</h2>
+            
+            <p>CSS 布局技術仍在不斷發展：</p>
+
+            <h3>Container Queries</h3>
+            
+            <pre><code class="language-css">/* 未來的容器查詢 */
+@container (min-width: 400px) {
+    .card {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+    }
+}</code></pre>
+
+            <h3>Subgrid</h3>
+            
+            <pre><code class="language-css">/* 子網格對齊 */
+.parent-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.child-grid {
+    display: grid;
+    grid-template-columns: subgrid;
+}</code></pre>
+
+            <h2>總結</h2>
+            
+            <p>選擇 Grid 還是 Flexbox 的核心原則：</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>場景</th>
+                        <th>推薦方案</th>
+                        <th>原因</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>頁面整體布局</td>
+                        <td>Grid</td>
+                        <td>二維控制，語義清晰</td>
+                    </tr>
+                    <tr>
+                        <td>組件內部布局</td>
+                        <td>Flexbox</td>
+                        <td>一維對齊，靈活簡潔</td>
+                    </tr>
+                    <tr>
+                        <td>卡片網格</td>
+                        <td>Grid</td>
+                        <td>自適應列數，等高對齊</td>
+                    </tr>
+                    <tr>
+                        <td>導航選單</td>
+                        <td>Flexbox</td>
+                        <td>動態內容，居中對齊</td>
+                    </tr>
+                    <tr>
+                        <td>複雜表單</td>
+                        <td>Grid</td>
+                        <td>精確控制位置</td>
+                    </tr>
+                    <tr>
+                        <td>按鈕群組</td>
+                        <td>Flexbox</td>
+                        <td>等寬分配，間距控制</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <blockquote>
+                <p>記住：Grid 和 Flexbox 不是競爭關係，而是互補的。掌握兩者的特性，根據具體需求選擇最適合的工具。</p>
+            </blockquote>
+
+            <p>在現代 Web 開發中，同時掌握 Grid 和 Flexbox 是必備技能。它們讓我們能夠創造出既美觀又實用的布局，為使用者提供更好的體驗。</p>
+
+            <hr>
+            
+            <p><em>想要了解更多 CSS 技巧？歡迎查看我們的其他技術文章，或者體驗 <a href="../index.html">The Lonesome Era</a> 網站的響應式布局實作。</em></p>
+        </div>
+    </div>
+</body>
+</html> 

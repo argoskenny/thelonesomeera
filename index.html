@@ -3,85 +3,201 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Lonesome Era</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="The Lonesome Era - 一個屬於創作者與思考者的技術角落，分享前端開發、遊戲製作與科技觀察">
+    <meta name="keywords" content="前端開發,遊戲開發,JavaScript,Vue.js,響應式設計,科技觀察">
+    <meta name="author" content="The Lonesome Era">
+    <title>The Lonesome Era | 一個屬於創作者與思考者的技術角落</title>
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7672088727567232"
      crossorigin="anonymous"></script>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            /* 設定全視窗高度 */
-            display: flex;
-            justify-content: center;
-            /* 水平置中 */
-            align-items: center;
-            /* 垂直置中 */
-            background: linear-gradient(0deg, #f48e43, #90a697, #58889C, #c4b075, #f48e43);
-            /* 背景漸層 */
-        }
-
-        .centered-image {
-            max-width: 80%;
-            /* 設定圖片的最大寬度 */
-            height: auto;
-            /* 自動調整高度以保持比例 */
-        }
-
-        #centered-text {
-            position: absolute;
-            /* Position the text absolutely within the body */
-            top: 80%;
-            /* Set the top position to 40% of the body height */
-            left: 50%;
-            /* Set the left position to 50% of the body width */
-            transform: translate(-50%, -50%);
-            /* Center the text horizontally and vertically */
-            width: 80%;
-            /* Set the width of the text container to 80% of the body width */
-            text-align: center;
-            /* Center the text within the container */
-            color: white;
-            /* Set the text color to white */
-            font-size: 1.5em;
-            /* Set the font size to 2em */
-        }
-
-        #dive-in-button {
-            position: absolute;
-            /* Position the text absolutely within the body */
-            top: 85%;
-
-            margin: 30px auto;
-            /* Add some margin above and below the button */
-            padding: 10px 20px;
-            /* Add some padding to the button */
-            background-color: #ffffff;
-            /* Blue background color */
-            color: rgb(32, 32, 32);
-            /* White text color */
-            border: none;
-            /* Remove the default button border */
-            border-radius: 50px;
-            /* Set the border radius to 50% for rounded corners */
-            cursor: pointer;
-            /* Make the cursor change to a pointer when hovering over the button */
-            text-decoration: none;
-            /* Remove any text decoration */
-            font-size: 1.2em;
-            /* Increase the font size slightly */
-        }
-    </style>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="/favicon.ico">
 </head>
 
 <body>
-    <img src="tle_logo.png" alt="logo" class="centered-image">
-    <div id="centered-text">
-        Come along with me<br>
-        To my little corner of the world
+    <div id="app">
+        <!-- 導航欄 -->
+        <header class="header">
+            <nav class="navbar">
+                <div class="nav-brand">
+                    <img src="assets/imgs/blog_icon.png" alt="The Lonesome Era" class="logo">
+                    <span class="brand-text">The Lonesome Era</span>
+                </div>
+                <ul class="nav-menu" :class="{ 'nav-menu-open': mobileMenuOpen }">
+                    <li><a href="#home" @click="changeSection('home')">首頁</a></li>
+                    <li><a href="#projects" @click="changeSection('projects')">作品</a></li>
+                    <li><a href="#articles" @click="changeSection('articles')">文章</a></li>
+                    <li><a href="#observations" @click="changeSection('observations')">觀察</a></li>
+                    <li><a href="#about" @click="changeSection('about')">關於</a></li>
+                </ul>
+                <div class="nav-toggle" :class="{ 'active': mobileMenuOpen }" @click="toggleMobileMenu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </header>
+
+        <!-- 手機選單遮罩 -->
+        <div v-if="mobileMenuOpen" class="mobile-overlay" @click="mobileMenuOpen = false"></div>
+
+        <!-- 主要內容 -->
+        <main class="main-content">
+            <!-- 首頁 Hero Section -->
+            <section v-if="currentSection === 'home'" class="hero-section">
+                <div class="hero-background">
+                    <div class="hero-overlay"></div>
+                </div>
+                <div class="hero-content">
+                    <img src="tle_logo.png" alt="The Lonesome Era" class="hero-logo">
+                    <p class="hero-subtitle">一個屬於創作者與思考者的技術角落</p>
+                    <div class="hero-description">
+                        <p>在這個充滿喧囂與快速變動的科技時代，我們選擇站在一個略為孤寂卻清晰的位置，靜靜觀察、深入探索。</p>
+                        <p>「The Lonesome Era」，是屬於開發者、設計者、與每一位熱愛科技的人們的空間。</p>
+                    </div>
+                    <button class="cta-button" @click="currentSection = 'projects'">開始探索</button>
+                </div>
+            </section>
+
+            <!-- 作品分享區塊 -->
+            <section v-if="currentSection === 'projects'" class="content-section projects-section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-number">01</span>
+                        <h2 class="section-title">作品分享</h2>
+                        <p class="section-subtitle">Web / App Project Showcase</p>
+                    </div>
+                    <div class="content-grid">
+                        <div class="content-card" v-for="project in projects" :key="project.id" 
+                             @click="handleCardClick(project.link, $event)">
+                            <div class="card-image">
+                                <img :src="project.image" :alt="project.title" loading="lazy">
+                            </div>
+                            <div class="card-content">
+                                <h3>{{ project.title }}</h3>
+                                <p>{{ project.description }}</p>
+                                <div class="card-tags">
+                                    <span v-for="tag in project.tags" :key="tag" class="tag">{{ tag }}</span>
+                                </div>
+                                <a :href="project.link" class="card-link" @click.stop="handleCardClick(project.link, $event)">查看更多 →</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 技術文章區塊 -->
+            <section v-if="currentSection === 'articles'" class="content-section articles-section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-number">02</span>
+                        <h2 class="section-title">技術文章</h2>
+                        <p class="section-subtitle">Deep Dive Into Tech</p>
+                    </div>
+                    <div class="articles-grid">
+                        <article v-for="article in articles" :key="article.id" class="article-card">
+                            <div class="article-meta">
+                                <span class="article-date">{{ article.date }}</span>
+                                <span class="article-category">{{ article.category }}</span>
+                            </div>
+                            <h3 class="article-title">{{ article.title }}</h3>
+                            <p class="article-excerpt">{{ article.excerpt }}</p>
+                            <a :href="article.link" class="article-link" @click="handleCardClick(article.link, $event)">閱讀全文 →</a>
+                        </article>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 科技觀察區塊 -->
+            <section v-if="currentSection === 'observations'" class="content-section observations-section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-number">03</span>
+                        <h2 class="section-title">科技觀察</h2>
+                        <p class="section-subtitle">Tech News & Thoughts</p>
+                    </div>
+                    <div class="observations-content">
+                        <div class="observation-card featured">
+                            <div class="observation-content">
+                                <h3>每週科技觀點</h3>
+                                <p>我們不做即時新聞搬運工，而是從開發者與實作者的角度，看待產業動態。</p>
+                                <ul class="observation-topics">
+                                    <li>某項新技術是否真有轉變工作流程的潛力？</li>
+                                    <li>大廠政策變化背後，對中小團隊或個人開發者意味著什麼？</li>
+                                    <li>對於人工智慧、Web3、開源運動，我們的觀察與質疑是什麼？</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 關於我們區塊 -->
+            <section v-if="currentSection === 'about'" class="content-section about-section">
+                <div class="container">
+                    <div class="section-header">
+                        <span class="section-number">04</span>
+                        <h2 class="section-title">我們相信</h2>
+                        <p class="section-subtitle">Our Beliefs</p>
+                    </div>
+                    <div class="beliefs-grid">
+                        <div class="belief-card">
+                            <div class="belief-icon">🔧</div>
+                            <h3>技術是工具</h3>
+                            <p>創作是過程，思考才是核心。</p>
+                        </div>
+                        <div class="belief-card">
+                            <div class="belief-icon">💡</div>
+                            <h3>分享，不為流量</h3>
+                            <p>只為連結志同道合的你。</p>
+                        </div>
+                        <div class="belief-card">
+                            <div class="belief-icon">🔭</div>
+                            <h3>彼此連結</h3>
+                            <p>即使身處孤獨的時代，我們仍能透過技術與創意連結。</p>
+                        </div>
+                    </div>
+                    <div class="final-message">
+                        <h3>歡迎來到 The Lonesome Era</h3>
+                        <p>如果你也喜歡思考、創造、分享，那麼你並不孤單。</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 頁腳 -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-section">
+                        <h4>The Lonesome Era</h4>
+                        <p>一個屬於創作者與思考者的技術角落</p>
+                    </div>
+                    <div class="footer-section">
+                        <h4>探索</h4>
+                        <ul>
+                            <li><a href="#projects">作品分享</a></li>
+                            <li><a href="#articles">技術文章</a></li>
+                            <li><a href="#observations">科技觀察</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-section">
+                        <h4>連結</h4>
+                        <ul>
+                            <li><a href="mailto:argoskenny@gmail.com">聯絡我們</a></li>
+                            <li><a href="rss.xml" target="_blank">RSS 訂閱</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 The Lonesome Era. 保留所有權利。</p>
+                </div>
+            </div>
+        </footer>
     </div>
-    <a id="dive-in-button" href="selfiecat.html">DIVE IN</a>
+
+    <script src="app.js"></script>
 </body>
 
 </html>

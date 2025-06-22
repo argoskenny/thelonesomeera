@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="從實際專案角度分析 Vue 3 的 Composition API，如何讓程式碼更具可維護性和重用性">
+    <meta name="keywords" content="Vue.js 3,Composition API,reactive,ref,computed,前端開發">
+    <title>Vue.js 3 Composition API 深度解析 | The Lonesome Era</title>
+    <link rel="stylesheet" href="article.css">
+    <link rel="icon" href="../favicon.ico">
+</head>
+<body>
+    <div class="article-container">
+        <a href="../index.html#articles" class="back-button">
+            ← 返回文章列表
+        </a>
+        
+        <h1 class="article-title">Vue.js 3 Composition API 深度解析</h1>
+        
+        <div class="article-meta">
+            <span class="article-date">2024年3月10日</span>
+            <span class="article-category">Vue.js</span>
+            <span class="article-reading-time">約 12 分鐘閱讀</span>
+        </div>
+        
+        <div class="article-content">
+            <p>Vue 3 的 Composition API 是一個革命性的變化，它為我們提供了更靈活、更可組合的方式來組織組件邏輯。在開發 <strong>The Lonesome Era</strong> 網站的過程中，我深度使用了 Composition API，本文將分享實戰中的心得與最佳實踐。</p>
+
+            <h2>為什麼選擇 Composition API？</h2>
+            
+            <p>在 Vue 2 的 Options API 中，我們經常遇到以下問題：</p>
+            
+            <ul>
+                <li><strong>邏輯分散</strong>：相關的邏輯被分散在 data、methods、computed 等不同選項中</li>
+                <li><strong>複用困難</strong>：跨組件的邏輯複用需要依賴 mixins，容易產生命名衝突</li>
+                <li><strong>類型推斷</strong>：TypeScript 支援不夠完善</li>
+                <li><strong>大型組件</strong>：隨著功能增加，組件變得難以維護</li>
+            </ul>
+
+            <p>Composition API 通過函數式的方式解決了這些問題，讓我們能夠：</p>
+
+            <blockquote>
+                <p>按照邏輯關注點組織程式碼，而非按照選項類型組織</p>
+            </blockquote>
+
+            <h2>核心概念深度解析</h2>
+
+            <h3>ref vs reactive：響應式系統的雙子星</h3>
+            
+            <p>理解 <code>ref</code> 和 <code>reactive</code> 的差異是掌握 Composition API 的關鍵：</p>
+
+            <pre><code class="language-javascript">import { ref, reactive, computed, watch } from 'vue'
+
+export default {
+    setup() {
+        // ref：用於基本類型和單一值
+        const count = ref(0)
+        const message = ref('Hello Vue 3')
+        
+        // reactive：用於物件和陣列
+        const state = reactive({
+            user: {
+                name: 'The Lonesome Era',
+                email: 'argoskenny@gmail.com'
+            },
+            posts: [],
+            isLoading: false
+        })
+        
+        // ref 需要通過 .value 存取
+        console.log(count.value) // 0
+        count.value++
+        
+        // reactive 直接存取屬性
+        console.log(state.user.name) // 'The Lonesome Era'
+        state.isLoading = true
+        
+        return {
+            count,
+            message,
+            state
+        }
+    }
+}</code></pre>
+
+            <h3>實戰技巧：選擇 ref 還是 reactive？</h3>
+            
+            <p>在實際開發中，我遵循以下原則：</p>
+
+            <ul>
+                <li><strong>基本類型</strong>：使用 <code>ref</code></li>
+                <li><strong>物件狀態</strong>：使用 <code>reactive</code></li>
+                <li><strong>表單資料</strong>：使用 <code>reactive</code> 更方便</li>
+                <li><strong>API 響應</strong>：根據資料結構選擇</li>
+            </ul>
+
+            <pre><code class="language-javascript">// ✅ 推薦的模式
+const useUserData = () => {
+    // 簡單狀態使用 ref
+    const isLoading = ref(false)
+    const error = ref(null)
+    
+    // 複雜物件使用 reactive
+    const userData = reactive({
+        profile: {},
+        preferences: {},
+        statistics: {}
+    })
+    
+    return {
+        isLoading,
+        error,
+        userData
+    }
+}</code></pre>
+
+            <h2>組合式函數：邏輯複用的藝術</h2>
+            
+            <p>Composition API 最大的優勢在於邏輯複用。讓我們看看如何創建可複用的組合式函數：</p>
+
+            <h3>響應式狀態管理</h3>
+            
+            <pre><code class="language-javascript">// composables/useResponsiveDesign.js
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+
+export function useResponsiveDesign() {
+    const windowWidth = ref(window.innerWidth)
+    
+    const updateWidth = () => {
+        windowWidth.value = window.innerWidth
+    }
+    
+    onMounted(() => {
+        window.addEventListener('resize', updateWidth)
+    })
+    
+    onUnmounted(() => {
+        window.removeEventListener('resize', updateWidth)
+    })
+    
+    const isMobile = computed(() => windowWidth.value <= 768)
+    const isTablet = computed(() => windowWidth.value > 768 && windowWidth.value <= 1024)
+    const isDesktop = computed(() => windowWidth.value > 1024)
+    
+    const deviceType = computed(() => {
+        if (isMobile.value) return 'mobile'
+        if (isTablet.value) return 'tablet'
+        return 'desktop'
+    })
+    
+    return {
+        windowWidth,
+        isMobile,
+        isTablet,
+        isDesktop,
+        deviceType
+    }
+}</code></pre>
+
+            <h3>API 資料獲取</h3>
+            
+            <pre><code class="language-javascript">// composables/useApi.js
+import { ref, reactive } from 'vue'
+
+export function useApi() {
+    const loading = ref(false)
+    const error = ref(null)
+    
+    const request = async (url, options = {}) => {
+        loading.value = true
+        error.value = null
+        
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers
+                },
+                ...options
+            })
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            
+            const data = await response.json()
+            return data
+        } catch (err) {
+            error.value = err.message
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+    
+    return {
+        loading,
+        error,
+        request
+    }
+}
+
+// 特定 API 的組合式函數
+export function useArticles() {
+    const { loading, error, request } = useApi()
+    const articles = ref([])
+    
+    const fetchArticles = async () => {
+        try {
+            const data = await request('/api/articles')
+            articles.value = data
+        } catch (err) {
+            console.error('Failed to fetch articles:', err)
+        }
+    }
+    
+    const createArticle = async (articleData) => {
+        try {
+            const newArticle = await request('/api/articles', {
+                method: 'POST',
+                body: JSON.stringify(articleData)
+            })
+            articles.value.push(newArticle)
+            return newArticle
+        } catch (err) {
+            console.error('Failed to create article:', err)
+            throw err
+        }
+    }
+    
+    return {
+        articles,
+        loading,
+        error,
+        fetchArticles,
+        createArticle
+    }
+}</code></pre>
+
+            <h2>實戰案例：The Lonesome Era 網站架構</h2>
+            
+            <p>讓我們看看 Composition API 在實際專案中的應用。以下是網站主要組件的簡化版本：</p>
+
+            <h3>主應用組件</h3>
+            
+            <pre><code class="language-javascript">// App.vue (setup 部分)
+import { ref, computed, onMounted, watch } from 'vue'
+import { useResponsiveDesign } from './composables/useResponsiveDesign'
+import { useNavigation } from './composables/useNavigation'
+import { useArticles } from './composables/useArticles'
+
+export default {
+    setup() {
+        // 響應式設計
+        const { isMobile, isTablet, deviceType } = useResponsiveDesign()
+        
+        // 導航狀態
+        const { 
+            currentSection, 
+            mobileMenuOpen, 
+            changeSection, 
+            toggleMobileMenu 
+        } = useNavigation()
+        
+        // 文章資料
+        const { articles, loading, fetchArticles } = useArticles()
+        
+        // 根據裝置類型調整文章顯示數量
+        const displayedArticles = computed(() => {
+            const maxArticles = isMobile.value ? 3 : 5
+            return articles.value.slice(0, maxArticles)
+        })
+        
+        // 監聽裝置變化，自動關閉手機選單
+        watch(deviceType, (newType, oldType) => {
+            if (oldType === 'mobile' && newType !== 'mobile') {
+                mobileMenuOpen.value = false
+            }
+        })
+        
+        // 初始化
+        onMounted(() => {
+            fetchArticles()
+        })
+        
+        return {
+            // 響應式狀態
+            currentSection,
+            mobileMenuOpen,
+            isMobile,
+            isTablet,
+            deviceType,
+            
+            // 資料
+            displayedArticles,
+            loading,
+            
+            // 方法
+            changeSection,
+            toggleMobileMenu
+        }
+    }
+}</code></pre>
+
+            <h3>導航邏輯組合式函數</h3>
+            
+            <pre><code class="language-javascript">// composables/useNavigation.js
+import { ref, nextTick } from 'vue'
+
+export function useNavigation() {
+    const currentSection = ref('home')
+    const mobileMenuOpen = ref(false)
+    
+    const sections = ['home', 'projects', 'articles', 'observations', 'about']
+    
+    const changeSection = async (section) => {
+        if (!sections.includes(section)) {
+            console.warn(`Invalid section: ${section}`)
+            return
+        }
+        
+        currentSection.value = section
+        mobileMenuOpen.value = false
+        
+        // 更新 URL
+        updateURL(section)
+        
+        // 滾動到頂部
+        await nextTick()
+        scrollToTop()
+        
+        // 頁面分析追蹤
+        trackPageView(section)
+    }
+    
+    const toggleMobileMenu = () => {
+        mobileMenuOpen.value = !mobileMenuOpen.value
+        
+        // 防止背景滾動
+        document.body.style.overflow = mobileMenuOpen.value ? 'hidden' : ''
+    }
+    
+    const updateURL = (section) => {
+        if (history.pushState) {
+            history.pushState(null, null, `#${section}`)
+        } else {
+            window.location.hash = section
+        }
+    }
+    
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        })
+    }
+    
+    const trackPageView = (section) => {
+        // Google Analytics 或其他分析工具
+        if (typeof gtag !== 'undefined') {
+            gtag('config', 'GA_MEASUREMENT_ID', {
+                page_title: `${section} | The Lonesome Era`,
+                page_location: window.location.href
+            })
+        }
+    }
+    
+    return {
+        currentSection,
+        mobileMenuOpen,
+        sections,
+        changeSection,
+        toggleMobileMenu
+    }
+}</code></pre>
+
+            <h2>進階技巧與最佳實踐</h2>
+
+            <h3>1. 使用 computed 進行資料轉換</h3>
+            
+            <pre><code class="language-javascript">// 複雜的計算屬性
+const useProjectsFilter = (projects) => {
+    const searchQuery = ref('')
+    const selectedCategory = ref('all')
+    const sortBy = ref('date')
+    
+    const filteredProjects = computed(() => {
+        let result = projects.value
+        
+        // 搜尋過濾
+        if (searchQuery.value) {
+            const query = searchQuery.value.toLowerCase()
+            result = result.filter(project => 
+                project.title.toLowerCase().includes(query) ||
+                project.description.toLowerCase().includes(query) ||
+                project.tags.some(tag => tag.toLowerCase().includes(query))
+            )
+        }
+        
+        // 分類過濾
+        if (selectedCategory.value !== 'all') {
+            result = result.filter(project => 
+                project.category === selectedCategory.value
+            )
+        }
+        
+        // 排序
+        result.sort((a, b) => {
+            switch (sortBy.value) {
+                case 'date':
+                    return new Date(b.date) - new Date(a.date)
+                case 'title':
+                    return a.title.localeCompare(b.title)
+                case 'popularity':
+                    return b.views - a.views
+                default:
+                    return 0
+            }
+        })
+        
+        return result
+    })
+    
+    return {
+        searchQuery,
+        selectedCategory,
+        sortBy,
+        filteredProjects
+    }
+}</code></pre>
+
+            <h3>2. 生命週期鉤子的靈活運用</h3>
+            
+            <pre><code class="language-javascript">// 組合多個生命週期邏輯
+const usePageAnalytics = () => {
+    const startTime = ref(Date.now())
+    const pageViews = ref(0)
+    
+    onMounted(() => {
+        // 記錄頁面載入時間
+        startTime.value = Date.now()
+        pageViews.value++
+        
+        // 發送頁面瀏覽事件
+        sendAnalyticsEvent('page_view', {
+            page: window.location.pathname,
+            timestamp: startTime.value
+        })
+    })
+    
+    onUnmounted(() => {
+        // 計算停留時間
+        const duration = Date.now() - startTime.value
+        
+        sendAnalyticsEvent('page_leave', {
+            page: window.location.pathname,
+            duration: duration
+        })
+    })
+    
+    return {
+        pageViews
+    }
+}
+
+const useKeyboardShortcuts = () => {
+    const handleKeydown = (event) => {
+        // ESC 鍵關閉選單
+        if (event.key === 'Escape') {
+            // 發送自定義事件
+            document.dispatchEvent(new CustomEvent('close-menu'))
+        }
+        
+        // Ctrl/Cmd + K 開啟搜尋
+        if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+            event.preventDefault()
+            document.dispatchEvent(new CustomEvent('open-search'))
+        }
+    }
+    
+    onMounted(() => {
+        document.addEventListener('keydown', handleKeydown)
+    })
+    
+    onUnmounted(() => {
+        document.removeEventListener('keydown', handleKeydown)
+    })
+}</code></pre>
+
+            <h3>3. 錯誤處理與邊界情況</h3>
+            
+            <pre><code class="language-javascript">// 強健的錯誤處理
+const useAsyncData = (fetchFn, options = {}) => {
+    const data = ref(null)
+    const loading = ref(false)
+    const error = ref(null)
+    const retryCount = ref(0)
+    
+    const { 
+        immediate = true, 
+        maxRetries = 3, 
+        retryDelay = 1000 
+    } = options
+    
+    const execute = async (...args) => {
+        loading.value = true
+        error.value = null
+        
+        try {
+            const result = await fetchFn(...args)
+            data.value = result
+            retryCount.value = 0
+            return result
+        } catch (err) {
+            error.value = err
+            
+            // 自動重試
+            if (retryCount.value < maxRetries) {
+                retryCount.value++
+                setTimeout(() => {
+                    execute(...args)
+                }, retryDelay * retryCount.value)
+            }
+            
+            throw err
+        } finally {
+            loading.value = false
+        }
+    }
+    
+    const retry = () => {
+        retryCount.value = 0
+        execute()
+    }
+    
+    if (immediate) {
+        execute()
+    }
+    
+    return {
+        data,
+        loading,
+        error,
+        retryCount,
+        execute,
+        retry
+    }
+}</code></pre>
+
+            <h2>效能優化策略</h2>
+
+            <h3>1. 適當使用 shallowRef 和 shallowReactive</h3>
+            
+            <pre><code class="language-javascript">import { shallowRef, shallowReactive } from 'vue'
+
+// 當只需要響應式根層級時
+const largeDataSet = shallowRef([])
+const config = shallowReactive({
+    theme: 'dark',
+    language: 'zh-TW',
+    features: {} // 不需要深度響應式
+})</code></pre>
+
+            <h3>2. 使用 markRaw 避免不必要的響應式</h3>
+            
+            <pre><code class="language-javascript">import { markRaw } from 'vue'
+
+// 第三方庫實例不需要響應式
+const chart = markRaw(new Chart(canvas, config))
+const map = markRaw(new google.maps.Map(element, options))</code></pre>
+
+            <h2>與 TypeScript 的完美結合</h2>
+            
+            <p>Composition API 對 TypeScript 的支援非常出色：</p>
+
+            <pre><code class="language-javascript">// 類型安全的組合式函數
+interface User {
+    id: number
+    name: string
+    email: string
+}
+
+interface ApiResponse<T> {
+    data: T
+    message: string
+    status: number
+}
+
+export function useUser() {
+    const user = ref<User | null>(null)
+    const loading = ref<boolean>(false)
+    const error = ref<string | null>(null)
+    
+    const fetchUser = async (id: number): Promise<User | null> => {
+        loading.value = true
+        error.value = null
+        
+        try {
+            const response = await fetch(`/api/users/${id}`)
+            const result: ApiResponse<User> = await response.json()
+            
+            user.value = result.data
+            return result.data
+        } catch (err) {
+            error.value = err instanceof Error ? err.message : 'Unknown error'
+            return null
+        } finally {
+            loading.value = false
+        }
+    }
+    
+    return {
+        user: readonly(user),
+        loading: readonly(loading),
+        error: readonly(error),
+        fetchUser
+    }
+}</code></pre>
+
+            <h2>總結</h2>
+            
+            <p>Composition API 不僅僅是一個新的 API，它代表了一種新的思維方式：</p>
+
+            <ul>
+                <li><strong>邏輯組合</strong>：按功能而非選項組織程式碼</li>
+                <li><strong>可重用性</strong>：通過組合式函數實現邏輯複用</li>
+                <li><strong>類型安全</strong>：更好的 TypeScript 支援</li>
+                <li><strong>靈活性</strong>：適應各種複雜場景</li>
+                <li><strong>可測試性</strong>：純函數更容易測試</li>
+            </ul>
+
+            <p>在 The Lonesome Era 的開發過程中，Composition API 讓我能夠：</p>
+
+            <blockquote>
+                <p>創建更清晰、更可維護的程式碼結構，同時保持 Vue 的簡潔性和響應式特性</p>
+            </blockquote>
+
+            <p>如果你還在使用 Options API，我強烈建議嘗試 Composition API。它不會讓你失望，反而會讓你愛上 Vue 3 的強大與靈活。</p>
+
+            <hr>
+            
+            <p><em>想要看到更多 Vue 3 實戰技巧？歡迎探索我們的其他技術文章，或者查看 <a href="../index.html">The Lonesome Era</a> 的完整原始碼實作。</em></p>
+        </div>
+    </div>
+</body>
+</html> 
