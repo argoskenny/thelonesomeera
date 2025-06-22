@@ -359,7 +359,7 @@ body {
     right: 0;
     bottom: 0;
     background: var(--gradient-primary);
-    opacity: 0.8;
+    opacity: 0.3;
     z-index: 1;
 }
 
@@ -368,6 +368,8 @@ body {
     height: 100%;
     object-fit: cover;
     transition: var(--transition);
+    position: relative;
+    z-index: 2;
 }
 
 .card-content {
@@ -509,7 +511,7 @@ body {
 }
 
 .observation-content p {
-    color: var(--text-secondary);
+    color: var(--text-primary);
     margin-bottom: 1.5rem;
     font-size: var(--font-size-sm);
     line-height: 1.6;
@@ -524,7 +526,7 @@ body {
     position: relative;
     padding-left: 1.5rem;
     margin-bottom: 0.75rem;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: var(--font-size-sm);
     line-height: 1.6;
 }

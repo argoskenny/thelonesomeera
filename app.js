@@ -15,10 +15,22 @@ createApp({
             isTabletView: false,
             windowWidth: window.innerWidth,
             
+            // 事件處理器（將在 mounted 中初始化）
+            handleScroll: null,
+            handleResize: null,
+            
             // 作品分享數據
             projects: [
                 {
                     id: 1,
+                    title: 'Selfie Cat',
+                    description: 'AI 驅動的貓咪自拍應用程式，讓您的貓咪與螢幕上的互動玩具遊戲時自動拍攝可愛照片，將遊戲時光變成珍貴回憶。',
+                    image: 'app_preview.png',
+                    tags: ['iOS App', 'AI Photography', 'Pet Tech', 'Mobile Development'],
+                    link: 'selfiecat.html'
+                },
+                {
+                    id: 2,
                     title: '小明問答遊戲',
                     description: '一個基於 Web 技術的互動問答遊戲，包含多媒體元素與響應式設計，讓使用者在遊戲中學習。',
                     image: 'assets/xiaoming/imgs/mvp.png',
@@ -26,7 +38,7 @@ createApp({
                     link: 'xiaoming/index.html'
                 },
                 {
-                    id: 2,
+                    id: 3,
                     title: 'Hell Rider 競速遊戲',
                     description: '使用原生 JavaScript 開發的 2D 競速遊戲，具有物理引擎和碰撞偵測系統。',
                     image: 'hellrider/pagebg1.png',
@@ -34,7 +46,7 @@ createApp({
                     link: 'hellrider/index.html'
                 },
                 {
-                    id: 3,
+                    id: 4,
                     title: 'Sox 射擊遊戲',
                     description: '以 Web 技術打造的射擊遊戲，包含音效系統和動畫效果，展現前端技術在遊戲開發的可能性。',
                     image: 'sox/favicon.svg',
@@ -230,9 +242,6 @@ createApp({
             this.changeSection(sections[nextIndex]);
         },
         
-        // 處理滾動事件（節流版本）
-        handleScroll: null, // 將在 mounted 中初始化
-        
         // 實際的滾動處理邏輯
         _handleScroll() {
             const header = document.querySelector('.header');
@@ -248,9 +257,6 @@ createApp({
                 header.style.boxShadow = 'none';
             }
         },
-        
-        // 處理視窗大小變化事件（防抖版本）
-        handleResize: null, // 將在 mounted 中初始化
         
         // 實際的視窗大小處理邏輯
         _handleResize() {
