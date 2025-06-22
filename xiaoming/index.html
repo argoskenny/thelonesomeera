@@ -18,10 +18,19 @@
             background: white;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 500px;
+            width: 100%;
         }
 
         h1 {
@@ -36,7 +45,9 @@
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 400px;
         }
 
         .sound-button {
@@ -92,6 +103,7 @@
         .audio-control {
             margin-top: 20px;
             text-align: center;
+            width: 100%;
         }
 
         .audio-toggle-button {
@@ -165,9 +177,17 @@
 
         /* 響應式設計 */
         @media (max-width: 480px) {
-            .container {
+            body {
                 padding: 15px;
-                margin: 10px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .button-grid {
+                max-width: 320px;
+                gap: 12px;
             }
             
             .sound-button {
@@ -184,6 +204,32 @@
             h1 {
                 font-size: 20px;
                 margin-bottom: 20px;
+            }
+            
+            .audio-toggle-button {
+                padding: 12px 20px;
+                font-size: 14px;
+                min-height: 45px;
+                min-width: 110px;
+            }
+        }
+
+        /* 大螢幕優化 */
+        @media (min-width: 768px) {
+            .button-grid {
+                max-width: 450px;
+                gap: 20px;
+            }
+            
+            .sound-button {
+                padding: 25px 20px;
+                min-height: 140px;
+                font-size: 16px;
+            }
+            
+            .button-icon {
+                width: 60px;
+                height: 60px;
             }
         }
 
