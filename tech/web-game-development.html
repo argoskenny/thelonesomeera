@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="探討如何使用純 JavaScript 和 Canvas API 開發遊戲，包含碰撞偵測、物理引擎和音效系統的實作心得">
-    <meta name="keywords" content="JavaScript遊戲開發,Canvas API,前端遊戲,碰撞偵測,物理引擎">
-    <title>前端遊戲開發實戰：從零到一打造 Web 遊戲 | The Lonesome Era</title>
+    <meta name="description" content="分享開發《Hell Rider》和《Sox 射擊遊戲》的完整經驗，從架構設計到效能優化的實戰心得">
+    <meta name="keywords" content="JavaScript遊戲開發,Canvas API,前端遊戲,碰撞偵測,物理引擎,Web遊戲">
+    <title>前端遊戲開發實戰心得：從零打造 Web 遊戲的經驗分享 | The Lonesome Era</title>
     <link rel="stylesheet" href="article.css">
     <link rel="icon" href="../favicon.ico">
 </head>
@@ -15,462 +15,130 @@
             ← 返回文章列表
         </a>
         
-        <h1 class="article-title">前端遊戲開發實戰：從零到一打造 Web 遊戲</h1>
+        <h1 class="article-title">前端遊戲開發實戰心得：從零打造 Web 遊戲的經驗分享</h1>
         
         <div class="article-meta">
             <span class="article-date">2024年3月15日</span>
             <span class="article-category">前端開發</span>
-            <span class="article-reading-time">約 15 分鐘閱讀</span>
+            <span class="article-reading-time">約 3 分鐘閱讀</span>
         </div>
         
         <div class="article-content">
-            <p>在現代 Web 開發中，遊戲開發不再是桌面應用程式的專利。透過 HTML5 Canvas、Web Audio API 和現代 JavaScript，我們可以在瀏覽器中創造出令人驚豔的遊戲體驗。本文將分享我在開發 <strong>Hell Rider</strong> 和 <strong>Sox 射擊遊戲</strong> 過程中的實戰經驗。</p>
+            <p>在這篇文章中，我想分享我在開發《Hell Rider》和《Sox 射擊遊戲》兩款 Web 遊戲的實戰心得。這兩個專案是我首次嘗試完整地用 HTML5、JavaScript、Canvas、Web Audio API 等技術來實作遊戲，從一開始的遊戲構想到後期的效能優化、音效整合，整個過程收穫良多，也遇到不少挑戰。以下是我對這次開發過程的整理與反思，希望能對也想學習前端遊戲開發的朋友有所幫助。</p>
 
-            <h2>遊戲架構設計</h2>
+            <hr>
             
-            <p>一個好的遊戲架構是成功的關鍵。我採用了模組化的設計模式，將遊戲分為以下幾個核心模組：</p>
+            <h2>一、從架構開始：設計清晰的遊戲模組</h2>
+            
+            <p>一開始我花了不少時間在架構設計上。前端遊戲不像靜態網頁，有持續性的邏輯更新與大量狀態變化，因此模組化是必要的。我將整體遊戲拆成幾個模組：</p>
             
             <ul>
-                <li><strong>遊戲引擎核心</strong>：管理遊戲循環、渲染和更新邏輯</li>
-                <li><strong>場景管理器</strong>：處理不同遊戲場景的切換</li>
-                <li><strong>實體系統</strong>：管理遊戲物件的生命週期</li>
-                <li><strong>物理引擎</strong>：處理碰撞偵測和物理運算</li>
-                <li><strong>音效系統</strong>：管理音效播放和音量控制</li>
+                <li><strong>遊戲引擎核心</strong>：負責遊戲循環、統一調用更新與繪圖邏輯。</li>
+                <li><strong>場景管理器</strong>：處理各種遊戲場景的切換，像是開始畫面、主遊戲、結束畫面等。</li>
+                <li><strong>實體系統</strong>：集中管理所有遊戲物件的生命週期（例如子彈、敵人、玩家）。</li>
+                <li><strong>物理引擎</strong>：計算移動、加速度、重力與碰撞反應。</li>
+                <li><strong>音效系統</strong>：透過 Web Audio API 管理背景音樂與音效。</li>
             </ul>
 
-            <h3>遊戲循環的實作</h3>
+            <p>透過這種設計，不但讓邏輯更清楚，也方便後續功能擴充與除錯。</p>
+
+            <hr>
+
+            <h2>二、遊戲循環與狀態更新</h2>
             
-            <p>遊戲循環是整個遊戲的心臟，負責持續更新遊戲狀態和渲染畫面：</p>
+            <p>遊戲循環是整個遊戲運作的基礎。它會在每一幀（frame）中執行更新邏輯與畫面重繪。在 JavaScript 中我使用 requestAnimationFrame 來實作這個循環，確保能適應不同設備的刷新率。</p>
 
-            <pre><code class="language-javascript">class GameEngine {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.lastTime = 0;
-        this.isRunning = false;
-        this.entities = [];
-    }
-    
-    start() {
-        this.isRunning = true;
-        this.gameLoop(0);
-    }
-    
-    gameLoop(currentTime) {
-        if (!this.isRunning) return;
-        
-        const deltaTime = currentTime - this.lastTime;
-        this.lastTime = currentTime;
-        
-        // 更新遊戲邏輯
-        this.update(deltaTime);
-        
-        // 渲染畫面
-        this.render();
-        
-        // 請求下一幀
-        requestAnimationFrame((time) => this.gameLoop(time));
-    }
-    
-    update(deltaTime) {
-        // 更新所有遊戲實體
-        this.entities.forEach(entity => {
-            if (entity.active) {
-                entity.update(deltaTime);
-            }
-        });
-        
-        // 處理碰撞檢測
-        this.handleCollisions();
-        
-        // 清理非活躍實體
-        this.entities = this.entities.filter(entity => entity.active);
-    }
-    
-    render() {
-        // 清空畫布
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        // 渲染所有實體
-        this.entities.forEach(entity => {
-            if (entity.visible) {
-                entity.render(this.ctx);
-            }
-        });
-    }
-}</code></pre>
-
-            <h2>碰撞偵測系統</h2>
+            <p>在每次更新中，我會執行以下步驟：</p>
             
-            <p>碰撞偵測是遊戲開發中的關鍵技術。我實作了多種碰撞偵測算法來適應不同的需求：</p>
-
-            <h3>AABB 碰撞偵測</h3>
-            
-            <p>對於矩形物體，AABB（Axis-Aligned Bounding Box）是最簡單有效的方法：</p>
-
-            <pre><code class="language-javascript">function checkAABBCollision(rect1, rect2) {
-    return rect1.x < rect2.x + rect2.width &&
-           rect1.x + rect1.width > rect2.x &&
-           rect1.y < rect2.y + rect2.height &&
-           rect1.y + rect1.height > rect2.y;
-}
-
-class CollisionSystem {
-    static checkCollision(entity1, entity2) {
-        // 根據實體類型選擇適當的碰撞檢測方法
-        if (entity1.shape === 'rectangle' && entity2.shape === 'rectangle') {
-            return this.checkAABBCollision(entity1.getBounds(), entity2.getBounds());
-        } else if (entity1.shape === 'circle' && entity2.shape === 'circle') {
-            return this.checkCircleCollision(entity1, entity2);
-        }
-        // 其他形狀的組合...
-    }
-    
-    static checkCircleCollision(circle1, circle2) {
-        const dx = circle1.x - circle2.x;
-        const dy = circle1.y - circle2.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        return distance < (circle1.radius + circle2.radius);
-    }
-}</code></pre>
-
-            <h3>空間分割優化</h3>
-            
-            <p>當遊戲實體數量增加時，N×N 的碰撞檢測會變得非常昂貴。我使用了空間分割技術來優化效能：</p>
-
-            <pre><code class="language-javascript">class SpatialGrid {
-    constructor(width, height, cellSize) {
-        this.width = width;
-        this.height = height;
-        this.cellSize = cellSize;
-        this.cols = Math.ceil(width / cellSize);
-        this.rows = Math.ceil(height / cellSize);
-        this.grid = [];
-        this.clear();
-    }
-    
-    clear() {
-        this.grid = [];
-        for (let i = 0; i < this.cols * this.rows; i++) {
-            this.grid[i] = [];
-        }
-    }
-    
-    insert(entity) {
-        const bounds = entity.getBounds();
-        const startCol = Math.floor(bounds.x / this.cellSize);
-        const endCol = Math.floor((bounds.x + bounds.width) / this.cellSize);
-        const startRow = Math.floor(bounds.y / this.cellSize);
-        const endRow = Math.floor((bounds.y + bounds.height) / this.cellSize);
-        
-        for (let col = startCol; col <= endCol; col++) {
-            for (let row = startRow; row <= endRow; row++) {
-                if (col >= 0 && col < this.cols && row >= 0 && row < this.rows) {
-                    const index = row * this.cols + col;
-                    this.grid[index].push(entity);
-                }
-            }
-        }
-    }
-    
-    getPotentialCollisions(entity) {
-        const bounds = entity.getBounds();
-        const col = Math.floor((bounds.x + bounds.width / 2) / this.cellSize);
-        const row = Math.floor((bounds.y + bounds.height / 2) / this.cellSize);
-        
-        if (col >= 0 && col < this.cols && row >= 0 && row < this.rows) {
-            const index = row * this.cols + col;
-            return this.grid[index];
-        }
-        return [];
-    }
-}</code></pre>
-
-            <h2>物理引擎實作</h2>
-            
-            <p>簡單的物理引擎可以讓遊戲更加真實。以下是基本的物理組件實作：</p>
-
-            <pre><code class="language-javascript">class PhysicsComponent {
-    constructor() {
-        this.velocity = { x: 0, y: 0 };
-        this.acceleration = { x: 0, y: 0 };
-        this.friction = 0.98;
-        this.gravity = 0.5;
-        this.mass = 1;
-        this.restitution = 0.8; // 彈性係數
-    }
-    
-    update(deltaTime) {
-        // 套用重力
-        this.acceleration.y += this.gravity;
-        
-        // 更新速度
-        this.velocity.x += this.acceleration.x * deltaTime;
-        this.velocity.y += this.acceleration.y * deltaTime;
-        
-        // 套用摩擦力
-        this.velocity.x *= this.friction;
-        this.velocity.y *= this.friction;
-        
-        // 重置加速度
-        this.acceleration.x = 0;
-        this.acceleration.y = 0;
-    }
-    
-    applyForce(force) {
-        this.acceleration.x += force.x / this.mass;
-        this.acceleration.y += force.y / this.mass;
-    }
-    
-    handleCollision(other, normal) {
-        // 計算相對速度
-        const relativeVelocity = {
-            x: this.velocity.x - other.velocity.x,
-            y: this.velocity.y - other.velocity.y
-        };
-        
-        // 計算碰撞速度
-        const velocityInNormal = relativeVelocity.x * normal.x + relativeVelocity.y * normal.y;
-        
-        // 如果物體正在分離，不處理碰撞
-        if (velocityInNormal > 0) return;
-        
-        // 計算彈性係數
-        const e = Math.min(this.restitution, other.restitution);
-        
-        // 計算衝量
-        const j = -(1 + e) * velocityInNormal / (1/this.mass + 1/other.mass);
-        
-        // 套用衝量
-        const impulse = { x: j * normal.x, y: j * normal.y };
-        this.velocity.x += impulse.x / this.mass;
-        this.velocity.y += impulse.y / this.mass;
-        other.velocity.x -= impulse.x / other.mass;
-        other.velocity.y -= impulse.y / other.mass;
-    }
-}</code></pre>
-
-            <h2>音效系統整合</h2>
-            
-            <p>好的音效能大幅提升遊戲體驗。我使用 Web Audio API 建立了一個靈活的音效系統：</p>
-
-            <pre><code class="language-javascript">class AudioManager {
-    constructor() {
-        this.context = new (window.AudioContext || window.webkitAudioContext)();
-        this.sounds = new Map();
-        this.masterVolume = 1.0;
-        this.sfxVolume = 1.0;
-        this.musicVolume = 1.0;
-    }
-    
-    async loadSound(name, url) {
-        try {
-            const response = await fetch(url);
-            const arrayBuffer = await response.arrayBuffer();
-            const audioBuffer = await this.context.decodeAudioData(arrayBuffer);
-            this.sounds.set(name, audioBuffer);
-        } catch (error) {
-            console.error(`Failed to load sound: ${name}`, error);
-        }
-    }
-    
-    playSound(name, options = {}) {
-        const sound = this.sounds.get(name);
-        if (!sound) {
-            console.warn(`Sound not found: ${name}`);
-            return;
-        }
-        
-        const source = this.context.createBufferSource();
-        const gainNode = this.context.createGain();
-        
-        source.buffer = sound;
-        source.connect(gainNode);
-        gainNode.connect(this.context.destination);
-        
-        // 設定音量
-        const volume = (options.volume || 1) * this.sfxVolume * this.masterVolume;
-        gainNode.gain.setValueAtTime(volume, this.context.currentTime);
-        
-        // 設定播放速率（音調）
-        if (options.playbackRate) {
-            source.playbackRate.setValueAtTime(options.playbackRate, this.context.currentTime);
-        }
-        
-        // 設定循環播放
-        if (options.loop) {
-            source.loop = true;
-        }
-        
-        source.start(0);
-        
-        return {
-            stop: () => source.stop(),
-            setVolume: (vol) => gainNode.gain.setValueAtTime(vol * this.sfxVolume * this.masterVolume, this.context.currentTime)
-        };
-    }
-    
-    setMasterVolume(volume) {
-        this.masterVolume = Math.max(0, Math.min(1, volume));
-    }
-    
-    setSFXVolume(volume) {
-        this.sfxVolume = Math.max(0, Math.min(1, volume));
-    }
-    
-    setMusicVolume(volume) {
-        this.musicVolume = Math.max(0, Math.min(1, volume));
-    }
-}</code></pre>
-
-            <h2>效能優化技巧</h2>
-            
-            <p>Web 遊戲的效能優化至關重要。以下是我在實作過程中學到的重要技巧：</p>
-
-            <h3>物件池（Object Pooling）</h3>
-            
-            <blockquote>
-                <p>頻繁創建和銷毀物件會導致垃圾回收頻繁觸發，影響遊戲流暢度。物件池可以有效解決這個問題。</p>
-            </blockquote>
-
-            <pre><code class="language-javascript">class ObjectPool {
-    constructor(createFn, resetFn, initialSize = 10) {
-        this.createFn = createFn;
-        this.resetFn = resetFn;
-        this.pool = [];
-        
-        // 預先創建物件
-        for (let i = 0; i < initialSize; i++) {
-            this.pool.push(this.createFn());
-        }
-    }
-    
-    get() {
-        if (this.pool.length > 0) {
-            return this.pool.pop();
-        } else {
-            return this.createFn();
-        }
-    }
-    
-    release(obj) {
-        this.resetFn(obj);
-        this.pool.push(obj);
-    }
-}
-
-// 使用範例
-const bulletPool = new ObjectPool(
-    () => new Bullet(),
-    (bullet) => {
-        bullet.active = false;
-        bullet.x = 0;
-        bullet.y = 0;
-        bullet.velocity.x = 0;
-        bullet.velocity.y = 0;
-    },
-    50
-);</code></pre>
-
-            <h3>渲染優化</h3>
-            
-            <p>Canvas 渲染是效能瓶頸之一，以下技巧可以顯著提升效能：</p>
-
-            <ul>
-                <li><strong>批次繪製</strong>：將相同材質的物體一起繪製</li>
-                <li><strong>視錐剔除</strong>：只渲染在螢幕範圍內的物體</li>
-                <li><strong>圖層分離</strong>：將背景和前景分別繪製到不同的 Canvas</li>
-                <li><strong>離屏渲染</strong>：預先繪製複雜圖形到離屏 Canvas</li>
-            </ul>
-
-            <pre><code class="language-javascript">class Renderer {
-    constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext('2d');
-        this.camera = { x: 0, y: 0 };
-    }
-    
-    render(entities) {
-        // 清空畫布
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        // 視錐剔除
-        const visibleEntities = entities.filter(entity => 
-            this.isInViewport(entity)
-        );
-        
-        // 按 Z 軸排序
-        visibleEntities.sort((a, b) => a.z - b.z);
-        
-        // 批次渲染
-        this.batchRender(visibleEntities);
-    }
-    
-    isInViewport(entity) {
-        const bounds = entity.getBounds();
-        return bounds.x + bounds.width >= this.camera.x &&
-               bounds.x <= this.camera.x + this.canvas.width &&
-               bounds.y + bounds.height >= this.camera.y &&
-               bounds.y <= this.camera.y + this.canvas.height;
-    }
-    
-    batchRender(entities) {
-        // 按材質分組
-        const batches = new Map();
-        entities.forEach(entity => {
-            const key = entity.texture || 'default';
-            if (!batches.has(key)) {
-                batches.set(key, []);
-            }
-            batches.get(key).push(entity);
-        });
-        
-        // 批次繪製
-        batches.forEach((batch, texture) => {
-            batch.forEach(entity => {
-                entity.render(this.ctx, this.camera);
-            });
-        });
-    }
-}</code></pre>
-
-            <h2>實戰案例分析</h2>
-            
-            <p>讓我們看看這些技術在實際專案中的應用。在 <strong>Hell Rider</strong> 遊戲中，我面臨了以下挑戰：</p>
-
-            <h3>挑戰 1：大量移動物體的效能問題</h3>
-            
-            <p>遊戲中有大量的車輛和障礙物需要同時移動和碰撞檢測。解決方案：</p>
-
             <ol>
-                <li>使用空間分割網格優化碰撞檢測</li>
-                <li>實作物件池管理車輛實體</li>
-                <li>使用視錐剔除減少不必要的渲染</li>
+                <li>更新所有實體（entity）的狀態。</li>
+                <li>執行碰撞檢測。</li>
+                <li>移除不再使用的物件（例如已爆炸的敵人）。</li>
+                <li>清除畫布後，重新繪製畫面。</li>
             </ol>
 
-            <h3>挑戰 2：流暢的物理互動</h3>
+            <p>這個架構簡單但實用，讓整體邏輯能持續穩定運作。</p>
+
+            <hr>
+
+            <h2>三、碰撞檢測：從 AABB 到空間分割</h2>
             
-            <p>車輛需要真實的物理行為，包括慣性、摩擦力和碰撞反應。解決方案：</p>
+            <p>遊戲中不免會有大量的碰撞需求，像是子彈擊中敵人、車子碰撞障礙物等。剛開始我採用最簡單的 AABB（軸對齊包圍盒）碰撞法，適用於大多數矩形物件。對於圓形物體，則使用圓心距離判斷。</p>
 
-            <ol>
-                <li>實作基於衝量的碰撞響應系統</li>
-                <li>調整物理參數以達到最佳遊戲感受</li>
-                <li>使用插值技術確保動畫流暢</li>
-            </ol>
+            <p>但當遊戲實體數量變多時，這種 N² 的檢查方式會造成效能瓶頸。因此我引入了「空間分割網格」，把畫面切割成一格一格的網格，讓每個實體只跟自己所在格子內的其他物件做碰撞檢查，大幅減少不必要的計算。</p>
 
-            <h2>總結與建議</h2>
+            <p>這樣的優化在《Hell Rider》中尤其重要，因為遊戲中會同時存在十幾台車和大量障礙。</p>
+
+            <hr>
+
+            <h2>四、簡單但有效的物理系統</h2>
             
-            <p>前端遊戲開發是一個充滿挑戰但也非常有趣的領域。通過這次實戰經驗，我學到了以下重要原則：</p>
-
+            <p>為了讓物件的移動更自然，我設計了一個基礎的物理組件，加入：</p>
+            
             <ul>
-                <li><strong>從簡單開始</strong>：先實作核心玩法，再逐步添加功能</li>
-                <li><strong>效能優先</strong>：早期就要考慮效能問題，避免後期重構</li>
-                <li><strong>模組化設計</strong>：良好的架構讓程式碼更容易維護和擴展</li>
-                <li><strong>持續測試</strong>：在不同裝置和瀏覽器上測試遊戲表現</li>
-                <li><strong>使用者體驗</strong>：技術服務於遊戲體驗，而非相反</li>
+                <li>速度與加速度</li>
+                <li>重力效果</li>
+                <li>摩擦力模擬</li>
+                <li>基於衝量的碰撞反應</li>
             </ul>
 
-            <p>如果你也對前端遊戲開發感興趣，建議從小專案開始，逐步掌握各種技術。記住，最重要的是讓玩家享受遊戲的樂趣！</p>
+            <p>這讓車輛或子彈的運動行為不再死板，也可以針對不同物體微調參數來強化手感，例如調整彈性係數來決定碰撞後的反彈程度。</p>
+
+            <hr>
+
+            <h2>五、整合音效系統，提升遊戲沉浸感</h2>
+            
+            <p>在加入音效後，遊戲的體驗馬上提升不少。我使用 Web Audio API 撰寫了自己的 AudioManager 類別，可以：</p>
+            
+            <ul>
+                <li>預先載入音效資源</li>
+                <li>控制音效與背景音樂的音量</li>
+                <li>調整播放速度與循環模式</li>
+            </ul>
+
+            <p>這個系統也支援動態控制音量，例如讓玩家可透過設定頁面調整背景音樂與音效大小，彈性非常高。</p>
+
+            <hr>
+
+            <h2>六、效能優化不可少</h2>
+            
+            <p>遊戲的效能會直接影響玩家體驗，我在開發中採用了以下幾項優化策略：</p>
+
+            <h3>1. 物件池（Object Pool）</h3>
+            
+            <p>避免在每次需要子彈時就 new 一個新的實體，而是重複使用已存在的實體，降低記憶體分配與回收成本。</p>
+
+            <h3>2. 渲染優化</h3>
+            
+            <ul>
+                <li>只繪製在視窗中的物件（視錐剔除）</li>
+                <li>將背景與前景分層處理</li>
+                <li>使用 offscreen canvas 提前繪製靜態畫面</li>
+            </ul>
+
+            <p>這些作法都有效降低了繪製負擔，讓遊戲在中低階設備上也能流暢執行。</p>
+
+            <hr>
+
+            <h2>七、從實戰中學到的幾個關鍵原則</h2>
+            
+            <p>這次的開發過程不只是技術的累積，也讓我深刻體會幾個開發原則的重要性：</p>
+            
+            <ul>
+                <li><strong>從簡開始，再漸進擴充</strong>：不要一開始就試圖實作所有功能，先把核心玩法完成才是重點。</li>
+                <li><strong>早期考慮效能與架構</strong>：否則後期重構的成本會非常高。</li>
+                <li><strong>模組化是王道</strong>：好的結構能減少維護與除錯的痛苦。</li>
+                <li><strong>不斷測試</strong>：尤其是跨瀏覽器與不同裝置的相容性。</li>
+                <li><strong>使用者體驗優先</strong>：技術只是手段，最終要讓玩家玩得開心。</li>
+            </ul>
+
+            <hr>
+
+            <h2>結語</h2>
+            
+            <p>Web 遊戲的開發，既是技術挑戰，也是創意發揮的舞台。比起傳統後端或 UI 開發，它更偏向一種即時互動系統的設計。對我來說，這次的專案是一段非常有收穫的旅程，也讓我更理解 JavaScript 與瀏覽器的潛力。</p>
+
+            <p>如果你也想嘗試前端遊戲開發，不妨從簡單的射擊遊戲或小型平台遊戲開始。你會驚訝於 JavaScript 與 Canvas 所能創造的可能性。</p>
 
             <hr>
             

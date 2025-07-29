@@ -59,14 +59,22 @@ createApp({
             articles: [
                 {
                     id: 1,
-                    title: '前端遊戲開發實戰：從零到一打造 Web 遊戲',
-                    excerpt: '探討如何使用純 JavaScript 和 Canvas API 開發遊戲，包含碰撞偵測、物理引擎和音效系統的實作心得。',
+                    title: '🐾 貓掌按快門！我開發「自拍貓 Selfie Cat」App 的小故事',
+                    excerpt: '分享開發寵物 App 的完整過程，從技術挑戰到商業模式，用 SwiftUI 讓貓咪變身攝影師！',
+                    date: '2025-05-20',
+                    category: 'iOS 開發',
+                    link: 'tech/selfie-cat-development.html'
+                },
+                {
+                    id: 2,
+                    title: '前端遊戲開發實戰心得：從零打造 Web 遊戲的經驗分享',
+                    excerpt: '分享開發《Hell Rider》和《Sox 射擊遊戲》的完整經驗，從架構設計到效能優化的實戰心得。',
                     date: '2024-03-15',
                     category: '前端開發',
                     link: 'tech/web-game-development.html'
                 },
                 {
-                    id: 2,
+                    id: 3,
                     title: 'Vue.js 3 Composition API 深度解析',
                     excerpt: '從實際專案角度分析 Vue 3 的 Composition API，如何讓程式碼更具可維護性和重用性。',
                     date: '2024-03-10',
@@ -74,7 +82,7 @@ createApp({
                     link: 'tech/vue3-composition-api.html'
                 },
                 {
-                    id: 3,
+                    id: 4,
                     title: 'CSS Grid 與 Flexbox：何時使用哪一個？',
                     excerpt: '詳細比較 CSS Grid 和 Flexbox 的使用場景，透過實際案例說明如何選擇合適的布局方案。',
                     date: '2024-03-05',
@@ -82,7 +90,7 @@ createApp({
                     link: 'tech/css-grid-vs-flexbox.html'
                 },
                 {
-                    id: 4,
+                    id: 5,
                     title: 'Web 效能優化：從載入時間到使用者體驗',
                     excerpt: '分享實際專案中的效能優化經驗，包含圖片優化、程式碼分割和快取策略。',
                     date: '2024-02-28',
@@ -90,7 +98,7 @@ createApp({
                     link: 'tech/web-performance-optimization.html'
                 },
                 {
-                    id: 5,
+                    id: 6,
                     title: '響應式設計的進階技巧：超越 Bootstrap',
                     excerpt: '探討現代響應式設計的最佳實踐，如何創造更好的跨裝置使用體驗。',
                     date: '2024-02-20',

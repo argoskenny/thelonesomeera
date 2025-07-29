@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="分享開發「自拍貓 Selfie Cat」iOS App 的完整過程，包含技術挑戰、UI設計和商業模式思考">
+    <meta name="keywords" content="iOS開發,SwiftUI,AVFoundation,寵物App,自拍應用,移動開發">
+    <title>🐾 貓掌按快門！我開發「自拍貓 Selfie Cat」App 的小故事 | The Lonesome Era</title>
+    <link rel="stylesheet" href="article.css">
+    <link rel="icon" href="../favicon.ico">
+</head>
+<body>
+    <div class="article-container">
+        <a href="../index.html#articles" class="back-button">
+            ← 返回文章列表
+        </a>
+        
+        <h1 class="article-title">🐾 貓掌按快門！我開發「自拍貓 Selfie Cat」App 的小故事</h1>
+        
+        <div class="article-meta">
+            <span class="article-date">2025年5月20日</span>
+            <span class="article-category">iOS 開發</span>
+            <span class="article-reading-time">約 5 分鐘閱讀</span>
+        </div>
+        
+        <div class="article-content">
+            <p>大家好！今天想跟大家分享一下我開發「自拍貓 Selfie Cat」這款小小寵物 App 的過程和一些心得。</p>
+
+            <p>這其實是一個靈感很簡單的點子：<strong>讓貓咪自己拍照！</strong><br>
+            只要在螢幕上放幾個會動的「玩具」，吸引貓貓伸爪去抓，一碰到螢幕就自動拍照。既可愛又有趣，而且拍到的照片還能馬上分享。</p>
+
+            <hr>
+
+            <h2>📱 這款 App 到底在幹嘛？</h2>
+            
+            <p>「自拍貓」的玩法很簡單：</p>
+            
+            <ul>
+                <li>螢幕上會出現 <strong>雷射點、彈跳球、煙火、游來游去的魚</strong> 四種玩具動畫</li>
+                <li>當貓咪用爪子碰觸螢幕，App 就會瞬間拍照，抓住那個超萌瞬間！📸</li>
+                <li>支援 <strong>iPhone、iPad（iOS 17+）</strong>，甚至 <strong>Mac（macOS 14+、M1晶片以上）</strong> 也能玩～</li>
+            </ul>
+
+            <p>而且這款 App 是 <strong>免費下載</strong>，有提供一些內購項目（例如更多玩具、去除廣告、小框框裝飾之類），你想升級就升級，沒壓力。</p>
+
+            <hr>
+
+            <h2>🛠 開發上有哪些挑戰？</h2>
+            
+            <p>講真，一開始覺得這是一個可愛的點子，但真正寫起來才發現——貓咪的爪子超級快，還很難預測，技術面也不馬虎！</p>
+
+            <h3>1. 觸控反應 + 快門同步</h3>
+            
+            <p>貓咪的觸碰不像人類那樣穩定，可能只是一瞬間就走了。所以我必須確保 <strong>一偵觸控就拍照，不能有延遲</strong>。</p>
+
+            <p>我用的是 UITouch 去偵測觸碰，搭配 AVFoundation 拍照，確保快又穩。</p>
+
+            <pre><code class="language-swift">// 觸控偵測與快門同步
+override func touchesBegan(_ touches: Set&lt;UITouch&gt;, with event: UIEvent?) {
+    super.touchesBegan(touches, with: event)
+    
+    // 立即觸發拍照
+    capturePhoto()
+    
+    // 播放拍照音效
+    playShutterSound()
+    
+    // 觸控回饋
+    let impactFeedback = UIImpactFeedbackGenerator(style: .medium)
+    impactFeedback.impactOccurred()
+}
+
+private func capturePhoto() {
+    guard let captureSession = self.captureSession,
+          captureSession.isRunning else { return }
+    
+    let settings = AVCapturePhotoSettings()
+    settings.flashMode = .off // 避免驚嚇到貓咪
+    
+    photoOutput.capturePhoto(with: settings, delegate: self)
+}</code></pre>
+
+            <h3>2. 動畫互動</h3>
+            
+            <p>玩具動畫不能太複雜，否則會拖慢畫面，但又要夠吸引貓貓的注意力。我用 SwiftUI 和 SpriteKit 輕量地做出互動感，不只可愛，還能跟觸控事件連動。</p>
+
+            <pre><code class="language-swift">// 雷射點動畫
+struct LaserDotView: View {
+    @State private var position = CGPoint(x: 100, y: 100)
+    @State private var isAnimating = false
+    
+    var body: some View {
+        Circle()
+            .fill(Color.red)
+            .frame(width: 15, height: 15)
+            .position(position)
+            .onAppear {
+                startRandomMovement()
+            }
+    }
+    
+    private func startRandomMovement() {
+        Timer.scheduledTimer(withTimeInterval: 1.5, repeats: true) { _ in
+            withAnimation(.easeInOut(duration: 1.2)) {
+                position = CGPoint(
+                    x: CGFloat.random(in: 50...350),
+                    y: CGFloat.random(in: 100...600)
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <h3>3. 拍完照還能加特效</h3>
+            
+            <p>很多人會想要美美地分享，所以我加入了簡單的照片後製功能，比如加框或套上模版。這部分用的是 CoreImage 和 CoreGraphics，可以即時處理不卡頓。</p>
+
+            <pre><code class="language-swift">// 照片濾鏡處理
+func applyPhotoFilter(_ image: UIImage, filterType: PhotoFilter) -> UIImage? {
+    guard let ciImage = CIImage(image: image) else { return nil }
+    
+    let context = CIContext()
+    var filteredImage = ciImage
+    
+    switch filterType {
+    case .cute:
+        // 可愛濾鏡：增加溫暖色調
+        if let filter = CIFilter(name: "CIColorControls") {
+            filter.setValue(filteredImage, forKey: kCIInputImageKey)
+            filter.setValue(1.2, forKey: kCIInputBrightnessKey)
+            filter.setValue(1.1, forKey: kCIInputSaturationKey)
+            filteredImage = filter.outputImage ?? filteredImage
+        }
+    case .vintage:
+        // 復古濾鏡
+        if let filter = CIFilter(name: "CISepiaTone") {
+            filter.setValue(filteredImage, forKey: kCIInputImageKey)
+            filter.setValue(0.7, forKey: kCIInputIntensityKey)
+            filteredImage = filter.outputImage ?? filteredImage
+        }
+    }
+    
+    guard let cgImage = context.createCGImage(filteredImage, from: filteredImage.extent) else {
+        return nil
+    }
+    
+    return UIImage(cgImage: cgImage)
+}</code></pre>
+
+            <h3>4. 多裝置支援</h3>
+            
+            <p>從 iPhone 到 iPad、再到 Mac，每種裝置的比例和操作都不太一樣，我就乖乖用 Auto Layout 和 SwiftUI 的彈性設計來搞定。</p>
+
+            <pre><code class="language-swift">// 響應式設計
+struct ContentView: View {
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    
+    var body: some View {
+        GeometryReader { geometry in
+            if horizontalSizeClass == .compact {
+                // iPhone 直向布局
+                VStack {
+                    CameraView()
+                    ToyControlPanel()
+                }
+            } else {
+                // iPad/Mac 橫向布局
+                HStack {
+                    CameraView()
+                        .frame(width: geometry.size.width * 0.7)
+                    ToyControlPanel()
+                        .frame(width: geometry.size.width * 0.3)
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <h3>5. 隱私權與授權</h3>
+            
+            <p>因為會用到相機，必須清楚說明用途與權限。App 的隱私政策也有寫明不蒐集個人資訊，讓使用者安心最重要！</p>
+
+            <pre><code class="language-swift">// 相機權限請求
+func requestCameraPermission() {
+    AVCaptureDevice.requestAccess(for: .video) { granted in
+        DispatchQueue.main.async {
+            if granted {
+                self.setupCamera()
+            } else {
+                self.showPermissionAlert()
+            }
+        }
+    }
+}</code></pre>
+
+            <hr>
+
+            <h2>💡 除了技術，還有這些經驗想分享：</h2>
+
+            <h3>🎯 社群分享是自然擴散的好幫手</h3>
+            
+            <p>很多使用者抓拍到超可愛的瞬間，會忍不住分享到 IG、FB，這其實比買廣告還有效果。</p>
+
+            <h3>🛒 內購設計也很關鍵</h3>
+            
+            <p>我採用了「免費下載 + Premium 升級」的策略，像是提供更多玩具、裝飾框框或是去廣告，讓使用者玩得開心，願意支持開發。</p>
+
+            <h3>🧼 UI 越簡單越好</h3>
+            
+            <p>App 一打開就是四個大大的玩具圖示，讓人不用學就知道怎麼用。這點很多用戶留言有稱讚～簡單即是美！</p>
+
+            <hr>
+
+            <h2>🧠 我學到什麼？有什麼未來的想法？</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>面向</th>
+                        <th>學習與建議</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>技術</strong></td>
+                        <td>快速觸控偵測 + 拍照是重點，熟練平台框架（SwiftUI + AVFoundation）能加快開發速度。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>UI/UX</strong></td>
+                        <td>像遊戲一樣的互動體驗很有趣，設計時也要考慮簡單直觀、低門檻。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>商業模式</strong></td>
+                        <td>免費下載 + 內購是一個不錯的切入點，如果加入更多分享功能或每日任務，可能會更有黏著力。</td>
+                    </tr>
+                    <tr>
+                        <td><strong>擴充性</strong></td>
+                        <td>未來可能支援狗狗或兔子，也能加入錄影、AR 效果，甚至訓練模式（像寵物反應遊戲）也是可行的方向！</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <hr>
+
+            <h2>✨ 最後想說</h2>
+            
+            <p>這個「自拍貓」App 雖然是個小品專案，但包含的技術、設計與商品化思維其實非常完整。</p>
+            
+            <p>如果你也在開發跟寵物、相機、互動有關的 App，希望這篇文章能給你一點靈感與方向！</p>
+
+            <blockquote>
+                <p>記住：有時候最簡單的想法，往往能創造出最有趣的作品。重點不是技術有多複雜，而是能不能解決真實的需求，並且讓人會心一笑。</p>
+            </blockquote>
+        </div>
+    </div>
+</body>
+</html> 
