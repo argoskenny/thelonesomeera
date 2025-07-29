@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Android Bridge 測試頁面</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+        
+        .test-section {
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 8px 0;
+            width: 100%;
+        }
+        
+        .test-button:hover {
+            background: #0056b3;
+        }
+        
+        .result {
+            margin-top: 12px;
+            padding: 12px;
+            background: #e9ecef;
+            border-radius: 4px;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .status.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Android Bridge 測試頁面</h1>
+        
+        <div id="status" class="status disconnected">
+            檢查 Android Bridge 狀態...
+        </div>
+        
+        <div class="test-section">
+            <h3>測試 Android Bridge 功能</h3>
+            <button class="test-button" onclick="testAndroidAgent()">測試 getAndroidAgent()</button>
+            <button class="test-button" onclick="testLanguageCode()">測試 getLanguageCode()</button>
+            <button class="test-button" onclick="testCountryCode()">測試 getCountryCode()</button>
+            <button class="test-button" onclick="testTimeZone()">測試 getTimeZone()</button>
+            <button class="test-button" onclick="testAllFunctions()">測試所有功能</button>
+        </div>
+        
+        <div id="result" class="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        // 檢查 Android Bridge 是否可用
+        function checkAndroidBridge() {
+            const statusElement = document.getElementById('status');
+            
+            if (typeof window.AndroidBridge !== 'undefined') {
+                statusElement.textContent = '✅ Android Bridge 已連接';
+                statusElement.className = 'status connected';
+                return true;
+            } else {
+                statusElement.textContent = '❌ Android Bridge 未連接';
+                statusElement.className = 'status disconnected';
+                return false;
+            }
+        }
+        
+        // 顯示結果
+        function showResult(message) {
+            const resultElement = document.getElementById('result');
+            resultElement.textContent = message;
+            resultElement.style.display = 'block';
+        }
+        
+        // 測試 getAndroidAgent
+        function testAndroidAgent() {
+            if (!checkAndroidBridge()) {
+                showResult('錯誤：Android Bridge 未連接');
+                return;
+            }
+            
+            try {
+                const result = window.AndroidBridge.getAndroidAgent();
+                showResult(`getAndroidAgent() 結果：${result}`);
+            } catch (error) {
+                showResult(`錯誤：${error.message}`);
+            }
+        }
+        
+        // 測試 getLanguageCode
+        function testLanguageCode() {
+            if (!checkAndroidBridge()) {
+                showResult('錯誤：Android Bridge 未連接');
+                return;
+            }
+            
+            try {
+                const result = window.AndroidBridge.getLanguageCode();
+                showResult(`getLanguageCode() 結果：${result}`);
+            } catch (error) {
+                showResult(`錯誤：${error.message}`);
+            }
+        }
+        
+        // 測試 getCountryCode
+        function testCountryCode() {
+            if (!checkAndroidBridge()) {
+                showResult('錯誤：Android Bridge 未連接');
+                return;
+            }
+            
+            try {
+                const result = window.AndroidBridge.getCountryCode();
+                showResult(`getCountryCode() 結果：${result}`);
+            } catch (error) {
+                showResult(`錯誤：${error.message}`);
+            }
+        }
+        
+        // 測試 getTimeZone
+        function testTimeZone() {
+            if (!checkAndroidBridge()) {
+                showResult('錯誤：Android Bridge 未連接');
+                return;
+            }
+            
+            try {
+                const result = window.AndroidBridge.getTimeZone();
+                showResult(`getTimeZone() 結果：${result}`);
+            } catch (error) {
+                showResult(`錯誤：${error.message}`);
+            }
+        }
+        
+        // 測試所有功能
+        function testAllFunctions() {
+            if (!checkAndroidBridge()) {
+                showResult('錯誤：Android Bridge 未連接');
+                return;
+            }
+            
+            try {
+                const results = {
+                    agent: window.AndroidBridge.getAndroidAgent(),
+                    language: window.AndroidBridge.getLanguageCode(),
+                    country: window.AndroidBridge.getCountryCode(),
+                    timezone: window.AndroidBridge.getTimeZone()
+                };
+                
+                const resultText = JSON.stringify(results, null, 2);
+                showResult(`所有功能測試結果：\n${resultText}`);
+            } catch (error) {
+                showResult(`錯誤：${error.message}`);
+            }
+        }
+        
+        // 頁面載入時檢查狀態
+        window.addEventListener('load', function() {
+            // 延遲檢查，確保 WebView 已完全載入
+            setTimeout(checkAndroidBridge, 1000);
+            
+            // 定期檢查狀態
+            setInterval(checkAndroidBridge, 3000);
+        });
+    </script>
+</body>
+</html> 
