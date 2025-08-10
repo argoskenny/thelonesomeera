@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>註冊頁面</title>
+  <style>
+    :root {
+      --bg: #0f172a;           /* slate-900 */
+      --card: #111827;         /* gray-900 */
+      --card-2: #0b1020;       /* darker blend */
+      --text: #e5e7eb;         /* gray-200 */
+      --muted: #94a3b8;        /* slate-400 */
+      --primary: #22d3ee;      /* cyan-400 */
+      --accent: #a78bfa;       /* violet-400 */
+      --danger: #ef4444;       /* red-500 */
+      --success: #10b981;      /* emerald-500 */
+      --warning: #f59e0b;      /* amber-500 */
+      --input-bg: #0b1220;     /* custom */
+      --input-br: #1f2937;     /* gray-800 */
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans TC", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--text);
+      background:
+        radial-gradient(1200px 400px at 10% 0%, rgba(34,211,238,.08), transparent 60%),
+        radial-gradient(1000px 600px at 100% 100%, rgba(167,139,250,.06), transparent 60%),
+        linear-gradient(180deg, #0b1020, #070b16 40%, #05070f);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .card {
+      width: min(720px, 100%);
+      background: linear-gradient(180deg, var(--card), var(--card-2));
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 28px 28px 6px;
+    }
+
+    .title {
+      font-size: clamp(22px, 2.6vw, 28px);
+      font-weight: 800;
+      letter-spacing: .2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title .logo {
+      inline-size: 12px; block-size: 12px; border-radius: 3px;
+      background: conic-gradient(from 30deg, var(--primary), var(--accent), var(--primary));
+      filter: drop-shadow(0 0 8px rgba(34,211,238,.35));
+    }
+
+    .subtitle { color: var(--muted); margin-top: 4px; font-size: 14px; }
+
+    .card-body { padding: 24px 28px 28px; }
+
+    form { display: grid; gap: 18px; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 680px) { .row { grid-template-columns: 1fr; } }
+
+    .form-group { display: grid; gap: 8px; }
+
+    .label { font-size: 14px; color: var(--muted); }
+
+    .control-wrap { position: relative; }
+
+    .input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1px solid var(--input-br);
+      border-radius: 12px;
+      padding: 12px 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+      font-size: 15px;
+    }
+    .input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(34,211,238,.08); }
+    .input.is-invalid { border-color: var(--danger); box-shadow: 0 0 0 4px rgba(239,68,68,.12); }
+
+    .hint {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 12px);
+      transform: translateY(-50%);
+      min-width: 180px;
+      max-width: 260px;
+      background: #140b0c;
+      border: 1px solid rgba(239,68,68,.5);
+      color: #fecaca; /* red-200 */
+      padding: 10px 12px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      line-height: 1.35;
+      display: none;
+      z-index: 3;
+    }
+    .hint[data-show="true"] { display: block; }
+    .hint::before {
+      content: "";
+      position: absolute;
+      left: -7px; top: 50%; transform: translateY(-50%);
+      border-width: 7px; border-style: solid;
+      border-color: transparent rgba(239,68,68,.5) transparent transparent;
+      filter: drop-shadow(-1px 0 0 rgba(239,68,68,.5));
+    }
+    .hint::after {
+      content: "";
+      position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+      border-width: 6px; border-style: solid;
+      border-color: transparent #140b0c transparent transparent;
+    }
+
+    @media (max-width: 680px) {
+      .hint {
+        top: calc(100% + 8px);
+        left: 0; transform: none;
+      }
+      .hint::before { left: 16px; top: -7px; transform: none; border-color: rgba(239,68,68,.5) transparent transparent transparent; }
+      .hint::after  { left: 16px; top: -6px; transform: none; border-color: #140b0c transparent transparent transparent; }
+    }
+
+    .actions { display: grid; gap: 12px; margin-top: 8px; }
+
+    .btn {
+      appearance: none; border: none; cursor: pointer;
+      padding: 12px 16px; border-radius: 12px;
+      background: linear-gradient(180deg, var(--primary), #13b8cf);
+      color: #052228; font-weight: 700; font-size: 15px; letter-spacing: .3px;
+      box-shadow: 0 10px 20px rgba(34,211,238,.25), inset 0 -2px 0 rgba(0,0,0,.2);
+      transition: transform .08s ease;
+    }
+    .btn:active { transform: translateY(1px); }
+
+    .note { font-size: 12px; color: var(--muted); text-align: center; }
+
+    .alert-success {
+      display: none;
+      margin-top: 10px;
+      background: rgba(16,185,129,.12);
+      color: #d1fae5;
+      border: 1px solid rgba(16,185,129,.35);
+      padding: 12px 14px; border-radius: 12px;
+      font-size: 14px;
+    }
+    .alert-success[data-show="true"] { display: block; }
+  </style>
+</head>
+<body>
+  <main class="card" aria-labelledby="form-title">
+    <div class="card-header">
+      <h1 class="title" id="form-title"><span class="logo"></span>註冊帳號</h1>
+      <p class="subtitle">請完整填寫以下欄位；系統會即時檢查是否留空。密碼需含 <strong>至少一個大寫字母</strong> 與 <strong>一個特殊符號</strong>。</p>
+    </div>
+    <div class="card-body">
+      <form id="signupForm" novalidate>
+        <div class="row">
+          <div class="form-group">
+            <label class="label" for="fullname">姓名</label>
+            <div class="control-wrap">
+              <input id="fullname" name="fullname" class="input" type="text" autocomplete="name" required aria-required="true" />
+              <div class="hint" id="hint-fullname" role="alert" aria-live="assertive"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="email">電子郵件</label>
+            <div class="control-wrap">
+              <input id="email" name="email" class="input" type="email" autocomplete="email" required aria-required="true" />
+              <div class="hint" id="hint-email" role="alert" aria-live="assertive"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group">
+            <label class="label" for="password">密碼</label>
+            <div class="control-wrap">
+              <input id="password" name="password" class="input" type="password" required aria-required="true" />
+              <div class="hint" id="hint-password" role="alert" aria-live="assertive"></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="label" for="confirm">確認密碼</label>
+            <div class="control-wrap">
+              <input id="confirm" name="confirm" class="input" type="password" required aria-required="true" />
+              <div class="hint" id="hint-confirm" role="alert" aria-live="assertive"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn" type="submit">建立帳號</button>
+          <p class="note">提交僅示範前端驗證，未連接後端。</p>
+          <div id="success" class="alert-success" role="status">✅ 驗證完成，表單已通過！</div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      const $ = (sel, root = document) => root.querySelector(sel);
+
+      const form = $('#signupForm');
+      const fields = {
+        fullname: $('#fullname'),
+        email: $('#email'),
+        password: $('#password'),
+        confirm: $('#confirm'),
+      };
+      const hints = {
+        fullname: $('#hint-fullname'),
+        email: $('#hint-email'),
+        password: $('#hint-password'),
+        confirm: $('#hint-confirm'),
+      };
+
+      const validators = {
+        fullname(value) {
+          if (!value.trim()) return '此欄位不可留空';
+          return '';
+        },
+        email(value) {
+          if (!value.trim()) return '此欄位不可留空';
+          const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+          return ok ? '' : '請輸入有效的電子郵件格式';
+        },
+        password(value) {
+          if (!value) return '此欄位不可留空';
+          const hasUpper = /[A-Z]/.test(value);
+          const hasSpecial = /[^A-Za-z0-9]/.test(value);
+          if (!hasUpper && !hasSpecial) return '需包含至少一個大寫字母與一個特殊符號';
+          if (!hasUpper) return '需包含至少一個大寫字母';
+          if (!hasSpecial) return '需包含至少一個特殊符號';
+          return '';
+        },
+        confirm(value) {
+          if (!value) return '此欄位不可留空';
+          if (value !== fields.password.value) return '兩次密碼輸入不一致';
+          return '';
+        },
+      };
+
+      function showHint(inputEl, hintEl, message) {
+        if (message) {
+          inputEl.classList.add('is-invalid');
+          inputEl.setAttribute('aria-invalid', 'true');
+          inputEl.setAttribute('aria-describedby', hintEl.id);
+          hintEl.textContent = message;
+          hintEl.dataset.show = 'true';
+        } else {
+          inputEl.classList.remove('is-invalid');
+          inputEl.removeAttribute('aria-invalid');
+          inputEl.removeAttribute('aria-describedby');
+          hintEl.textContent = '';
+          hintEl.dataset.show = 'false';
+        }
+      }
+
+      function validateField(key) {
+        const inputEl = fields[key];
+        const hintEl = hints[key];
+        const value = inputEl.value;
+        const message = validators[key](value);
+        showHint(inputEl, hintEl, message);
+        return !message;
+      }
+
+      // Real-time (on blur and input) validation
+      Object.keys(fields).forEach((key) => {
+        const el = fields[key];
+        el.addEventListener('blur', () => validateField(key));
+        el.addEventListener('input', () => {
+          // live-validate only if already invalid or not empty
+          const alreadyInvalid = el.classList.contains('is-invalid');
+          if (alreadyInvalid || el.value.trim() !== '') {
+            validateField(key);
+          }
+          // confirm field also re-checks when password changes
+          if (key === 'password' && fields.confirm.value) validateField('confirm');
+        });
+      });
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        let allValid = true;
+        for (const key of Object.keys(fields)) {
+          const ok = validateField(key);
+          if (!ok) allValid = false;
+        }
+        const success = document.getElementById('success');
+        success.dataset.show = allValid ? 'true' : 'false';
+        if (allValid) {
+          // For demo we just clear and keep success message visible.
+          // In real use, submit via fetch/XHR.
+          console.log('Form valid: ready to submit');
+        } else {
+          // Focus first invalid input
+          const firstInvalid = document.querySelector('.input.is-invalid');
+          if (firstInvalid) firstInvalid.focus();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

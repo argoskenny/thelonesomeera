@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太陽系模擬器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 50%, #16213e 100%);
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            height: 100vh;
+        }
+
+        /* 添加星空背景 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .solar-system {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: rotate linear infinite;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            animation: orbit linear infinite;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .planet:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        /* 太陽 */
+        .sun {
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ffeb3b, #ff9800);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: 0 0 50px #ffeb3b, 0 0 100px #ff9800;
+            animation: sunPulse 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes sunPulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            100% { transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        /* 水星 */
+        .mercury-orbit {
+            width: 150px;
+            height: 150px;
+            animation-duration: 10s;
+        }
+
+        .mercury {
+            width: 8px;
+            height: 8px;
+            background: linear-gradient(45deg, #8c7853, #d4af37);
+            top: -4px;
+            left: 50%;
+            margin-left: -4px;
+            animation-duration: 10s;
+        }
+
+        /* 金星 */
+        .venus-orbit {
+            width: 200px;
+            height: 200px;
+            animation-duration: 15s;
+        }
+
+        .venus {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(45deg, #ffd700, #ffb347);
+            top: -6px;
+            left: 50%;
+            margin-left: -6px;
+            animation-duration: 15s;
+        }
+
+        /* 地球 */
+        .earth-orbit {
+            width: 260px;
+            height: 260px;
+            animation-duration: 20s;
+        }
+
+        .earth {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(45deg, #4169e1, #228b22);
+            top: -8px;
+            left: 50%;
+            margin-left: -8px;
+            animation-duration: 20s;
+            position: relative;
+        }
+
+        .earth::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #c0c0c0;
+            border-radius: 50%;
+            top: -10px;
+            left: 50%;
+            margin-left: -2px;
+            animation: moonOrbit 2s linear infinite;
+        }
+
+        @keyframes moonOrbit {
+            0% { transform: rotate(0deg) translateX(20px) rotate(0deg); }
+            100% { transform: rotate(360deg) translateX(20px) rotate(-360deg); }
+        }
+
+        /* 火星 */
+        .mars-orbit {
+            width: 320px;
+            height: 320px;
+            animation-duration: 30s;
+        }
+
+        .mars {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(45deg, #cd5c5c, #ff6347);
+            top: -7px;
+            left: 50%;
+            margin-left: -7px;
+            animation-duration: 30s;
+        }
+
+        /* 木星 */
+        .jupiter-orbit {
+            width: 400px;
+            height: 400px;
+            animation-duration: 50s;
+        }
+
+        .jupiter {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #daa520, #b8860b);
+            top: -16px;
+            left: 50%;
+            margin-left: -16px;
+            animation-duration: 50s;
+        }
+
+        /* 土星 */
+        .saturn-orbit {
+            width: 480px;
+            height: 480px;
+            animation-duration: 70s;
+        }
+
+        .saturn {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(45deg, #ffd700, #f4a460);
+            top: -14px;
+            left: 50%;
+            margin-left: -14px;
+            animation-duration: 70s;
+            position: relative;
+        }
+
+        .saturn::before {
+            content: '';
+            position: absolute;
+            width: 45px;
+            height: 45px;
+            border: 2px solid rgba(255, 215, 0, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 天王星 */
+        .uranus-orbit {
+            width: 560px;
+            height: 560px;
+            animation-duration: 90s;
+        }
+
+        .uranus {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #4fd0e4, #00ced1);
+            top: -10px;
+            left: 50%;
+            margin-left: -10px;
+            animation-duration: 90s;
+        }
+
+        /* 海王星 */
+        .neptune-orbit {
+            width: 640px;
+            height: 640px;
+            animation-duration: 120s;
+        }
+
+        .neptune {
+            width: 18px;
+            height: 18px;
+            background: linear-gradient(45deg, #4169e1, #0000cd);
+            top: -9px;
+            left: 50%;
+            margin-left: -9px;
+            animation-duration: 120s;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 控制面板 */
+        .controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-item {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 200px;
+        }
+
+        .speed-control {
+            width: 100px;
+            margin-left: 10px;
+        }
+
+        button {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 行星信息 */
+        .planet-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            color: white;
+            max-width: 250px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .controls, .planet-info {
+                font-size: 12px;
+                padding: 10px;
+            }
+            
+            .sun {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .orbit {
+                transform: scale(0.7);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 星空背景 -->
+    <div class="stars"></div>
+
+    <!-- 控制面板 -->
+    <div class="controls">
+        <h3>太陽系控制器</h3>
+        <div class="control-item">
+            <span>速度:</span>
+            <input type="range" class="speed-control" id="speedControl" min="0.1" max="3" step="0.1" value="1">
+        </div>
+        <div class="control-item">
+            <button onclick="togglePause()">暫停/繼續</button>
+        </div>
+        <div class="control-item">
+            <button onclick="resetView()">重置視角</button>
+        </div>
+    </div>
+
+    <!-- 行星信息面板 -->
+    <div class="planet-info" id="planetInfo">
+        <h4 id="planetName">行星名稱</h4>
+        <p id="planetDescription">行星描述</p>
+    </div>
+
+    <!-- 太陽系 -->
+    <div class="solar-system" id="solarSystem">
+        <!-- 太陽 -->
+        <div class="sun" title="太陽"></div>
+
+        <!-- 水星軌道 -->
+        <div class="orbit mercury-orbit">
+            <div class="planet mercury" data-planet="mercury" title="水星"></div>
+        </div>
+
+        <!-- 金星軌道 -->
+        <div class="orbit venus-orbit">
+            <div class="planet venus" data-planet="venus" title="金星"></div>
+        </div>
+
+        <!-- 地球軌道 -->
+        <div class="orbit earth-orbit">
+            <div class="planet earth" data-planet="earth" title="地球"></div>
+        </div>
+
+        <!-- 火星軌道 -->
+        <div class="orbit mars-orbit">
+            <div class="planet mars" data-planet="mars" title="火星"></div>
+        </div>
+
+        <!-- 木星軌道 -->
+        <div class="orbit jupiter-orbit">
+            <div class="planet jupiter" data-planet="jupiter" title="木星"></div>
+        </div>
+
+        <!-- 土星軌道 -->
+        <div class="orbit saturn-orbit">
+            <div class="planet saturn" data-planet="saturn" title="土星"></div>
+        </div>
+
+        <!-- 天王星軌道 -->
+        <div class="orbit uranus-orbit">
+            <div class="planet uranus" data-planet="uranus" title="天王星"></div>
+        </div>
+
+        <!-- 海王星軌道 -->
+        <div class="orbit neptune-orbit">
+            <div class="planet neptune" data-planet="neptune" title="海王星"></div>
+        </div>
+    </div>
+
+    <script>
+        // 行星數據
+        const planetData = {
+            mercury: {
+                name: '水星 (Mercury)',
+                description: '距離太陽最近的行星，表面溫度變化極大，白天可達427°C，夜晚可降至-173°C。'
+            },
+            venus: {
+                name: '金星 (Venus)',
+                description: '太陽系中最熱的行星，表面溫度約462°C。被稱為地球的姊妹星，但環境極為惡劣。'
+            },
+            earth: {
+                name: '地球 (Earth)',
+                description: '我們的家園，太陽系中唯一已知存在生命的行星。擁有液態水和適宜的大氣層。'
+            },
+            mars: {
+                name: '火星 (Mars)',
+                description: '紅色星球，擁有太陽系最大的火山和峽谷。可能曾經存在液態水和生命。'
+            },
+            jupiter: {
+                name: '木星 (Jupiter)',
+                description: '太陽系最大的行星，是一個氣體巨星。擁有超過80顆衛星，包括四大伽利略衛星。'
+            },
+            saturn: {
+                name: '土星 (Saturn)',
+                description: '以其壯觀的光環系統而聞名。密度比水還小，是太陽系第二大行星。'
+            },
+            uranus: {
+                name: '天王星 (Uranus)',
+                description: '冰巨星，自轉軸傾斜約98度，幾乎是躺著繞太陽公轉。擁有微弱的光環系統。'
+            },
+            neptune: {
+                name: '海王星 (Neptune)',
+                description: '太陽系最外層的行星，風速可達2100公里/小時，是太陽系風速最快的行星。'
+            }
+        };
+
+        // 初始化
+        let isPaused = false;
+        let currentSpeed = 1;
+
+        // 創建星空
+        function createStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // 更新動畫速度
+        function updateAnimationSpeed() {
+            const speedControl = document.getElementById('speedControl');
+            currentSpeed = parseFloat(speedControl.value);
+            
+            const orbits = document.querySelectorAll('.orbit, .planet');
+            orbits.forEach(orbit => {
+                const currentDuration = parseFloat(getComputedStyle(orbit).animationDuration);
+                if (!isNaN(currentDuration)) {
+                    orbit.style.animationDuration = (currentDuration / currentSpeed) + 's';
+                }
+            });
+
+            // 更新月球動畫
+            const earth = document.querySelector('.earth');
+            earth.style.setProperty('--moon-speed', (2 / currentSpeed) + 's');
+        }
+
+        // 暫停/繼續動畫
+        function togglePause() {
+            const solarSystem = document.getElementById('solarSystem');
+            if (isPaused) {
+                solarSystem.style.animationPlayState = 'running';
+                const elements = solarSystem.querySelectorAll('.orbit, .planet, .earth::after');
+                elements.forEach(el => {
+                    el.style.animationPlayState = 'running';
+                });
+                isPaused = false;
+            } else {
+                solarSystem.style.animationPlayState = 'paused';
+                const elements = solarSystem.querySelectorAll('.orbit, .planet');
+                elements.forEach(el => {
+                    el.style.animationPlayState = 'paused';
+                });
+                isPaused = true;
+            }
+        }
+
+        // 重置視角
+        function resetView() {
+            const solarSystem = document.getElementById('solarSystem');
+            solarSystem.style.transform = 'scale(1) rotate(0deg)';
+        }
+
+        // 顯示行星信息
+        function showPlanetInfo(planetKey) {
+            const planetInfo = document.getElementById('planetInfo');
+            const planetName = document.getElementById('planetName');
+            const planetDescription = document.getElementById('planetDescription');
+            
+            const data = planetData[planetKey];
+            if (data) {
+                planetName.textContent = data.name;
+                planetDescription.textContent = data.description;
+                planetInfo.style.display = 'block';
+            }
+        }
+
+        // 隱藏行星信息
+        function hidePlanetInfo() {
+            const planetInfo = document.getElementById('planetInfo');
+            planetInfo.style.display = 'none';
+        }
+
+        // 鼠標滾輪縮放
+        function handleZoom(event) {
+            event.preventDefault();
+            const solarSystem = document.getElementById('solarSystem');
+            const currentTransform = getComputedStyle(solarSystem).transform;
+            let scale = 1;
+            
+            if (currentTransform !== 'none') {
+                const matrix = currentTransform.split('(')[1].split(')')[0].split(',');
+                scale = parseFloat(matrix[0]);
+            }
+            
+            const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+            const newScale = Math.max(0.3, Math.min(2, scale * zoomFactor));
+            
+            solarSystem.style.transform = `scale(${newScale})`;
+        }
+
+        // 事件監聽器
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            
+            // 速度控制
+            const speedControl = document.getElementById('speedControl');
+            speedControl.addEventListener('input', updateAnimationSpeed);
+            
+            // 行星懸停事件
+            const planets = document.querySelectorAll('.planet');
+            planets.forEach(planet => {
+                planet.addEventListener('mouseenter', function() {
+                    const planetType = this.getAttribute('data-planet');
+                    if (planetType) {
+                        showPlanetInfo(planetType);
+                    }
+                });
+                
+                planet.addEventListener('mouseleave', function() {
+                    setTimeout(hidePlanetInfo, 500);
+                });
+            });
+            
+            // 鼠標滾輪縮放
+            document.addEventListener('wheel', handleZoom);
+            
+            // 鍵盤控制
+            document.addEventListener('keydown', function(event) {
+                switch(event.code) {
+                    case 'Space':
+                        event.preventDefault();
+                        togglePause();
+                        break;
+                    case 'KeyR':
+                        resetView();
+                        break;
+                }
+            });
+        });
+
+        // 觸摸設備支持
+        let startDistance = 0;
+        let startScale = 1;
+
+        document.addEventListener('touchstart', function(event) {
+            if (event.touches.length === 2) {
+                const touch1 = event.touches[0];
+                const touch2 = event.touches[1];
+                startDistance = Math.hypot(
+                    touch1.clientX - touch2.clientX,
+                    touch1.clientY - touch2.clientY
+                );
+                
+                const solarSystem = document.getElementById('solarSystem');
+                const currentTransform = getComputedStyle(solarSystem).transform;
+                startScale = 1;
+                if (currentTransform !== 'none') {
+                    const matrix = currentTransform.split('(')[1].split(')')[0].split(',');
+                    startScale = parseFloat(matrix[0]);
+                }
+            }
+        });
+
+        document.addEventListener('touchmove', function(event) {
+            if (event.touches.length === 2) {
+                event.preventDefault();
+                const touch1 = event.touches[0];
+                const touch2 = event.touches[1];
+                const currentDistance = Math.hypot(
+                    touch1.clientX - touch2.clientX,
+                    touch1.clientY - touch2.clientY
+                );
+                
+                const scale = startScale * (currentDistance / startDistance);
+                const newScale = Math.max(0.3, Math.min(2, scale));
+                
+                const solarSystem = document.getElementById('solarSystem');
+                solarSystem.style.transform = `scale(${newScale})`;
+            }
+        });
+    </script>
+</body>
+</html>

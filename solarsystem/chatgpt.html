@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>太陽系模擬器｜單一 HTML 檔</title>
+  <style>
+    :root{
+      --panel-bg: rgba(20,22,28,0.66);
+      --panel-border: rgba(255,255,255,0.12);
+      --accent: #8bd3ff;
+      --text: #e8eef6;
+      --muted: #a9b3c3;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:var(--text);
+      font: 15px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, 'PingFang TC', 'Heiti TC', sans-serif;
+      /* 太空漸層背景 */
+      background: radial-gradient(1200px 800px at 70% 30%, #0b1530 0%, #040914 60%, #000 100%);
+      overflow:hidden;
+    }
+    /* 畫布鋪滿視窗，使用高 DPI 寫法在 JS 控 */
+    canvas#universe{position:fixed; inset:0; display:block;}
+
+    /* 控制面板 */
+    .panel{
+      position: fixed; left: 16px; top: 16px; width: min(380px, 92vw);
+      backdrop-filter: blur(8px) saturate(1.2);
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 16px; padding: 14px 14px 10px; box-shadow: 0 6px 30px rgba(0,0,0,0.35);
+    }
+    .panel h1{margin:0 0 8px; font-size:18px; letter-spacing:.3px}
+    .row{display:grid; grid-template-columns: 1fr auto; align-items:center; gap:10px; margin:8px 0}
+    .row > label{color:var(--muted)}
+    .row span.value{min-width:70px; text-align:right; color:var(--text); font-variant-numeric: tabular-nums}
+    .grid{
+      display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:8px; margin-top:8px
+    }
+    .btn{cursor:pointer; user-select:none; border-radius:12px; padding:8px 12px; border:1px solid var(--panel-border);
+      background:#0e1624; color:#e9f3ff; transition: .15s transform, .15s background;
+    }
+    .btn:hover{background:#16243a}
+    .btn:active{transform:translateY(1px)}
+    .btn.wide{grid-column: span 2}
+
+    input[type="range"]{width: 100%}
+    input[type="range"]{accent-color: var(--accent)}
+    input[type="checkbox"]{width:18px; height:18px; accent-color: var(--accent); vertical-align: middle}
+    .toggle{display:flex; align-items:center; gap:10px}
+
+    details{margin-top:6px; border-top:1px dashed var(--panel-border); padding-top:8px}
+    details summary{cursor:pointer; color:var(--muted)}
+    details p{margin:6px 0 0; color:#cbd6e7}
+
+    /* 右下角資訊條 */
+    .infobar{
+      position: fixed; right: 16px; bottom: 12px; padding:8px 12px; border-radius: 12px;
+      background: var(--panel-bg); border:1px solid var(--panel-border); backdrop-filter: blur(6px);
+      color:#cfe5ff; font-variant-numeric: tabular-nums; box-shadow: 0 6px 24px rgba(0,0,0,0.3)
+    }
+
+    /* 行星 hover 提示 */
+    .tooltip{
+      position: fixed; pointer-events:none; transform: translate(-50%, calc(-100% - 10px));
+      background: rgba(0,0,0,0.72); border:1px solid rgba(255,255,255,0.14); border-radius:10px; padding:6px 8px; font-size:13px;
+      white-space:nowrap; color:#fff; box-shadow:0 6px 20px rgba(0,0,0,0.45); display:none
+    }
+
+    @media (max-width: 768px){
+      .panel{left: 10px; right: 10px; width:auto}
+      .grid{grid-template-columns: 1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+  <canvas id="universe" role="img" aria-label="太陽系 2D 模擬"></canvas>
+
+  <div class="panel" aria-live="polite">
+    <h1>太陽系模擬器（單一 HTML）</h1>
+
+    <div class="row">
+      <label for="speed">模擬速度（天/秒）</label>
+      <span class="value" id="speedVal">—</span>
+    </div>
+    <input id="speed" type="range" min="0" max="1000" step="1" value="80" />
+
+    <div class="row">
+      <label for="dist">距離縮放（px / AU）</label>
+      <span class="value" id="distVal">—</span>
+    </div>
+    <input id="dist" type="range" min="4" max="60" step="1" value="28" />
+
+    <div class="row">
+      <label for="size">行星尺寸倍率</label>
+      <span class="value" id="sizeVal">—</span>
+    </div>
+    <input id="size" type="range" min="0.4" max="6" step="0.1" value="1.6" />
+
+    <div class="grid">
+      <label class="toggle"><input id="showOrbits" type="checkbox" checked/>顯示軌道</label>
+      <label class="toggle"><input id="showLabels" type="checkbox" checked/>顯示標籤</label>
+      <label class="toggle"><input id="showTrails" type="checkbox"/>顯示尾跡</label>
+      <label class="toggle"><input id="includePluto" type="checkbox"/>包含冥王星</label>
+      <button id="playPause" class="btn">⏸ 暫停</button>
+      <button id="reset" class="btn">🔄 重設</button>
+      <button id="centerSun" class="btn wide">☀️ 以太陽為中心</button>
+    </div>
+
+    <details>
+      <summary>使用說明與注意事項</summary>
+      <p>此模擬以 <strong>圓形軌道</strong> 近似真實運動，週期與日數比例接近實際值；距離與行星尺寸皆經過視覺化縮放，非真實比例。</p>
+      <p>拖曳空白處可平移視角，使用滾輪可縮放（僅距離縮放）。</p>
+    </details>
+  </div>
+
+  <div class="infobar" id="infobar">—</div>
+  <div class="tooltip" id="tooltip"></div>
+
+<script>
+(() => {
+  'use strict';
+  // === 常數與資料 ===
+  const AU = 1; // 我們以 AU 為單位，轉像素時乘以 pxPerAU
+  const TWOPI = Math.PI * 2;
+  const BASE_DATE = new Date('2000-01-01T00:00:00Z'); // 模擬起始參考日期
+
+  const PLANETS_ALL = [
+    { key:'mercury', name:'水星', color:'#b9b9b9', au:0.387, period:87.969, radiusRel:0.383, info:'最內側行星' },
+    { key:'venus',   name:'金星', color:'#e6d190', au:0.723, period:224.701, radiusRel:0.949 },
+    { key:'earth',   name:'地球', color:'#4da6ff', au:1.000, period:365.256, radiusRel:1.000 },
+    { key:'mars',    name:'火星', color:'#ff6b4d', au:1.524, period:686.980, radiusRel:0.532 },
+    { key:'jupiter', name:'木星', color:'#d9b38c', au:5.203, period:4332.589, radiusRel:11.21 },
+    { key:'saturn',  name:'土星', color:'#e6c97e', au:9.537, period:10759.22, radiusRel:9.45, ring:true },
+    { key:'uranus',  name:'天王星', color:'#94d6d6', au:19.191, period:30685.4, radiusRel:4.01 },
+    { key:'neptune', name:'海王星', color:'#5b8cff', au:30.068, period:60190, radiusRel:3.88 },
+    { key:'pluto',   name:'冥王星', color:'#cccccc', au:39.482, period:90560, radiusRel:0.186, dwarf:true },
+  ];
+
+  // === DOM 參照 ===
+  const canvas = document.getElementById('universe');
+  const ctx = canvas.getContext('2d');
+  const panel = document.querySelector('.panel');
+  const speedEl = document.getElementById('speed');
+  const speedVal = document.getElementById('speedVal');
+  const distEl  = document.getElementById('dist');
+  const distVal = document.getElementById('distVal');
+  const sizeEl  = document.getElementById('size');
+  const sizeVal = document.getElementById('sizeVal');
+  const showOrbitsEl = document.getElementById('showOrbits');
+  const showLabelsEl = document.getElementById('showLabels');
+  const showTrailsEl = document.getElementById('showTrails');
+  const includePlutoEl = document.getElementById('includePluto');
+  const playPauseBtn = document.getElementById('playPause');
+  const resetBtn = document.getElementById('reset');
+  const centerSunBtn = document.getElementById('centerSun');
+  const infobar = document.getElementById('infobar');
+  const tooltip = document.getElementById('tooltip');
+
+  // === 畫布與座標 ===
+  let dpr = Math.max(1, window.devicePixelRatio || 1);
+  let width = 0, height = 0;
+  let centerX = 0, centerY = 0; // 視圖中心（可平移）
+  let viewOffsetX = 0, viewOffsetY = 0; // 使用者拖曳產生的偏移（px）
+
+  // === 模擬狀態 ===
+  let running = true;
+  let simDays = 0; // 從 BASE_DATE 起算的模擬日數
+  let daysPerSecond = parseFloat(speedEl.value); // 天/秒
+  let pxPerAU = parseFloat(distEl.value); // 像素/天文單位
+  let sizeScale = parseFloat(sizeEl.value); // 行星尺寸倍率
+
+  // 滑鼠互動
+  let mouseX = 0, mouseY = 0, isDragging = false, dragStartX = 0, dragStartY = 0, dragViewX = 0, dragViewY = 0;
+
+  // 星野（背景星空）使用離屏畫布提升效率
+  const starLayer = document.createElement('canvas');
+  const starCtx = starLayer.getContext('2d');
+
+  function buildStars(){
+    const S = 1000; // 基底圖尺寸，之後平鋪縮放
+    starLayer.width = S; starLayer.height = S;
+    const grad = starCtx.createRadialGradient(S*0.5,S*0.5,0,S*0.5,S*0.5,S*0.9);
+    grad.addColorStop(0,'#020411');
+    grad.addColorStop(1,'#000');
+    starCtx.fillStyle = grad; starCtx.fillRect(0,0,S,S);
+    const count = 800;
+    for(let i=0;i<count;i++){
+      const x = Math.random()*S, y = Math.random()*S;
+      const r = Math.random()*1.2 + 0.2;
+      const a = 0.6 + Math.random()*0.4;
+      starCtx.fillStyle = `rgba(255,255,255,${a.toFixed(2)})`;
+      starCtx.beginPath(); starCtx.arc(x,y,r,0,TWOPI); starCtx.fill();
+      // 微藍/微黃的星色
+      if (Math.random()<0.2){
+        starCtx.fillStyle = Math.random()<0.5 ? 'rgba(160,200,255,0.5)' : 'rgba(255,230,180,0.5)';
+        starCtx.beginPath(); starCtx.arc(x+0.5,y+0.5,r*0.9,0,TWOPI); starCtx.fill();
+      }
+    }
+  }
+
+  function resize(){
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    width = Math.floor(window.innerWidth * dpr);
+    height= Math.floor(window.innerHeight* dpr);
+    canvas.width = width; canvas.height = height;
+    canvas.style.width = Math.floor(width/dpr)+'px';
+    canvas.style.height= Math.floor(height/dpr)+'px';
+    centerX = width/2; centerY = height/2;
+  }
+
+  function fitPxPerAU(){
+    // 讓海王星接近畫面邊緣，保留留白
+    const includePluto = includePlutoEl.checked;
+    const maxAU = includePluto ? 39.482 : 30.068;
+    const minEdge = Math.min(width, height);
+    // 0.43 係數為美觀留白，結果換算至 CSS 像素
+    const fit = (minEdge * 0.43) / maxAU;
+    // 將 dist range 的預設值也設為接近 fit（不覆蓋使用者調整）
+    return fit;
+  }
+
+  function updateLabels(){
+    speedVal.textContent = daysPerSecond.toFixed(0).padStart(3,' ');
+    distVal.textContent  = pxPerAU.toFixed(0).padStart(2,' ');
+    sizeVal.textContent  = sizeScale.toFixed(1);
+  }
+
+  // === 互動 ===
+  canvas.addEventListener('pointerdown', (e)=>{
+    if (e.button !== 0) return;
+    isDragging = true; dragStartX = e.clientX; dragStartY = e.clientY; dragViewX = viewOffsetX; dragViewY = viewOffsetY; canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', (e)=>{
+    const rect = canvas.getBoundingClientRect();
+    mouseX = (e.clientX - rect.left) * dpr; // to device px
+    mouseY = (e.clientY - rect.top) * dpr;
+    if (isDragging){
+      const dx = (e.clientX - dragStartX) * dpr;
+      const dy = (e.clientY - dragStartY) * dpr;
+      viewOffsetX = dragViewX + dx;
+      viewOffsetY = dragViewY + dy;
+    }
+  });
+  canvas.addEventListener('pointerup', ()=>{ isDragging = false; });
+  canvas.addEventListener('pointercancel', ()=>{ isDragging = false; });
+
+  canvas.addEventListener('wheel', (e)=>{
+    // 滾輪只控制距離縮放（px/AU），含游標位置縮放的視覺補償
+    e.preventDefault();
+    const delta = -Math.sign(e.deltaY) * 1; // 每次 1 單位
+    const oldPx = pxPerAU;
+    const newPx = Math.min(120, Math.max(2, oldPx + delta));
+    if (newPx !== oldPx){
+      // 以游標為中心的縮放：調整 viewOffset 讓游標下的宇宙座標維持同一 AU 位置
+      const worldX = (mouseX - centerX - viewOffsetX) / oldPx; // AU
+      const worldY = (mouseY - centerY - viewOffsetY) / oldPx; // AU
+      pxPerAU = newPx;
+      viewOffsetX = mouseX - centerX - worldX * pxPerAU;
+      viewOffsetY = mouseY - centerY - worldY * pxPerAU;
+      distEl.value = pxPerAU.toFixed(0);
+      updateLabels();
+    }
+  }, {passive:false});
+
+  playPauseBtn.addEventListener('click', ()=>{
+    running = !running; playPauseBtn.textContent = running ? '⏸ 暫停' : '▶️ 繼續';
+  });
+  resetBtn.addEventListener('click', ()=>{ simDays = 0; viewOffsetX = viewOffsetY = 0; });
+  centerSunBtn.addEventListener('click', ()=>{ viewOffsetX = viewOffsetY = 0; });
+
+  speedEl.addEventListener('input', ()=>{ daysPerSecond = parseFloat(speedEl.value); updateLabels();});
+  distEl.addEventListener('input', ()=>{ pxPerAU = parseFloat(distEl.value); updateLabels();});
+  sizeEl.addEventListener('input', ()=>{ sizeScale = parseFloat(sizeEl.value); updateLabels();});
+
+  includePlutoEl.addEventListener('change', ()=>{
+    // 調整預設 pxPerAU 使全部行星都在視野內（除非使用者自訂）
+    const fit = fitPxPerAU();
+    if (pxPerAU > fit) return; // 使用者已經縮太近就不覆蓋
+    pxPerAU = Math.max(6, Math.min(parseFloat(distEl.value), fit));
+    distEl.value = pxPerAU.toFixed(0); updateLabels();
+  });
+
+  // === 繪製 ===
+  function clearWithStars(){
+    // 將星野鋪滿畫面
+    const scaleX = width / starLayer.width;
+    const scaleY = height/ starLayer.height;
+    ctx.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+    ctx.drawImage(starLayer, 0, 0);
+    // 還原單位座標
+    ctx.setTransform(1,0,0,1,0,0);
+  }
+
+  function drawSun(){
+    const x = centerX + viewOffsetX, y = centerY + viewOffsetY;
+    const r = 24 * dpr * Math.max(0.8, Math.min(2.2, sizeScale));
+    const g = ctx.createRadialGradient(x - r*0.25, y - r*0.25, r*0.2, x, y, r*1.1);
+    g.addColorStop(0,'#fff7b3');
+    g.addColorStop(0.5,'#ffd35a');
+    g.addColorStop(1,'rgba(255,160,20,0.05)');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x,y,r,0,TWOPI); ctx.fill();
+  }
+
+  function planetPixelRadius(radiusRel){
+    // 以地球為 1，採用 sqrt 壓縮動態範圍，視覺最小半徑 2px
+    const base = 8 * dpr * sizeScale; // 地球基準
+    return Math.max(2*dpr, Math.sqrt(radiusRel) * base);
+  }
+
+  function drawOrbit(rPx){
+    ctx.save();
+    ctx.strokeStyle = 'rgba(180,200,255,0.18)';
+    ctx.lineWidth = 1 * dpr;
+    ctx.beginPath(); ctx.arc(centerX + viewOffsetX, centerY + viewOffsetY, rPx, 0, TWOPI); ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawPlanet(p, angle){
+    const cx = centerX + viewOffsetX; const cy = centerY + viewOffsetY;
+    const rOrbit = p.au * pxPerAU;
+    const x = cx + Math.cos(angle) * rOrbit;
+    const y = cy + Math.sin(angle) * rOrbit;
+    const pr = planetPixelRadius(p.radiusRel);
+
+    // 陰影（表現受光面）
+    const lightX = cx, lightY = cy; // 太陽位置
+    const lx = x - lightX, ly = y - lightY;
+    const l = Math.hypot(lx, ly) || 1;
+    const nx = lx / l, ny = ly / l;
+
+    const grad = ctx.createRadialGradient(x - nx*pr*0.6, y - ny*pr*0.6, pr*0.2, x, y, pr*1.2);
+    grad.addColorStop(0, p.color);
+    grad.addColorStop(1, '#000');
+
+    ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(x, y, pr, 0, TWOPI); ctx.fill();
+
+    // 土星環
+    if (p.ring){
+      ctx.save();
+      ctx.globalAlpha = 0.6; ctx.strokeStyle = 'rgba(210,190,140,0.95)';
+      ctx.lineWidth = pr*0.25; // 環寬
+      ctx.beginPath();
+      ctx.ellipse(x, y, pr*1.8, pr*1.1, 0.35, 0, TWOPI);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 標籤
+    if (showLabelsEl.checked){
+      ctx.save();
+      ctx.font = `${Math.max(10, 12*dpr)}px system-ui, -apple-system, 'Noto Sans TC', sans-serif`;
+      ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = 'rgba(230,240,255,0.9)';
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)'; ctx.lineWidth = 3;
+      const label = p.name;
+      const lx = x + pr + 6*dpr; const ly = y;
+      ctx.strokeText(label, lx, ly);
+      ctx.fillText(label, lx, ly);
+      ctx.restore();
+    }
+
+    return {x, y, r: pr};
+  }
+
+  // 計算與繪製一幀
+  function render(now){
+    clearWithStars();
+
+    // 軌道
+    if (showOrbitsEl.checked){
+      activePlanets().forEach(p => drawOrbit(p.au * pxPerAU));
+    }
+
+    // 太陽置底繪製（讓尾跡不覆蓋太陽）
+    drawSun();
+
+    // 行星
+    const positions = [];
+    activePlanets().forEach(p => {
+      const angle = (simDays / p.period) * TWOPI; // 簡化：圓形等速
+      positions.push({p, ...drawPlanet(p, angle)});
+    });
+
+    // 互動：滑鼠提示（命中測試）
+    const hit = positions.find(o => {
+      const dx = mouseX - o.x, dy = mouseY - o.y; return dx*dx + dy*dy <= (o.r+3*dpr)*(o.r+3*dpr);
+    });
+    if (hit){
+      const au = hit.p.au;
+      tooltip.style.display = 'block';
+      tooltip.style.left = (Math.round(mouseX/dpr))+'px';
+      tooltip.style.top  = (Math.round(mouseY/dpr))+'px';
+      tooltip.innerHTML = `${hit.p.name} · 距離：${au.toFixed(3)} AU`;
+    } else {
+      tooltip.style.display = 'none';
+    }
+
+    // 資訊條
+    const date = new Date(BASE_DATE.getTime() + simDays*24*3600*1000);
+    infobar.textContent = `模擬日期：${date.toISOString().slice(0,10)} ｜ 速度：${daysPerSecond.toFixed(0)} 天/秒`;
+  }
+
+  function activePlanets(){
+    return PLANETS_ALL.filter(p => includePlutoEl.checked ? true : p.key !== 'pluto');
+  }
+
+  // === 主迴圈 ===
+  let last = performance.now();
+  function loop(now){
+    const dt = Math.max(0, Math.min(0.1, (now - last)/1000)); // 限制最大步長 0.1 秒以避免切視窗造成跳躍
+    last = now;
+
+    if (running){
+      simDays += dt * daysPerSecond;
+    }
+
+    if (showTrailsEl.checked){
+      // 尾跡效果：以半透明黑蓋一層並重畫星空（營造殘影）
+      ctx.fillStyle = 'rgba(0,0,0,0.22)';
+      ctx.fillRect(0,0,width,height);
+    }
+    render(now);
+    requestAnimationFrame(loop);
+  }
+
+  // === 初始化 ===
+  function init(){
+    buildStars();
+    resize();
+    // 初始 px/AU 以視窗自動配適，並同步到 UI
+    const fit = Math.round(fitPxPerAU());
+    pxPerAU = Math.min(Math.max(parseFloat(distEl.value), 6), fit);
+    distEl.value = pxPerAU.toFixed(0);
+    updateLabels();
+    requestAnimationFrame(loop);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=5.0, user-scalable=yes">
+  <meta name="description" content="AI Demo Hub - 整合 signuptest 與 solarsystem 的示範頁面">
+  <title>AI Demo Hub | The Lonesome Era</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    /* 本頁覆蓋樣式：移除固定導覽列預留空間、頁籤樣式 */
+    .main-content { padding-top: 0 !important; }
+    .tabs { display: flex; gap: 0.75rem; justify-content: center; margin: 0.5rem auto 0; }
+    .tab { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-secondary); padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer; transition: var(--transition); font-size: var(--font-size-sm); }
+    .tab:hover { border-color: var(--accent-color); color: var(--text-primary); }
+    .tab.active { background: var(--accent-color); color: var(--primary-dark); border-color: var(--accent-color); }
+  </style>
+</head>
+<body>
+  <div id="aiHubApp">
+
+    <!-- 主內容：兩個分區塊，分別列出 signuptest 與 solarsystem -->
+    <main class="main-content">
+      <!-- Hero -->
+      <section class="hero-section" style="min-height: 10vh;">
+        <div class="hero-background"><div class="hero-overlay"></div></div>
+        <div class="hero-content">
+          <p class="hero-subtitle">AI Demo Hub</p>
+          <div class="container">
+            <div class="tabs">
+              <button class="tab" :class="{ active: activeTab === 'signuptest' }" @click="activeTab = 'signuptest'">SignUp Test</button>
+              <button class="tab" :class="{ active: activeTab === 'solarsystem' }" @click="activeTab = 'solarsystem'">Solar System Test</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SignUp Test 區塊（頁籤一） -->
+      <section v-if="activeTab === 'signuptest'" class="content-section projects-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-number">01</span>
+            <h2 class="section-title">SignUp Test</h2>
+            <p class="section-subtitle">LLM Provider Demo Pages</p>
+          </div>
+          <div class="content-grid">
+            <div class="content-card" v-for="item in signuptestPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <div class="card-content">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <div class="card-tags">
+                  <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+                </div>
+                <a :href="item.link" class="card-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Solar System Test 區塊（頁籤二） -->
+      <section v-else-if="activeTab === 'solarsystem'" class="content-section projects-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-number">02</span>
+            <h2 class="section-title">Solar System Test</h2>
+            <p class="section-subtitle">LLM Themed Demos</p>
+          </div>
+          <div class="content-grid">
+            <div class="content-card" v-for="item in solarsystemPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <div class="card-content">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <div class="card-tags">
+                  <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+                </div>
+                <a :href="item.link" class="card-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // 確保載入後可滾動
+    document.body.classList.add('loaded');
+    // Vue 應用（僅本頁用） - 備註以繁體中文
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          // 手機選單狀態
+          mobileMenuOpen: false,
+          // 行動版偵測
+          isMobileView: window.innerWidth <= 768,
+          // 目前啟用的頁籤：'signuptest' | 'solarsystem'
+          activeTab: 'signuptest',
+
+          // signuptest 卡片資料
+          // 說明：圖片用站內共用圖示，若未來有各頁專屬縮圖可替換
+          signuptestPages: [
+            { title: 'Signup Test - ChatGPT', description: '模型互動測試頁（ChatGPT）', image: 'tle_logo.png', tags: ['LLM', 'ChatGPT', 'Signup'], link: 'signuptest/chatgpt.html' },
+            { title: 'Signup Test - Claude', description: '模型互動測試頁（Claude）', image: 'tle_logo.png', tags: ['LLM', 'Claude', 'Signup'], link: 'signuptest/claude.html' },
+            { title: 'Signup Test - Gemini', description: '模型互動測試頁（Gemini）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'Signup'], link: 'signuptest/gemini.html' },
+            { title: 'Signup Test - Grok', description: '模型互動測試頁（Grok）', image: 'tle_logo.png', tags: ['LLM', 'Grok', 'Signup'], link: 'signuptest/grok.html' },
+            { title: 'Signup Test - DeepSeek', description: '模型互動測試頁（DeepSeek）', image: 'tle_logo.png', tags: ['LLM', 'DeepSeek', 'Signup'], link: 'signuptest/deepseek.html' },
+            { title: 'Signup Test - Qwen', description: '模型互動測試頁（Qwen）', image: 'tle_logo.png', tags: ['LLM', 'Qwen', 'Signup'], link: 'signuptest/qwen.html' }
+          ],
+
+          // solarsystem 卡片資料
+          solarsystemPages: [
+            { title: 'Solar System - ChatGPT', description: '太陽系主題互動示範（ChatGPT）', image: 'tle_logo.png', tags: ['LLM', 'ChatGPT', 'SolarSystem'], link: 'solarsystem/chatgpt.html' },
+            { title: 'Solar System - Claude', description: '太陽系主題互動示範（Claude）', image: 'tle_logo.png', tags: ['LLM', 'Claude', 'SolarSystem'], link: 'solarsystem/claude.html' },
+            { title: 'Solar System - Gemini', description: '太陽系主題互動示範（Gemini）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'SolarSystem'], link: 'solarsystem/gemini.html' },
+            { title: 'Solar System - Grok', description: '太陽系主題互動示範（Grok）', image: 'tle_logo.png', tags: ['LLM', 'Grok', 'SolarSystem'], link: 'solarsystem/grok.html' },
+            { title: 'Solar System - DeepSeek', description: '太陽系主題互動示範（DeepSeek）', image: 'tle_logo.png', tags: ['LLM', 'DeepSeek', 'SolarSystem'], link: 'solarsystem/deepseek.html' },
+            { title: 'Solar System - Qwen', description: '太陽系主題互動示範（Qwen）', image: 'tle_logo.png', tags: ['LLM', 'Qwen', 'SolarSystem'], link: 'solarsystem/qwen.html' }
+          ]
+        }
+      },
+      methods: {
+        // 卡片點擊：行動裝置同窗、桌機新分頁
+        handleCardClick(link, event) {
+          if (!link) return;
+          if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          if (this.isMobileView) {
+            window.location.href = link;
+          } else {
+            window.open(link, '_blank', 'noopener,noreferrer');
+          }
+        }
+      },
+      mounted() {
+        // 響應式狀態
+        const onResize = () => { this.isMobileView = window.innerWidth <= 768; };
+        window.addEventListener('resize', onResize);
+        this.$once('hook:beforeUnmount', () => window.removeEventListener('resize', onResize));
+        // 保險：初始化後再標記 loaded，避免任何延遲造成無法滾動
+        document.body.classList.add('loaded');
+      }
+    }).mount('#aiHubApp');
+  </script>
+</body>
+</html>
+
+

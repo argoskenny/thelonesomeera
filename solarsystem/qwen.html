@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太陽系模擬器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0c0e25, #1a1a2e);
+            color: #e6e6e6;
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 10, 30, 0.7);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4cc9f0, #72efdd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #a0a0c0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+        }
+        
+        .canvas-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            background: rgba(10, 15, 40, 0.5);
+            border: 1px solid rgba(76, 201, 240, 0.2);
+        }
+        
+        canvas {
+            display: block;
+        }
+        
+        .controls {
+            width: 300px;
+            background: rgba(15, 25, 55, 0.85);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(76, 201, 240, 0.15);
+        }
+        
+        .control-group {
+            margin-bottom: 25px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4cc9f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, #4cc9f0, transparent);
+            margin-left: 10px;
+        }
+        
+        .slider-container {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #c0c0e0;
+            font-weight: 500;
+        }
+        
+        .slider-value {
+            display: inline-block;
+            width: 50px;
+            text-align: right;
+            color: #4cc9f0;
+            font-weight: bold;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            height: 12px;
+            -webkit-appearance: none;
+            background: rgba(70, 80, 120, 0.5);
+            border-radius: 6px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: #4cc9f0;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(76, 201, 240, 0.7);
+            border: 2px solid white;
+        }
+        
+        .planet-info {
+            background: rgba(20, 30, 60, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .planet-info h3 {
+            color: #72efdd;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .planet-info p {
+            margin: 8px 0;
+            color: #b0b0d0;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .highlight {
+            color: #4cc9f0;
+            font-weight: bold;
+        }
+        
+        .key-features {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .feature {
+            background: rgba(30, 40, 80, 0.5);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .feature i {
+            color: #4cc9f0;
+            margin-right: 5px;
+        }
+        
+        .planet-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .planet-btn {
+            padding: 8px 5px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(40, 50, 100, 0.6);
+            color: #e0e0ff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .planet-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .planet-btn.active {
+            background: #4cc9f0;
+            color: #0a0f25;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(76, 201, 240, 0.6);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #8080a0;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(76, 201, 240, 0.1);
+        }
+        
+        .instructions {
+            background: rgba(20, 30, 60, 0.6);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .instructions ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .instructions li {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 1100px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .controls {
+                width: 100%;
+                max-width: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>太陽系3D模擬器</h1>
+        <p class="subtitle">探索我們的太陽系 - 一個互動式3D模型，展示八大行星圍繞太陽的真實運動。使用滑鼠拖拽旋轉視角，滾輪縮放，體驗宇宙的壯麗</p>
+    </header>
+    
+    <div class="container">
+        <div class="canvas-container">
+            <canvas id="solarSystemCanvas"></canvas>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <h2>視角控制</h2>
+                <div class="slider-container">
+                    <label for="rotationSpeed">旋轉速度: <span class="slider-value" id="rotationSpeedValue">1.0</span>x</label>
+                    <input type="range" id="rotationSpeed" min="0.1" max="3.0" step="0.1" value="1.0">
+                </div>
+                
+                <div class="slider-container">
+                    <label for="zoomLevel">視野縮放: <span class="slider-value" id="zoomLevelValue">1.0</span>x</label>
+                    <input type="range" id="zoomLevel" min="0.5" max="3.0" step="0.1" value="1.0">
+                </div>
+                
+                <div class="slider-container">
+                    <label for="tiltAngle">傾斜角度: <span class="slider-value" id="tiltAngleValue">30</span>°</label>
+                    <input type="range" id="tiltAngle" min="0" max="90" value="30">
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h2>行星資訊</h2>
+                <div class="planet-info">
+                    <h3 id="currentPlanet">太陽</h3>
+                    <p><span class="highlight">直徑:</span> 1,392,700 公里</p>
+                    <p><span class="highlight">表面溫度:</span> 約 5,500°C</p>
+                    <p><span class="highlight">組成:</span> 氫(74%)、氦(24%)及其他元素</p>
+                    <p><span class="highlight">特點:</span> 太陽系的中心恆星，提供光和熱</p>
+                    
+                    <div class="key-features">
+                        <div class="feature">☉ 核心溫度 1500萬°C</div>
+                        <div class="feature">☉ 佔太陽系質量99.86%</div>
+                        <div class="feature">☉ 光到地球需8分20秒</div>
+                        <div class="feature">☉ 年齡約46億年</div>
+                    </div>
+                </div>
+                
+                <div class="planet-selector">
+                    <button class="planet-btn active" data-planet="sun">太陽</button>
+                    <button class="planet-btn" data-planet="mercury">水星</button>
+                    <button class="planet-btn" data-planet="venus">金星</button>
+                    <button class="planet-btn" data-planet="earth">地球</button>
+                    <button class="planet-btn" data-planet="mars">火星</button>
+                    <button class="planet-btn" data-planet="jupiter">木星</button>
+                    <button class="planet-btn" data-planet="saturn">土星</button>
+                    <button class="planet-btn" data-planet="uranus">天王星</button>
+                    <button class="planet-btn" data-planet="neptune">海王星</button>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <h2>操作說明</h2>
+                <div class="instructions">
+                    <p>使用滑鼠與太陽系互動：</p>
+                    <ul>
+                        <li>↓ 按住滑鼠左鍵並拖動：旋轉視角</li>
+                        <li>↑ 滾動滑鼠滾輪：縮放視野</li>
+                        <li>→ 點擊行星按鈕：聚焦特定行星</li>
+                        <li>⚡ 調整滑桿：控制旋轉速度和視角</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>太陽系模擬器 | 資料來源：NASA | 此模型已按比例縮放以便視覺化展示</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // 初始化Canvas
+            const canvas = document.getElementById('solarSystemCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 設定Canvas尺寸
+            function resizeCanvas() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            
+            // 行星資料
+            const planets = [
+                { 
+                    name: 'sun', 
+                    label: '太陽', 
+                    radius: 30, 
+                    color: '#FDB813', 
+                    glowColor: 'rgba(253, 184, 19, 0.3)',
+                    orbitRadius: 0, 
+                    orbitSpeed: 0, 
+                    info: {
+                        diameter: '1,392,700 公里',
+                        temperature: '約 5,500°C',
+                        composition: '氫(74%)、氦(24%)及其他元素',
+                        features: [
+                            '☉ 核心溫度 1500萬°C',
+                            '☉ 佔太陽系質量99.86%',
+                            '☉ 光到地球需8分20秒',
+                            '☉ 年齡約46億年'
+                        ],
+                        description: '太陽系的中心恆星，提供光和熱'
+                    }
+                },
+                { 
+                    name: 'mercury', 
+                    label: '水星', 
+                    radius: 4, 
+                    color: '#aaa9ad', 
+                    orbitRadius: 60, 
+                    orbitSpeed: 0.04, 
+                    info: {
+                        diameter: '4,880 公里',
+                        temperature: '-173°C 至 427°C',
+                        composition: '鐵(核心)、矽酸鹽(地殼)',
+                        features: [
+                            '☉ 最靠近太陽的行星',
+                            '☉ 一年僅88地球日',
+                            '☉ 溫差最大行星',
+                            '☉ 沒有衛星'
+                        ],
+                        description: '最小的行星，表面佈滿隕石坑'
+                    }
+                },
+                { 
+                    name: 'venus', 
+                    label: '金星', 
+                    radius: 8, 
+                    color: '#e6e2af', 
+                    orbitRadius: 90, 
+                    orbitSpeed: 0.015, 
+                    info: {
+                        diameter: '12,104 公里',
+                        temperature: '約 467°C',
+                        composition: '二氧化碳(96.5%)、氮',
+                        features: [
+                            '☉ 表面溫度最高的行星',
+                            '☉ 逆向自轉（太陽西昇東落）',
+                            '☉ 被稱為地球的「姊妹星」',
+                            '☉ 有濃厚硫酸雲層'
+                        ],
+                        description: '被有毒大氣層包圍的熾熱行星'
+                    }
+                },
+                { 
+                    name: 'earth', 
+                    label: '地球', 
+                    radius: 8.5, 
+                    color: '#6699ff', 
+                    orbitRadius: 120, 
+                    orbitSpeed: 0.01, 
+                    info: {
+                        diameter: '12,742 公里',
+                        temperature: '-89°C 至 58°C',
+                        composition: '氮(78%)、氧(21%)',
+                        features: [
+                            '☉ 唯一已知有生命的行星',
+                            '☉ 71%表面被水覆蓋',
+                            '☉ 有強大的磁場',
+                            '☉ 有一顆天然衛星'
+                        ],
+                        description: '我們的家園，藍色星球'
+                    }
+                },
+                { 
+                    name: 'mars', 
+                    label: '火星', 
+                    radius: 5, 
+                    color: '#ff6600', 
+                    orbitRadius: 150, 
+                    orbitSpeed: 0.008, 
+                    info: {
+                        diameter: '6,779 公里',
+                        temperature: '-143°C 至 35°C',
+                        composition: '二氧化碳(95%)、氮',
+                        features: [
+                            '☉ 紅色星球（因氧化鐵）',
+                            '☉ 有太陽系最高山（奧林帕斯山）',
+                            '☉ 有稀薄大氣層',
+                            '☉ 有兩顆小衛星'
+                        ],
+                        description: '探索重點，可能曾有液態水'
+                    }
+                },
+                { 
+                    name: 'jupiter', 
+                    label: '木星', 
+                    radius: 20, 
+                    color: '#ffcc99', 
+                    orbitRadius: 220, 
+                    orbitSpeed: 0.004, 
+                    info: {
+                        diameter: '139,820 公里',
+                        temperature: '-145°C',
+                        composition: '氫(90%)、氦(10%)',
+                        features: [
+                            '☉ 太陽系最大行星',
+                            '☉ 有79顆已知衛星',
+                            '☉ 大紅斑（持續數百年的風暴）',
+                            '☉ 沒有固體表面'
+                        ],
+                        description: '氣態巨行星，質量是地球318倍'
+                    }
+                },
+                { 
+                    name: 'saturn', 
+                    label: '土星', 
+                    radius: 17, 
+                    color: '#f4d03f', 
+                    ring: { inner: 25, outer: 35, color: '#e0c080' },
+                    orbitRadius: 290, 
+                    orbitSpeed: 0.003, 
+                    info: {
+                        diameter: '116,460 公里',
+                        temperature: '-178°C',
+                        composition: '氫(96%)、氦(3%)',
+                        features: [
+                            '☉ 有壯觀的環系統',
+                            '☉ 密度比水還小',
+                            '☉ 有82顆已知衛星',
+                            '☉ 有太陽系最強風暴'
+                        ],
+                        description: '以美麗環系聞名的氣態巨行星'
+                    }
+                },
+                { 
+                    name: 'uranus', 
+                    label: '天王星', 
+                    radius: 12, 
+                    color: '#d1f2fb', 
+                    orbitRadius: 350, 
+                    orbitSpeed: 0.002, 
+                    info: {
+                        diameter: '50,724 公里',
+                        temperature: '-224°C',
+                        composition: '氫(83%)、氦(15%)、甲烷(2%)',
+                        features: [
+                            '☉ 以側向自轉（軸傾角98°）',
+                            '☉ 呈藍綠色（因甲烷）',
+                            '☉ 有27顆已知衛星',
+                            '☉ 有暗淡環系'
+                        ],
+                        description: '冰巨行星，自轉軸幾乎躺在軌道面上'
+                    }
+                },
+                { 
+                    name: 'neptune', 
+                    label: '海王星', 
+                    radius: 11, 
+                    color: '#1560bd', 
+                    orbitRadius: 400, 
+                    orbitSpeed: 0.0015, 
+                    info: {
+                        diameter: '49,244 公里',
+                        temperature: '-214°C',
+                        composition: '氫(80%)、氦(19%)、甲烷(1%)',
+                        features: [
+                            '☉ 以風速最高聞名（2,100km/h）',
+                            '☉ 通過數學預測發現',
+                            '☉ 有14顆已知衛星',
+                            '☉ 有暗淡環系'
+                        ],
+                        description: '最外側的冰巨行星，深藍色'
+                    }
+                }
+            ];
+            
+            // 控制變數
+            let rotationSpeed = 1.0;
+            let zoomLevel = 1.0;
+            let tiltAngle = 30;
+            let currentPlanet = 'sun';
+            let angle = 0;
+            let mouseX = 0, mouseY = 0;
+            let lastMouseX = 0, lastMouseY = 0;
+            let isDragging = false;
+            let cameraX = 0, cameraY = 0;
+            
+            // 事件監聽器
+            document.getElementById('rotationSpeed').addEventListener('input', function() {
+                rotationSpeed = parseFloat(this.value);
+                document.getElementById('rotationSpeedValue').textContent = rotationSpeed.toFixed(1);
+            });
+            
+            document.getElementById('zoomLevel').addEventListener('input', function() {
+                zoomLevel = parseFloat(this.value);
+                document.getElementById('zoomLevelValue').textContent = zoomLevel.toFixed(1);
+            });
+            
+            document.getElementById('tiltAngle').addEventListener('input', function() {
+                tiltAngle = parseInt(this.value);
+                document.getElementById('tiltAngleValue').textContent = tiltAngle;
+            });
+            
+            // 行星按鈕
+            document.querySelectorAll('.planet-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.planet-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentPlanet = this.dataset.planet;
+                    updatePlanetInfo();
+                });
+            });
+            
+            // 滑鼠事件
+            canvas.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+                canvas.style.cursor = 'grabbing';
+            });
+            
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.clientX - lastMouseX;
+                    const deltaY = e.clientY - lastMouseY;
+                    
+                    cameraX += deltaX * 0.01;
+                    cameraY += deltaY * 0.01;
+                    
+                    lastMouseX = e.clientX;
+                    lastMouseY = e.clientY;
+                }
+            });
+            
+            canvas.addEventListener('mouseup', () => {
+                isDragging = false;
+                canvas.style.cursor = 'grab';
+            });
+            
+            canvas.addEventListener('mouseleave', () => {
+                isDragging = false;
+                canvas.style.cursor = 'default';
+            });
+            
+            canvas.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                zoomLevel = Math.min(3.0, Math.max(0.5, zoomLevel - e.deltaY * 0.001));
+                document.getElementById('zoomLevel').value = zoomLevel;
+                document.getElementById('zoomLevelValue').textContent = zoomLevel.toFixed(1);
+            });
+            
+            // 更新行星資訊
+            function updatePlanetInfo() {
+                const planet = planets.find(p => p.name === currentPlanet);
+                if (!planet) return;
+                
+                document.getElementById('currentPlanet').textContent = planet.label;
+                
+                const infoDiv = document.querySelector('.planet-info');
+                infoDiv.innerHTML = `
+                    <h3>${planet.label}</h3>
+                    <p><span class="highlight">直徑:</span> ${planet.info.diameter}</p>
+                    <p><span class="highlight">表面溫度:</span> ${planet.info.temperature}</p>
+                    <p><span class="highlight">組成:</span> ${planet.info.composition}</p>
+                    <p><span class="highlight">特點:</span> ${planet.info.description}</p>
+                    
+                    <div class="key-features">
+                        ${planet.info.features.map(feat => `<div class="feature">${feat}</div>`).join('')}
+                    </div>
+                `;
+            }
+            
+            // 繪製函數
+            function draw() {
+                // 清除畫布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // 設定背景漸層
+                const bgGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+                bgGradient.addColorStop(0, '#0a0f25');
+                bgGradient.addColorStop(1, '#050816');
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // 星空效果
+                drawStars();
+                
+                // 計算中心點
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                
+                // 計算縮放和旋轉
+                const scale = 150 * zoomLevel;
+                const rotation = angle * rotationSpeed;
+                
+                // 繪製軌道
+                planets.slice(1).forEach(planet => {
+                    const radius = planet.orbitRadius * (scale / 150);
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = 'rgba(100, 150, 255, 0.2)';
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                });
+                
+                // 繪製行星
+                planets.forEach(planet => {
+                    // 計算行星位置
+                    let x, y;
+                    
+                    if (planet.orbitRadius > 0) {
+                        // 有軌道的行星
+                        const orbitRadius = planet.orbitRadius * (scale / 150);
+                        const planetAngle = angle * planet.orbitSpeed + rotation;
+                        
+                        // 考慮傾斜角度
+                        const tiltRad = tiltAngle * Math.PI / 180;
+                        const zOffset = Math.sin(planetAngle) * orbitRadius * Math.sin(tiltRad);
+                        
+                        x = centerX + Math.cos(planetAngle) * orbitRadius;
+                        y = centerY + Math.sin(planetAngle) * orbitRadius * Math.cos(tiltRad) + zOffset * 0.3;
+                    } else {
+                        // 太陽
+                        x = centerX;
+                        y = centerY;
+                    }
+                    
+                    // 繪製行星
+                    ctx.beginPath();
+                    ctx.arc(x, y, planet.radius * (zoomLevel * 0.8), 0, Math.PI * 2);
+                    
+                    // 太陽的光暈效果
+                    if (planet.name === 'sun') {
+                        const gradient = ctx.createRadialGradient(
+                            x, y, planet.radius * 0.5,
+                            x, y, planet.radius * 2
+                        );
+                        gradient.addColorStop(0, planet.color);
+                        gradient.addColorStop(1, 'rgba(253, 184, 19, 0)');
+                        ctx.fillStyle = gradient;
+                        ctx.fill();
+                        
+                        // 太陽本體
+                        ctx.beginPath();
+                        ctx.arc(x, y, planet.radius * 0.8, 0, Math.PI * 2);
+                        ctx.fillStyle = planet.color;
+                        ctx.fill();
+                    } else {
+                        // 普通行星
+                        ctx.fillStyle = planet.color;
+                        ctx.fill();
+                        
+                        // 土星環
+                        if (planet.name === 'saturn' && zoomLevel > 0.7) {
+                            ctx.beginPath();
+                            ctx.ellipse(
+                                x, 
+                                y, 
+                                planet.ring.outer * (zoomLevel * 0.8), 
+                                planet.ring.outer * (zoomLevel * 0.8) * 0.3, 
+                                0, 0, Math.PI * 2
+                            );
+                            ctx.fillStyle = planet.ring.color;
+                            ctx.globalAlpha = 0.7;
+                            ctx.fill();
+                            
+                            ctx.beginPath();
+                            ctx.ellipse(
+                                x, 
+                                y, 
+                                planet.ring.inner * (zoomLevel * 0.8), 
+                                planet.ring.inner * (zoomLevel * 0.8) * 0.3, 
+                                0, 0, Math.PI * 2
+                            );
+                            ctx.globalAlpha = 1;
+                            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+                            ctx.fill();
+                        }
+                    }
+                    
+                    // 繪製行星標籤
+                    if (zoomLevel > 0.8 && planet.orbitRadius > 0) {
+                        ctx.fillStyle = '#e0e0ff';
+                        ctx.font = '12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(planet.label, x, y + planet.radius * 1.8);
+                    }
+                });
+                
+                // 更新角度
+                angle += 0.001;
+                
+                // 請求下一幀
+                requestAnimationFrame(draw);
+            }
+            
+            // 繪製星空
+            function drawStars() {
+                const starCount = 300;
+                ctx.fillStyle = 'white';
+                
+                for (let i = 0; i < starCount; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const size = Math.random() * 1.5;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            
+            // 初始化
+            updatePlanetInfo();
+            canvas.style.cursor = 'grab';
+            draw();
+        });
+    </script>
+</body>
+</html>

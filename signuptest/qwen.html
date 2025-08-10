@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用戶註冊 | 安全註冊平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-attachment: fixed;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .register-card {
+            display: flex;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.25);
+            height: 600px;
+        }
+
+        .info-section {
+            flex: 1;
+            background: linear-gradient(to bottom, #4b6cb7, #182848);
+            padding: 40px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            transform: rotate(30deg);
+        }
+
+        .info-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .info-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .info-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .feature i {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .form-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h1 {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.05rem;
+        }
+
+        .input-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: #4b6cb7;
+            box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+        }
+
+        .error-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #e74c3c;
+            font-size: 1.2rem;
+            display: none;
+        }
+
+        .error-message {
+            position: absolute;
+            right: -220px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e74c3c;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            width: 200px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            z-index: 10;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .error-message::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-width: 8px;
+            border-style: solid;
+            border-color: transparent #e74c3c transparent transparent;
+        }
+
+        .form-control.is-invalid {
+            border-color: #e74c3c;
+        }
+
+        .form-control.is-invalid:focus {
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
+        }
+
+        .password-requirements {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            display: none;
+        }
+
+        .password-requirements ul {
+            list-style-type: none;
+            padding-left: 15px;
+        }
+
+        .password-requirements li {
+            margin-bottom: 3px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .password-requirements li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: #e74c3c;
+        }
+
+        .btn-register {
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(75, 108, 183, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(75, 108, 183, 0.4);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 25px;
+            color: #7f8c8d;
+        }
+
+        .login-link a {
+            color: #4b6cb7;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-50%) translateX(10px); }
+            to { opacity: 1; transform: translateY(-50%); }
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 900px) {
+            .register-card {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+            
+            .info-section, .form-section {
+                padding: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .error-message {
+                right: -180px;
+                width: 170px;
+            }
+            
+            .info-section h2 {
+                font-size: 2rem;
+            }
+            
+            .form-header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="register-card">
+            <div class="info-section">
+                <div class="info-content">
+                    <h2>安全註冊平台</h2>
+                    <p>我們重視您的帳戶安全，採用先進的加密技術保護您的個人資料。完成註冊後，您將享受個性化服務和專屬功能。</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>軍用級數據加密</div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-lock"></i>
+                            <div>雙重身份驗證</div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-sync-alt"></i>
+                            <div>實時安全監控</div>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-user-shield"></i>
+                            <div>隱私保護協議</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <div class="form-header">
+                    <h1>創建新帳戶</h1>
+                    <p>加入我們，開始您的安全之旅</p>
+                </div>
+                
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="name">真實姓名</label>
+                        <div class="input-container">
+                            <input type="text" id="name" class="form-control" placeholder="輸入您的真實姓名">
+                            <i class="fas fa-exclamation-circle error-icon" id="nameErrorIcon"></i>
+                            <div class="error-message" id="nameErrorMessage">
+                                請輸入您的真實姓名，此欄位不得為空
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">電子郵箱</label>
+                        <div class="input-container">
+                            <input type="email" id="email" class="form-control" placeholder="example@email.com">
+                            <i class="fas fa-exclamation-circle error-icon" id="emailErrorIcon"></i>
+                            <div class="error-message" id="emailErrorMessage">
+                                請輸入有效的電子郵箱地址
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">密碼</label>
+                        <div class="input-container">
+                            <input type="password" id="password" class="form-control" placeholder="至少8個字符，包含大寫字母和特殊符號">
+                            <i class="fas fa-exclamation-circle error-icon" id="passwordErrorIcon"></i>
+                            <div class="error-message" id="passwordErrorMessage">
+                                密碼需包含至少一個大寫字母和一個特殊符號
+                            </div>
+                        </div>
+                        <div class="password-requirements" id="passwordRequirements">
+                            <ul>
+                                <li>至少8個字符</li>
+                                <li>至少一個大寫字母 (A-Z)</li>
+                                <li>至少一個特殊符號 (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="confirmPassword">確認密碼</label>
+                        <div class="input-container">
+                            <input type="password" id="confirmPassword" class="form-control" placeholder="再次輸入密碼">
+                            <i class="fas fa-exclamation-circle error-icon" id="confirmErrorIcon"></i>
+                            <div class="error-message" id="confirmErrorMessage">
+                                兩次輸入的密碼不一致
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-register">立即註冊</button>
+                    
+                    <div class="login-link">
+                        已有帳戶? <a href="#">立即登入</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registerForm');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const confirmPasswordInput = document.getElementById('confirmPassword');
+            
+            // 獲取所有錯誤元素
+            const nameErrorIcon = document.getElementById('nameErrorIcon');
+            const nameErrorMessage = document.getElementById('nameErrorMessage');
+            const emailErrorIcon = document.getElementById('emailErrorIcon');
+            const emailErrorMessage = document.getElementById('emailErrorMessage');
+            const passwordErrorIcon = document.getElementById('passwordErrorIcon');
+            const passwordErrorMessage = document.getElementById('passwordErrorMessage');
+            const confirmErrorIcon = document.getElementById('confirmErrorIcon');
+            const confirmErrorMessage = document.getElementById('confirmErrorMessage');
+            const passwordRequirements = document.getElementById('passwordRequirements');
+            
+            // 顯示錯誤提示
+            function showError(input, errorIcon, errorMessage, message) {
+                input.classList.add('is-invalid');
+                errorIcon.style.display = 'block';
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            
+            // 隱藏錯誤提示
+            function hideError(input, errorIcon, errorMessage) {
+                input.classList.remove('is-invalid');
+                errorIcon.style.display = 'none';
+                errorMessage.style.display = 'none';
+            }
+            
+            // 驗證姓名
+            function validateName() {
+                const name = nameInput.value.trim();
+                if (name === '') {
+                    showError(nameInput, nameErrorIcon, nameErrorMessage, '請輸入您的真實姓名，此欄位不得為空');
+                    return false;
+                }
+                hideError(nameInput, nameErrorIcon, nameErrorMessage);
+                return true;
+            }
+            
+            // 驗證郵箱
+            function validateEmail() {
+                const email = emailInput.value.trim();
+                if (email === '') {
+                    showError(emailInput, emailErrorIcon, emailErrorMessage, '請輸入電子郵箱地址');
+                    return false;
+                }
+                
+                // 基本郵箱格式驗證
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    showError(emailInput, emailErrorIcon, emailErrorMessage, '請輸入有效的電子郵箱地址');
+                    return false;
+                }
+                
+                hideError(emailInput, emailErrorIcon, emailErrorMessage);
+                return true;
+            }
+            
+            // 驗證密碼
+            function validatePassword() {
+                const password = passwordInput.value;
+                
+                // 顯示密碼要求提示
+                passwordRequirements.style.display = 'block';
+                
+                if (password === '') {
+                    showError(passwordInput, passwordErrorIcon, passwordErrorMessage, '密碼欄位不得為空');
+                    return false;
+                }
+                
+                // 檢查密碼長度
+                if (password.length < 8) {
+                    showError(passwordInput, passwordErrorIcon, passwordErrorMessage, '密碼至少需要8個字符');
+                    return false;
+                }
+                
+                // 檢查大寫字母
+                if (!/[A-Z]/.test(password)) {
+                    showError(passwordInput, passwordErrorIcon, passwordErrorMessage, '密碼需包含至少一個大寫字母');
+                    return false;
+                }
+                
+                // 檢查特殊符號
+                if (!/[\W_]/.test(password)) {
+                    showError(passwordInput, passwordErrorIcon, passwordErrorMessage, '密碼需包含至少一個特殊符號 (!@#$%^&*等)');
+                    return false;
+                }
+                
+                hideError(passwordInput, passwordErrorIcon, passwordErrorMessage);
+                return true;
+            }
+            
+            // 驗證確認密碼
+            function validateConfirmPassword() {
+                const password = passwordInput.value;
+                const confirmPassword = confirmPasswordInput.value;
+                
+                if (confirmPassword === '') {
+                    showError(confirmPasswordInput, confirmErrorIcon, confirmErrorMessage, '請再次輸入密碼');
+                    return false;
+                }
+                
+                if (password !== confirmPassword) {
+                    showError(confirmPasswordInput, confirmErrorIcon, confirmErrorMessage, '兩次輸入的密碼不一致');
+                    return false;
+                }
+                
+                hideError(confirmPasswordInput, confirmErrorIcon, confirmErrorMessage);
+                return true;
+            }
+            
+            // 當密碼欄位聚焦時顯示要求
+            passwordInput.addEventListener('focus', function() {
+                passwordRequirements.style.display = 'block';
+            });
+            
+            // 當密碼欄位失去焦點時驗證
+            passwordInput.addEventListener('blur', validatePassword);
+            
+            // 當確認密碼欄位失去焦點時驗證
+            confirmPasswordInput.addEventListener('blur', validateConfirmPassword);
+            
+            // 即時驗證姓名
+            nameInput.addEventListener('blur', validateName);
+            
+            // 即時驗證郵箱
+            emailInput.addEventListener('blur', validateEmail);
+            
+            // 表單提交驗證
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const isNameValid = validateName();
+                const isEmailValid = validateEmail();
+                const isPasswordValid = validatePassword();
+                const isConfirmValid = validateConfirmPassword();
+                
+                if (isNameValid && isEmailValid && isPasswordValid && isConfirmValid) {
+                    // 所有驗證通過
+                    alert('註冊成功！您的帳戶已創建。');
+                    form.reset();
+                    
+                    // 隱藏所有錯誤和密碼要求
+                    hideError(nameInput, nameErrorIcon, nameErrorMessage);
+                    hideError(emailInput, emailErrorIcon, emailErrorMessage);
+                    hideError(passwordInput, passwordErrorIcon, passwordErrorMessage);
+                    hideError(confirmPasswordInput, confirmErrorIcon, confirmErrorMessage);
+                    passwordRequirements.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員註冊</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .registration-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .registration-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .form-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .form-input.error {
+            border-color: #e74c3c;
+            background: #fff5f5;
+        }
+
+        .form-input.success {
+            border-color: #27ae60;
+            background: #f0fff4;
+        }
+
+        .error-tooltip {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #e74c3c;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .error-tooltip::before {
+            content: '';
+            position: absolute;
+            left: -5px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-right: 5px solid #e74c3c;
+        }
+
+        .error-tooltip.show {
+            opacity: 1;
+            visibility: visible;
+            right: -10px;
+        }
+
+        .password-strength {
+            margin-top: 10px;
+            font-size: 12px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: #e1e5e9;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .strength-weak { background: #e74c3c; width: 33%; }
+        .strength-medium { background: #f39c12; width: 66%; }
+        .strength-strong { background: #27ae60; width: 100%; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .checkbox-input {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .login-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 480px) {
+            .registration-container {
+                padding: 30px 20px;
+            }
+            
+            .form-title {
+                font-size: 24px;
+            }
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <h2 class="form-title">會員註冊</h2>
+        
+        <div class="success-message" id="successMessage">
+            註冊成功！歡迎加入我們！
+        </div>
+
+        <form id="registrationForm" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="username">使用者名稱 *</label>
+                <input type="text" id="username" name="username" class="form-input" required>
+                <div class="error-tooltip" id="usernameError">請輸入使用者名稱</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="email">電子郵件 *</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+                <div class="error-tooltip" id="emailError">請輸入有效的電子郵件</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="phone">手機號碼 *</label>
+                <input type="tel" id="phone" name="phone" class="form-input" required>
+                <div class="error-tooltip" id="phoneError">請輸入手機號碼</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="password">密碼 *</label>
+                <input type="password" id="password" name="password" class="form-input" required>
+                <div class="error-tooltip" id="passwordError">密碼必須包含至少一個大寫字母和一個特殊符號</div>
+                <div class="password-strength">
+                    <div class="strength-text">密碼強度：<span id="strengthText">請輸入密碼</span></div>
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthBar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="confirmPassword">確認密碼 *</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" required>
+                <div class="error-tooltip" id="confirmPasswordError">密碼不一致</div>
+            </div>
+
+            <div class="checkbox-group">
+                <input type="checkbox" id="terms" name="terms" class="checkbox-input" required>
+                <label class="checkbox-label" for="terms">我同意 <a href="#" style="color: #667eea;">使用條款</a> 和 <a href="#" style="color: #667eea;">隱私政策</a> *</label>
+                <div class="error-tooltip" id="termsError" style="position: absolute; right: 0; top: 0;">請同意使用條款</div>
+            </div>
+
+            <button type="submit" class="submit-btn">立即註冊</button>
+        </form>
+
+        <div class="login-link">
+            已有帳號？<a href="#">立即登入</a>
+        </div>
+    </div>
+
+    <script>
+        class FormValidator {
+            constructor() {
+                this.form = document.getElementById('registrationForm');
+                this.fields = {
+                    username: document.getElementById('username'),
+                    email: document.getElementById('email'),
+                    phone: document.getElementById('phone'),
+                    password: document.getElementById('password'),
+                    confirmPassword: document.getElementById('confirmPassword'),
+                    terms: document.getElementById('terms')
+                };
+                this.errors = {
+                    username: document.getElementById('usernameError'),
+                    email: document.getElementById('emailError'),
+                    phone: document.getElementById('phoneError'),
+                    password: document.getElementById('passwordError'),
+                    confirmPassword: document.getElementById('confirmPasswordError'),
+                    terms: document.getElementById('termsError')
+                };
+                this.strengthBar = document.getElementById('strengthBar');
+                this.strengthText = document.getElementById('strengthText');
+                
+                this.init();
+            }
+
+            init() {
+                // 即時驗證
+                Object.keys(this.fields).forEach(key => {
+                    if (key !== 'terms') {
+                        this.fields[key].addEventListener('input', () => this.validateField(key));
+                        this.fields[key].addEventListener('blur', () => this.validateField(key));
+                    } else {
+                        this.fields[key].addEventListener('change', () => this.validateField(key));
+                    }
+                });
+
+                // 密碼強度檢測
+                this.fields.password.addEventListener('input', () => this.checkPasswordStrength());
+
+                // 表單提交
+                this.form.addEventListener('submit', (e) => this.handleSubmit(e));
+            }
+
+            validateField(fieldName) {
+                const field = this.fields[fieldName];
+                const errorTooltip = this.errors[fieldName];
+                let isValid = true;
+                let errorMessage = '';
+
+                // 清除之前的狀態
+                field.classList.remove('error', 'success');
+                this.hideError(errorTooltip);
+
+                switch (fieldName) {
+                    case 'username':
+                        if (!field.value.trim()) {
+                            errorMessage = '請輸入使用者名稱';
+                            isValid = false;
+                        } else if (field.value.length < 3) {
+                            errorMessage = '使用者名稱至少需要3個字元';
+                            isValid = false;
+                        }
+                        break;
+
+                    case 'email':
+                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        if (!field.value.trim()) {
+                            errorMessage = '請輸入電子郵件';
+                            isValid = false;
+                        } else if (!emailRegex.test(field.value)) {
+                            errorMessage = '請輸入有效的電子郵件格式';
+                            isValid = false;
+                        }
+                        break;
+
+                    case 'phone':
+                        const phoneRegex = /^09\d{8}$/;
+                        if (!field.value.trim()) {
+                            errorMessage = '請輸入手機號碼';
+                            isValid = false;
+                        } else if (!phoneRegex.test(field.value)) {
+                            errorMessage = '請輸入有效的手機號碼格式 (09xxxxxxxx)';
+                            isValid = false;
+                        }
+                        break;
+
+                    case 'password':
+                        const password = field.value;
+                        const hasUppercase = /[A-Z]/.test(password);
+                        const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password);
+                        
+                        if (!password) {
+                            errorMessage = '請輸入密碼';
+                            isValid = false;
+                        } else if (password.length < 8) {
+                            errorMessage = '密碼長度至少需要8個字元';
+                            isValid = false;
+                        } else if (!hasUppercase) {
+                            errorMessage = '密碼必須包含至少一個大寫字母';
+                            isValid = false;
+                        } else if (!hasSpecialChar) {
+                            errorMessage = '密碼必須包含至少一個特殊符號';
+                            isValid = false;
+                        }
+                        break;
+
+                    case 'confirmPassword':
+                        if (!field.value) {
+                            errorMessage = '請確認密碼';
+                            isValid = false;
+                        } else if (field.value !== this.fields.password.value) {
+                            errorMessage = '密碼不一致';
+                            isValid = false;
+                        }
+                        break;
+
+                    case 'terms':
+                        if (!field.checked) {
+                            errorMessage = '請同意使用條款';
+                            isValid = false;
+                        }
+                        break;
+                }
+
+                if (!isValid) {
+                    field.classList.add('error');
+                    this.showError(errorTooltip, errorMessage);
+                } else {
+                    field.classList.add('success');
+                }
+
+                return isValid;
+            }
+
+            showError(errorElement, message) {
+                errorElement.textContent = message;
+                errorElement.classList.add('show');
+            }
+
+            hideError(errorElement) {
+                errorElement.classList.remove('show');
+            }
+
+            checkPasswordStrength() {
+                const password = this.fields.password.value;
+                let strength = 0;
+                let strengthText = '';
+
+                if (password.length >= 8) strength++;
+                if (/[a-z]/.test(password)) strength++;
+                if (/[A-Z]/.test(password)) strength++;
+                if (/[0-9]/.test(password)) strength++;
+                if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) strength++;
+
+                this.strengthBar.className = 'strength-fill';
+                
+                if (password.length === 0) {
+                    strengthText = '請輸入密碼';
+                } else if (strength <= 2) {
+                    this.strengthBar.classList.add('strength-weak');
+                    strengthText = '弱';
+                } else if (strength <= 4) {
+                    this.strengthBar.classList.add('strength-medium');
+                    strengthText = '中等';
+                } else {
+                    this.strengthBar.classList.add('strength-strong');
+                    strengthText = '強';
+                }
+
+                this.strengthText.textContent = strengthText;
+            }
+
+            validateForm() {
+                let isFormValid = true;
+                Object.keys(this.fields).forEach(key => {
+                    if (!this.validateField(key)) {
+                        isFormValid = false;
+                    }
+                });
+                return isFormValid;
+            }
+
+            handleSubmit(e) {
+                e.preventDefault();
+                
+                if (this.validateForm()) {
+                    // 模擬提交成功
+                    document.getElementById('successMessage').style.display = 'block';
+                    this.form.reset();
+                    
+                    // 清除所有樣式
+                    Object.keys(this.fields).forEach(key => {
+                        this.fields[key].classList.remove('error', 'success');
+                        this.hideError(this.errors[key]);
+                    });
+                    
+                    // 重置密碼強度
+                    this.strengthBar.className = 'strength-fill';
+                    this.strengthText.textContent = '請輸入密碼';
+                    
+                    // 3秒後隱藏成功訊息
+                    setTimeout(() => {
+                        document.getElementById('successMessage').style.display = 'none';
+                    }, 3000);
+                }
+            }
+        }
+
+        // 初始化表單驗證器
+        document.addEventListener('DOMContentLoaded', () => {
+            new FormValidator();
+        });
+    </script>
+</body>
+</html>

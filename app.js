@@ -52,6 +52,14 @@ createApp({
                     image: 'sox/favicon.svg',
                     tags: ['Vue.js', 'Web Audio API', '動畫', '遊戲設計'],
                     link: 'sox/index.html'
+                },
+                {
+                    id: 5,
+                    title: 'AI Demo Hub',
+                    description: '整合 signuptest 與 solarsystem 內各模型示範頁的快速入口。',
+                    image: 'tle_logo.png',
+                    tags: ['LLM', 'Demo', 'Integration'],
+                    link: 'ai-hub.html'
                 }
             ],
             

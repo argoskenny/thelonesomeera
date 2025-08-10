@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>註冊頁面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .register-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error-tooltip {
+            position: absolute;
+            top: 50%;
+            right: -150px;
+            transform: translateY(-50%);
+            background-color: #ffdddd;
+            border: 1px solid #ff0000;
+            color: #ff0000;
+            padding: 5px 10px;
+            border-radius: 4px;
+            white-space: nowrap;
+            display: none;
+            z-index: 1;
+        }
+        .form-group.invalid input {
+            border-color: #ff0000;
+        }
+        .form-group.invalid .error-tooltip {
+            display: block;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2>註冊</h2>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">使用者名稱</label>
+                <input type="text" id="username" name="username">
+                <div class="error-tooltip" id="usernameError">使用者名稱不能留空</div>
+            </div>
+            <div class="form-group">
+                <label for="email">電子郵件</label>
+                <input type="email" id="email" name="email">
+                <div class="error-tooltip" id="emailError">電子郵件不能留空</div>
+            </div>
+            <div class="form-group">
+                <label for="password">密碼</label>
+                <input type="password" id="password" name="password">
+                <div class="error-tooltip" id="passwordError">密碼不能留空，且必須包含至少一個大寫字母和一個特殊符號</div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">確認密碼</label>
+                <input type="password" id="confirmPassword" name="confirmPassword">
+                <div class="error-tooltip" id="confirmPasswordError">確認密碼不能留空，且必須與密碼相同</div>
+            </div>
+            <button type="submit">註冊</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const fields = ['username', 'email', 'password', 'confirmPassword'];
+
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            let isValid = true;
+
+            fields.forEach(field => {
+                const input = document.getElementById(field);
+                const group = input.parentElement;
+                const error = document.getElementById(field + 'Error');
+
+                group.classList.remove('invalid');
+                if (!input.value.trim()) {
+                    group.classList.add('invalid');
+                    error.textContent = field === 'confirmPassword' ? '確認密碼不能留空，且必須與密碼相同' : (field === 'password' ? '密碼不能留空，且必須包含至少一個大寫字母和一個特殊符號' : `${field.charAt(0).toUpperCase() + field.slice(1)}不能留空`);
+                    isValid = false;
+                } else if (field === 'password') {
+                    const hasUppercase = /[A-Z]/.test(input.value);
+                    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(input.value);
+                    if (!hasUppercase || !hasSpecial) {
+                        group.classList.add('invalid');
+                        isValid = false;
+                    }
+                } else if (field === 'confirmPassword') {
+                    const password = document.getElementById('password').value;
+                    if (input.value !== password) {
+                        group.classList.add('invalid');
+                        error.textContent = '確認密碼必須與密碼相同';
+                        isValid = false;
+                    }
+                }
+            });
+
+            if (isValid) {
+                alert('註冊成功！');
+                // 在這裡可以添加實際的註冊邏輯，如發送數據到後端
+            }
+        });
+    </script>
+</body>
+</html>
