@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>地球—月球 3D 運行模擬</title>
+  <style>
+    html, body { height: 100%; margin: 0; background: radial-gradient(#0a0f1a, #04060a); color: #e6eefc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    #app { position: fixed; inset: 0; }
+    canvas { display:block; }
+    .ui { position: fixed; left: 16px; top: 16px; width: 340px; background: rgba(8,12,20,.7); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.35); backdrop-filter: blur(8px); padding: 14px 14px 10px; }
+    .ui h1 { font-size: 16px; margin: 0 0 8px; letter-spacing: .5px; font-weight: 700; }
+    .row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 10px; margin: 10px 0; }
+    .row label { font-size: 12px; opacity: .9; }
+    .row input[type="range"] { width: 190px; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+    button { cursor: pointer; border: 1px solid rgba(255,255,255,.12); background: rgba(30,40,60,.6); color: #e6eefc; border-radius: 10px; padding: 8px 10px; font-weight: 600; }
+    button:hover { background: rgba(45,60,90,.65); }
+    .muted { opacity: .8; font-size: 12px; margin-top: 6px; }
+    .stats { position: fixed; right: 16px; top: 16px; background: rgba(8,12,20,.6); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 10px 12px; text-align: right; line-height: 1.35; }
+    .legend { position: fixed; right: 16px; bottom: 16px; background: rgba(8,12,20,.6); border: 1px solid rgba(255,255,255,.08); border-radius: 12px; padding: 10px 12px; }
+    .legend span { display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align: -1px; }
+    .badges { position: fixed; left: 16px; bottom: 16px; display:flex; gap: 8px; flex-wrap: wrap; opacity: .9; }
+    .badge { font-size: 12px; padding: 6px 8px; border-radius: 8px; background: rgba(30,40,60,.6); border: 1px solid rgba(255,255,255,.12); }
+    a, a:visited { color: #9cc2ff; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div class="ui">
+    <h1>地球—月球 3D 運行模擬</h1>
+    <div class="row">
+      <label>時間倍率（天/秒）<br><small id="speedLabel">3.0</small></label>
+      <input id="speed" type="range" min="0" max="40" step="0.1" value="3" />
+    </div>
+    <div class="row">
+      <label>距離縮放（相對地月距）<br><small id="distLabel">1.00×</small></label>
+      <input id="dist" type="range" min="0.2" max="2" step="0.01" value="1" />
+    </div>
+    <div class="row">
+      <label>顯示軌道/尾跡</label>
+      <div>
+        <label style="font-size:12px; margin-right:6px;"><input id="showOrbit" type="checkbox" checked /> 軌道</label>
+        <label style="font-size:12px;"><input id="showTrail" type="checkbox" /> 尾跡</label>
+      </div>
+    </div>
+    <div class="btns">
+      <button id="toggle">暫停</button>
+      <button id="resetCam">重置視角</button>
+      <button id="realScale">真實比例</button>
+      <button id="exaggerated">易觀比例</button>
+    </div>
+    <div class="muted">提示：拖曳以旋轉視角，滾輪縮放，右鍵平移。</div>
+  </div>
+
+  <div class="stats">
+    <div>模擬經過：<b><span id="elapsed">0.0</span> 天</b></div>
+    <div>地球自轉：<b>23.934 小時/圈</b></div>
+    <div>月球公轉：<b>27.3217 天/圈</b></div>
+  </div>
+
+  <div class="legend">
+    <div><span style="background:#3fa9f5"></span>地球</div>
+    <div><span style="background:#bdbdbd"></span>月球</div>
+    <div><span style="background:#f6d26b"></span>太陽光方向</div>
+  </div>
+
+  <div class="badges">
+    <div class="badge">Three.js</div>
+    <div class="badge">單頁式 HTML</div>
+    <div class="badge"><a href="https://svs.gsfc.nasa.gov/3895" target="_blank" rel="noreferrer noopener">NASA 紋理來源</a></div>
+  </div>
+
+  <script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+    import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // === 基本場景 ===
+    const app = document.getElementById('app');
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(12, 8, 16);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    app.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // 柔和太空背景星點
+    const starsGeom = new THREE.BufferGeometry();
+    const starCnt = 2000;
+    const starPos = new Float32Array(starCnt * 3);
+    for (let i = 0; i < starCnt; i++) {
+      const r = 800 + Math.random() * 1200;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+      starPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+      starPos[i*3+1] = r * Math.cos(phi);
+      starPos[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
+    }
+    starsGeom.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const stars = new THREE.Points(starsGeom, new THREE.PointsMaterial({ size: 1.2 }));
+    scene.add(stars);
+
+    // 光源（以太陽方向作為平行光）
+    const sunlight = new THREE.DirectionalLight(0xffffff, 1.4);
+    sunlight.position.set(-50, 20, 10);
+    scene.add(sunlight);
+    scene.add(new THREE.AmbientLight(0x334466, 0.35));
+
+    // 可視化太陽方向
+    const sunDir = new THREE.ArrowHelper(sunlight.position.clone().normalize(), new THREE.Vector3(0,0,0), 8, 0xF6D26B, 1, 0.6);
+    scene.add(sunDir);
+
+    // === 地球與月球 ===
+    const loader = new THREE.TextureLoader();
+    const texEarth = loader.load('https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg');
+    const texEarthSpec = loader.load('https://threejs.org/examples/textures/planets/earth_specular_2048.jpg');
+    const texMoon = loader.load('https://threejs.org/examples/textures/planets/moon_1024.jpg');
+
+    // 比例（易於觀察的比例，非嚴格真實）
+    // 地球半徑：1，月球半徑：0.27，地月距：8（可調整）
+    const SIZES = {
+      earthR: 1,
+      moonR: 0.27,
+      baseEMDist: 8, // 基準地月距
+    };
+
+    // 地球
+    const earthGroup = new THREE.Group();
+    scene.add(earthGroup);
+    const earthGeo = new THREE.SphereGeometry(SIZES.earthR, 64, 64);
+    const earthMat = new THREE.MeshPhongMaterial({ map: texEarth, specularMap: texEarthSpec, shininess: 8 });
+    const earth = new THREE.Mesh(earthGeo, earthMat);
+    // 地球自轉軸傾角約 23.4°
+    earth.rotation.z = THREE.MathUtils.degToRad(23.4);
+    earthGroup.add(earth);
+
+    // 月球（掛在繞地群組下，方便做公轉）
+    const moonOrbit = new THREE.Group();
+    earthGroup.add(moonOrbit);
+    const moonGeo = new THREE.SphereGeometry(SIZES.moonR, 48, 48);
+    const moonMat = new THREE.MeshPhongMaterial({ map: texMoon });
+    const moon = new THREE.Mesh(moonGeo, moonMat);
+    moon.castShadow = false;
+    moon.receiveShadow = false;
+    moonOrbit.add(moon);
+
+    // 月球軌道線（圓形）
+    const orbitMat = new THREE.LineBasicMaterial({ color: 0x88aaff, transparent: true, opacity: 0.5 });
+    let orbitLine = null;
+    function rebuildOrbit(dist){
+      if (orbitLine) { moonOrbit.remove(orbitLine); orbitLine.geometry.dispose(); orbitLine.material.dispose(); }
+      const curve = new THREE.EllipseCurve(0,0, dist, dist, 0, Math.PI*2, false, 0);
+      const pts = curve.getPoints(256);
+      const geom = new THREE.BufferGeometry().setFromPoints(pts.map(p => new THREE.Vector3(p.x, 0, p.y)));
+      orbitLine = new THREE.LineLoop(geom, orbitMat);
+      moonOrbit.add(orbitLine);
+    }
+
+    // 尾跡（動態更新折線）
+    const maxTrail = 600; // 頂點數
+    const trailGeom = new THREE.BufferGeometry();
+    const trailPos = new Float32Array(maxTrail * 3);
+    trailGeom.setAttribute('position', new THREE.BufferAttribute(trailPos, 3));
+    const trailMat = new THREE.LineBasicMaterial({ color: 0xb5b5b5, transparent: true, opacity: 0.6 });
+    const trailLine = new THREE.Line(trailGeom, trailMat);
+    trailLine.frustumCulled = false;
+    let trailIndex = 0, trailLength = 0, trailEnabled = false;
+
+    function pushTrail(v){
+      trailPos[trailIndex*3] = v.x;
+      trailPos[trailIndex*3+1] = v.y;
+      trailPos[trailIndex*3+2] = v.z;
+      trailIndex = (trailIndex + 1) % maxTrail;
+      trailLength = Math.min(trailLength + 1, maxTrail);
+      const arr = new Float32Array(trailLength * 3);
+      // 將循環緩衝轉為首尾相接的序列
+      for (let i=0; i<trailLength; i++){
+        const src = ((trailIndex + i) % maxTrail) * 3;
+        arr[i*3] = trailPos[src];
+        arr[i*3+1] = trailPos[src+1];
+        arr[i*3+2] = trailPos[src+2];
+      }
+      trailGeom.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+      trailGeom.setDrawRange(0, trailLength);
+      trailGeom.attributes.position.needsUpdate = true;
+    }
+
+    // 參數與 UI 綁定
+    const $ = (id)=>document.getElementById(id);
+    const speedInput = $('speed');
+    const distInput = $('dist');
+    const showOrbit = $('showOrbit');
+    const showTrail = $('showTrail');
+    const toggleBtn = $('toggle');
+    const resetCamBtn = $('resetCam');
+    const realScaleBtn = $('realScale');
+    const exaggeratedBtn = $('exaggerated');
+    const speedLabel = $('speedLabel');
+    const distLabel = $('distLabel');
+    const elapsedEl = $('elapsed');
+
+    // 模擬時間控制
+    let running = true;
+    let timeScaleDaysPerSec = parseFloat(speedInput.value); // 天/秒
+    let elapsedDays = 0;
+
+    // 週期常數
+    const EARTH_ROT_HOURS = 23.934; // sidereal day
+    const EARTH_ROT_DAYS = EARTH_ROT_HOURS / 24.0; // 0.99726968
+    const MOON_ORBIT_DAYS = 27.321661; // sidereal month
+
+    // 初次設定距離
+    let distScale = parseFloat(distInput.value);
+    function applyDistance() {
+      const d = SIZES.baseEMDist * distScale;
+      moon.position.set(d, 0, 0);
+      rebuildOrbit(d);
+      distLabel.textContent = `${distScale.toFixed(2)}×`;
+    }
+    applyDistance();
+
+    // UI 動作
+    speedInput.addEventListener('input', () => {
+      timeScaleDaysPerSec = parseFloat(speedInput.value);
+      speedLabel.textContent = timeScaleDaysPerSec.toFixed(1);
+    });
+    distInput.addEventListener('input', () => {
+      distScale = parseFloat(distInput.value);
+      applyDistance();
+    });
+    showOrbit.addEventListener('change', () => {
+      if (orbitLine) orbitLine.visible = showOrbit.checked;
+    });
+    showTrail.addEventListener('change', () => {
+      trailEnabled = showTrail.checked;
+      if (trailEnabled) {
+        scene.add(trailLine);
+      } else {
+        scene.remove(trailLine);
+        trailLength = 0; trailIndex = 0;
+      }
+    });
+    toggleBtn.addEventListener('click', () => {
+      running = !running;
+      toggleBtn.textContent = running ? '暫停' : '繼續';
+    });
+    resetCamBtn.addEventListener('click', () => {
+      camera.position.set(12, 8, 16);
+      controls.target.set(0,0,0);
+      controls.update();
+    });
+    realScaleBtn.addEventListener('click', () => {
+      // 近似真實比例：地球半徑：1，月球半徑：0.27，地月距：30（~ 60 地球半徑/2 = 30）
+      distScale = 30 / SIZES.baseEMDist; // 讓地月距 ≈ 30（地球半徑的 30 倍）
+      distInput.value = distScale.toFixed(2);
+      applyDistance();
+    });
+    exaggeratedBtn.addEventListener('click', () => {
+      distScale = 1.0; // 易於觀察的預設
+      distInput.value = '1.00';
+      applyDistance();
+    });
+
+    // 同步自轉的小工具：讓月球恆向地球
+    function updateMoonSynchronousRotation(theta){
+      // theta 為公轉相位角（弧度），以 +Y 軸為公轉軸
+      // 讓月球自轉與公轉等速，使同一面朝向地球
+      moon.rotation.y = -theta; // 補償 orbit 群組旋轉
+    }
+
+    // 主動畫循環
+    const clock = new THREE.Clock();
+    function animate(){
+      requestAnimationFrame(animate);
+      const dt = clock.getDelta();
+
+      if (running) {
+        // 累積模擬時間（天）
+        elapsedDays += dt * timeScaleDaysPerSec;
+        elapsedEl.textContent = elapsedDays.toFixed(1);
+
+        // 地球自轉：每 EARTH_ROT_DAYS 轉一圈
+        const earthRotAngle = (elapsedDays / EARTH_ROT_DAYS) * Math.PI * 2;
+        // 將自轉應用到地球本體（考慮傾角已設在 Z 軸）
+        earth.rotation.y = earthRotAngle;
+
+        // 月球公轉：每 MOON_ORBIT_DAYS 繞一圈
+        const moonOrbitAngle = (elapsedDays / MOON_ORBIT_DAYS) * Math.PI * 2;
+        moonOrbit.rotation.y = moonOrbitAngle;
+        updateMoonSynchronousRotation(moonOrbitAngle);
+
+        // 尾跡
+        if (trailEnabled) {
+          // 需以世界座標記錄月球位置
+          moon.updateWorldMatrix(true, false);
+          const p = new THREE.Vector3();
+          p.setFromMatrixPosition(moon.matrixWorld);
+          pushTrail(p);
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // 視窗尺寸改變
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>

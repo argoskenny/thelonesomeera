@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=5.0, user-scalable=yes">
-  <meta name="description" content="AI Demo Hub - 整合 signuptest 與 solarsystem 的示範頁面">
+  <meta name="description" content="AI Demo Hub - 整合 signuptest、solarsystem、earthmoonsystem 的示範頁面">
   <title>AI Demo Hub | The Lonesome Era</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link rel="stylesheet" href="style.css">
@@ -15,6 +15,9 @@
     .tab { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: var(--text-secondary); padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer; transition: var(--transition); font-size: var(--font-size-sm); }
     .tab:hover { border-color: var(--accent-color); color: var(--text-primary); }
     .tab.active { background: var(--accent-color); color: var(--primary-dark); border-color: var(--accent-color); }
+    .prompt-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; margin: 1rem auto 2rem; max-width: 900px; }
+    .prompt-title { font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
+    .prompt-text { color: var(--text-secondary); white-space: pre-wrap; line-height: 1.7; }
   </style>
 </head>
 <body>
@@ -29,8 +32,9 @@
           <p class="hero-subtitle">AI Demo Hub</p>
           <div class="container">
             <div class="tabs">
-              <button class="tab" :class="{ active: activeTab === 'signuptest' }" @click="activeTab = 'signuptest'">SignUp Test</button>
-              <button class="tab" :class="{ active: activeTab === 'solarsystem' }" @click="activeTab = 'solarsystem'">Solar System Test</button>
+              <button class="tab" :class="{ active: activeTab === 'signuptest' }" @click="changeTab('signuptest')">SignUp Test</button>
+              <button class="tab" :class="{ active: activeTab === 'solarsystem' }" @click="changeTab('solarsystem')">Solar System Test</button>
+              <button class="tab" :class="{ active: activeTab === 'earthmoonsystem' }" @click="changeTab('earthmoonsystem')">Earth-Moon System Test</button>
             </div>
           </div>
         </div>
@@ -81,6 +85,33 @@
           </div>
         </div>
       </section>
+
+      <!-- Earth-Moon System Test 區塊（頁籤三） -->
+      <section v-else-if="activeTab === 'earthmoonsystem'" class="content-section projects-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-number">03</span>
+            <h2 class="section-title">Earth-Moon System Test</h2>
+            <p class="section-subtitle">3D Simulation Demos</p>
+          </div>
+          <div class="prompt-box">
+            <div class="prompt-title">提示詞</div>
+            <div class="prompt-text">製作一個單頁式的HTML，內容是模擬地球與月球運行的系統，要使用前端的3D技術來製作</div>
+          </div>
+          <div class="content-grid">
+            <div class="content-card" v-for="item in earthmoonPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <div class="card-content">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <div class="card-tags">
+                  <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+                </div>
+                <a :href="item.link" class="card-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -96,8 +127,8 @@
           mobileMenuOpen: false,
           // 行動版偵測
           isMobileView: window.innerWidth <= 768,
-          // 目前啟用的頁籤：'signuptest' | 'solarsystem'
-          activeTab: 'signuptest',
+          // 目前啟用的頁籤：'signuptest' | 'solarsystem' | 'earthmoonsystem'
+          activeTab: this.getInitialTab(),
 
           // signuptest 卡片資料
           // 說明：圖片用站內共用圖示，若未來有各頁專屬縮圖可替換
@@ -118,10 +149,41 @@
             { title: 'Solar System - Grok', description: '太陽系主題互動示範（Grok）', image: 'tle_logo.png', tags: ['LLM', 'Grok', 'SolarSystem'], link: 'solarsystem/grok.html' },
             { title: 'Solar System - DeepSeek', description: '太陽系主題互動示範（DeepSeek）', image: 'tle_logo.png', tags: ['LLM', 'DeepSeek', 'SolarSystem'], link: 'solarsystem/deepseek.html' },
             { title: 'Solar System - Qwen', description: '太陽系主題互動示範（Qwen）', image: 'tle_logo.png', tags: ['LLM', 'Qwen', 'SolarSystem'], link: 'solarsystem/qwen.html' }
+          ],
+
+          // earthmoonsystem 卡片資料
+          earthmoonPages: [
+            { title: 'Earth-Moon System - ChatGPT', description: '地月系統 3D 模擬（ChatGPT）', tags: ['LLM', 'ChatGPT', '3D'], link: 'earthmoonsystem/chatgpt.html' },
+            { title: 'Earth-Moon System - Claude', description: '地月系統 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'earthmoonsystem/claude.html' },
+            { title: 'Earth-Moon System - Gemini', description: '地月系統 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'earthmoonsystem/gemini.html' },
+            { title: 'Earth-Moon System - Grok', description: '地月系統 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'earthmoonsystem/grok.html' }
           ]
         }
       },
       methods: {
+        // 根據 URL hash 取得初始頁籤
+        getInitialTab() {
+          const hash = window.location.hash.slice(1);
+          const validTabs = ['signuptest', 'solarsystem', 'earthmoonsystem'];
+          return validTabs.includes(hash) ? hash : 'signuptest';
+        },
+        // 切換頁籤並更新 URL hash
+        changeTab(tab) {
+          this.activeTab = tab;
+          // 更新 URL hash
+          if (history.pushState) {
+            history.pushState(null, null, `#${tab}`);
+          } else {
+            window.location.hash = tab;
+          }
+        },
+        // 處理 hash 變化
+        handleHashChange() {
+          const newTab = this.getInitialTab();
+          if (newTab !== this.activeTab) {
+            this.activeTab = newTab;
+          }
+        },
         // 卡片點擊：行動裝置同窗、桌機新分頁
         handleCardClick(link, event) {
           if (!link) return;
@@ -141,8 +203,13 @@
         const onResize = () => { this.isMobileView = window.innerWidth <= 768; };
         window.addEventListener('resize', onResize);
         this.$once('hook:beforeUnmount', () => window.removeEventListener('resize', onResize));
+        // 監聽 hash 變化
+        window.addEventListener('hashchange', this.handleHashChange);
         // 保險：初始化後再標記 loaded，避免任何延遲造成無法滾動
         document.body.classList.add('loaded');
+      },
+      beforeUnmount() {
+        window.removeEventListener('hashchange', this.handleHashChange);
       }
     }).mount('#aiHubApp');
   </script>
