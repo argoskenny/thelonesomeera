@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Black Hole 3D Simulation</title>
+    <style>
+        body { margin: 0; }
+        canvas { display: block; }
+        #launch { position: absolute; top: 10px; left: 10px; }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.179.0/build/three.module.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <button id="launch">Launch Object</button>
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.179.0/examples/jsm/controls/OrbitControls.js';
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+
+        // Black hole model: a black sphere representing the event horizon
+        const blackHoleGeometry = new THREE.SphereGeometry(1, 32, 32);
+        const blackHoleMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const blackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
+        scene.add(blackHole);
+
+        // Add ambient light and point light for visibility
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        camera.position.z = 20;
+
+        // Celestial bodies array
+        const bodies = [];
+
+        // Function to create a body
+        function createBody(radius, color, position, velocity) {
+            const geometry = new THREE.SphereGeometry(radius, 16, 16);
+            const material = new THREE.MeshStandardMaterial({ color });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set(...position);
+            mesh.userData = { velocity: new THREE.Vector3(...velocity), mass: 1 }; // Simplified mass
+            scene.add(mesh);
+            bodies.push(mesh);
+        }
+
+        // Add 3 celestial bodies in approximate orbits
+        createBody(0.5, 0xff0000, [10, 0, 0], [0, 0.5, 0.2]); // Red body
+        createBody(0.3, 0x00ff00, [0, 15, 0], [0.3, 0, 0.1]); // Green body
+        createBody(0.4, 0x0000ff, [0, 0, 20], [0.2, 0.1, 0]); // Blue body
+
+        // Physics constants
+        const G = 1; // Gravitational constant (simplified)
+        const blackHoleMass = 1000; // High mass for black hole
+        const eventHorizonRadius = 1; // Matches sphere radius
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update each body
+            bodies.forEach(body => {
+                const direction = new THREE.Vector3().subVectors(blackHole.position, body.position);
+                const distance = direction.length();
+                
+                if (distance < eventHorizonRadius + body.geometry.parameters.radius) {
+                    // "Swallow" the body if too close
+                    scene.remove(body);
+                    bodies.splice(bodies.indexOf(body), 1);
+                    return;
+                }
+                
+                // Gravitational acceleration: a = G * M / r^2
+                const accelMagnitude = G * blackHoleMass / (distance * distance);
+                const acceleration = direction.normalize().multiplyScalar(accelMagnitude);
+                
+                // Update velocity: v += a * dt (dt=1 for simplicity, adjust for frame rate)
+                body.userData.velocity.add(acceleration);
+                
+                // Update position: p += v * dt
+                body.position.add(body.userData.velocity);
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Launch button
+        const launchButton = document.getElementById('launch');
+        launchButton.addEventListener('click', () => {
+            // Launch from a position away, velocity toward black hole
+            const startPos = [30, 0, 0]; // Fixed start for simplicity
+            const initialVel = [-1, 0.1, 0]; // Toward center with slight tangent
+            createBody(0.2, 0xffff00, startPos, initialVel); // Yellow launched object
+        });
+    </script>
+</body>
+</html>

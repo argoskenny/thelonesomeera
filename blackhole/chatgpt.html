@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>3D Black Hole Gravity Lab</title>
+  <style>
+    html, body { height: 100%; margin: 0; background: radial-gradient(1200px 600px at 50% 0%, #0b0f25 0%, #05070f 50%, #02040a 100%); color: #e6ecff; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    #app { position: fixed; inset: 0; }
+    #overlay { position: fixed; top: 12px; left: 12px; max-width: 420px; background: rgba(10, 14, 25, 0.56); border: 1px solid rgba(255,255,255,0.08); padding: 10px 12px; border-radius: 10px; backdrop-filter: blur(6px); box-shadow: 0 10px 30px rgba(0,0,0,0.35); }
+    #overlay h1 { margin: 0 0 4px; font-size: 16px; letter-spacing: 0.3px; }
+    #overlay p { margin: 8px 0; font-size: 13px; line-height: 1.35; color: #c9d4ff; }
+    #overlay .kbd { display:inline-block; padding: 1px 6px; border: 1px solid rgba(255,255,255,0.2); border-bottom-width: 2px; border-radius: 6px; font-size: 12px; background: rgba(255,255,255,0.05); }
+    #footer { position: fixed; right: 12px; bottom: 12px; font-size: 12px; color: #9fb3ff; opacity: 0.9; }
+    a { color: #a6c0ff; }
+    canvas { display:block; }
+  </style>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.160.0/build/three.module.js"
+      }
+    }
+  </script>
+</head>
+<body>
+  <div id="app"></div>
+  <div id="overlay">
+    <h1>3D Black Hole Gravity Lab</h1>
+    <p>
+      <strong>How to use:</strong> Orbit the camera with mouse/touch (drag), zoom with wheel/pinch, pan with right-drag. <br/>
+      <strong>Launch a probe:</strong> click–drag on space to draw an arrow; release to fire. The drag length sets speed.
+    </p>
+    <p>
+      <span class="kbd">Reset</span> in GUI to respawn orbits. Adjust <em>Time Scale</em> and <em>G</em> to explore stability. Bodies crossing the event horizon are captured.
+    </p>
+  </div>
+  <div id="footer">Newtonian gravity + event-horizon capture. Educational demo; not full GR.</div>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+    import GUI from 'https://cdn.jsdelivr.net/npm/lil-gui@0.19/+esm';
+
+    // -------------------------------
+    // Globals & Params
+    // -------------------------------
+    const app = document.getElementById('app');
+
+    const params = {
+      G: 1.0,              // Gravitational constant (scaled units)
+      M: 2000,             // Black hole mass (scaled units)
+      c: 50,               // Speed of light (scaled units)
+      timeScale: 1.0,      // Simulation speed multiplier
+      dt: 0.016,           // Base fixed timestep (sec)
+      softening: 0.6,      // Softening to avoid numerical blowups near r=0
+      trailLength: 240,    // Max samples per body trail
+      bodyCount: 30,       // Default # of orbiting bodies
+      launchScale: 2.4,    // Drag distance -> initial speed mapping
+      showHorizon: true,
+      showDisk: true,
+      reset: () => resetSystem()
+    };
+
+    // Derived event horizon radius (Schwarzschild radius in these scaled units)
+    const horizonRadius = () => 2 * params.G * params.M / (params.c * params.c);
+
+    // -------------------------------
+    // Three.js Setup
+    // -------------------------------
+    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    app.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+    camera.position.set(0, 60, 140);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.06;
+    controls.maxDistance = 800;
+    controls.minDistance = 10;
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0x7a8cff, 0.35));
+    const keyLight = new THREE.DirectionalLight(0xbad3ff, 0.85);
+    keyLight.position.set(120, 180, 90);
+    scene.add(keyLight);
+
+    // Stars background
+    const stars = (() => {
+      const COUNT = 4000;
+      const positions = new Float32Array(COUNT * 3);
+      for (let i = 0; i < COUNT; i++) {
+        const r = 1000 * Math.pow(Math.random(), 0.5); // denser afar
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        positions[3 * i + 0] = r * Math.sin(phi) * Math.cos(theta);
+        positions[3 * i + 1] = r * Math.sin(phi) * Math.sin(theta);
+        positions[3 * i + 2] = r * Math.cos(phi);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const mat = new THREE.PointsMaterial({ size: 1.25, sizeAttenuation: true, color: 0xffffff });
+      const pts = new THREE.Points(geo, mat);
+      pts.matrixAutoUpdate = false;
+      pts.updateMatrix();
+      return pts;
+    })();
+    scene.add(stars);
+
+    // -------------------------------
+    // Black Hole: horizon + disk
+    // -------------------------------
+    const bhGroup = new THREE.Group();
+    scene.add(bhGroup);
+
+    // Event horizon sphere (pure black, slightly glossy rim using Fresnel-ish material)
+    let horizonMesh, diskMesh, glowSprite;
+
+    function buildBlackHole() {
+      if (horizonMesh) bhGroup.remove(horizonMesh);
+      if (diskMesh) bhGroup.remove(diskMesh);
+      if (glowSprite) bhGroup.remove(glowSprite);
+
+      const Rs = horizonRadius();
+
+      const sphereGeo = new THREE.SphereGeometry(Rs * 1.02, 64, 64);
+      const sphereMat = new THREE.MeshPhysicalMaterial({
+        color: 0x000000,
+        metalness: 0.9,
+        roughness: 0.2,
+        clearcoat: 1.0,
+        clearcoatRoughness: 0.7
+      });
+      horizonMesh = new THREE.Mesh(sphereGeo, sphereMat);
+      horizonMesh.name = 'EventHorizon';
+      bhGroup.add(horizonMesh);
+
+      // Accretion disk (ring) with a procedural radial gradient texture
+      if (params.showDisk) {
+        const inner = Rs * 1.3;
+        const outer = Rs * 5.0;
+        const ringGeo = new THREE.RingGeometry(inner, outer, 256, 1);
+        ringGeo.rotateX(-Math.PI / 2);
+
+        const diskTex = makeDiskTexture();
+        diskTex.wrapS = diskTex.wrapT = THREE.ClampToEdgeWrapping;
+        diskTex.repeat.set(1, 1);
+        const ringMat = new THREE.MeshBasicMaterial({
+          map: diskTex,
+          transparent: true,
+          opacity: 0.95,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+        diskMesh = new THREE.Mesh(ringGeo, ringMat);
+        diskMesh.name = 'AccretionDisk';
+        bhGroup.add(diskMesh);
+      }
+
+      // Soft glow sprite
+      const glowSize = Rs * 9.0;
+      const glowTex = makeGlowTexture();
+      const glowMat = new THREE.SpriteMaterial({ map: glowTex, color: 0x88aaff, blending: THREE.AdditiveBlending, transparent: true, depthWrite: false });
+      glowSprite = new THREE.Sprite(glowMat);
+      glowSprite.scale.set(glowSize, glowSize, 1);
+      bhGroup.add(glowSprite);
+    }
+
+    // Procedural textures
+    function makeDiskTexture() {
+      const size = 512;
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(size/2, size/2, size*0.05, size/2, size/2, size*0.5);
+      grad.addColorStop(0.00, 'rgba(255,255,255,0.95)');
+      grad.addColorStop(0.15, 'rgba(200,220,255,0.8)');
+      grad.addColorStop(0.6,  'rgba(100,140,255,0.35)');
+      grad.addColorStop(1.00, 'rgba(10,20,60,0.0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,size,size);
+
+      // add subtle streaks
+      ctx.globalAlpha = 0.18;
+      ctx.fillStyle = '#99bbff';
+      for (let i = 0; i < 45; i++) {
+        const y = size/2 + (Math.random()*2-1) * (size*0.08);
+        ctx.fillRect(0, y, size, 1);
+      }
+      return new THREE.CanvasTexture(c);
+    }
+    function makeGlowTexture() {
+      const size = 256;
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d');
+      const grad = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+      grad.addColorStop(0, 'rgba(120,160,255,0.20)');
+      grad.addColorStop(0.5, 'rgba(60,100,255,0.08)');
+      grad.addColorStop(1, 'rgba(20,40,120,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,size,size);
+      return new THREE.CanvasTexture(c);
+    }
+
+    buildBlackHole();
+
+    // -------------------------------
+    // Physics Model
+    // -------------------------------
+    class Body {
+      constructor({ position, velocity, mass = 1, color = 0xffffff, radius = 0.6 }) {
+        this.position = position.clone();
+        this.velocity = velocity.clone();
+        this.mass = mass;
+        this.acc = new THREE.Vector3();
+        this.alive = true;
+
+        const geo = new THREE.SphereGeometry(radius, 16, 16);
+        const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.7, metalness: 0.1, emissive: new THREE.Color(color).multiplyScalar(0.08) });
+        this.mesh = new THREE.Mesh(geo, mat);
+        this.mesh.position.copy(this.position);
+        this.mesh.castShadow = false; this.mesh.receiveShadow = false;
+        scene.add(this.mesh);
+
+        this.trail = new Trail(this, params.trailLength, color);
+      }
+      computeAccel() {
+        // Acceleration due to central black hole at origin
+        const r = this.position.length();
+        const Rs = horizonRadius();
+        if (r < Rs) {
+          this.alive = false; // captured
+          return this.acc.set(0,0,0);
+        }
+        const dir = this.position.clone().multiplyScalar(-1); // toward origin
+        const dist2 = Math.max(r*r, params.softening*params.softening);
+        const invR3 = 1 / (Math.sqrt(dist2) * dist2);
+        this.acc.copy(dir).multiplyScalar(params.G * params.M * invR3);
+        return this.acc;
+      }
+      // Velocity-Verlet integration step
+      step(dt) {
+        if (!this.alive) return;
+        // v(t+1/2)
+        this.velocity.addScaledVector(this.acc, dt * 0.5);
+        // x(t+1)
+        this.position.addScaledVector(this.velocity, dt);
+        // a(t+1)
+        this.computeAccel();
+        // v(t+1)
+        this.velocity.addScaledVector(this.acc, dt * 0.5);
+
+        this.mesh.position.copy(this.position);
+        this.trail.update();
+      }
+      dispose() {
+        scene.remove(this.mesh);
+        this.mesh.geometry.dispose();
+        this.mesh.material.dispose();
+        this.trail.dispose();
+      }
+    }
+
+    class Trail {
+      constructor(body, maxPoints = 240, color = 0xffffff) {
+        this.body = body;
+        this.maxPoints = maxPoints;
+        this.points = [];
+        const geo = new THREE.BufferGeometry();
+        const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.8 });
+        this.line = new THREE.Line(geo, mat);
+        scene.add(this.line);
+      }
+      update() {
+        if (!this.body.alive) return;
+        const p = this.body.position.clone();
+        this.points.push(p);
+        if (this.points.length > this.maxPoints) this.points.shift();
+        this.line.geometry.setFromPoints(this.points);
+      }
+      dispose() {
+        scene.remove(this.line);
+        this.line.geometry.dispose();
+        this.line.material.dispose();
+      }
+      clear() { this.points = []; this.line.geometry.setFromPoints(this.points); }
+    }
+
+    // Bodies container
+    let bodies = [];
+
+    function spawnOrbitingBodies(n = params.bodyCount) {
+      const Rs = horizonRadius();
+      const minR = Rs * 6.5;
+      const maxR = Rs * 22.0;
+      for (let i = 0; i < n; i++) {
+        const r = THREE.MathUtils.lerp(minR, maxR, Math.pow(Math.random(), 1.2));
+        const theta = Math.random() * Math.PI * 2;
+
+        // Random orbital plane via quaternion
+        const axis = new THREE.Vector3(Math.random(), Math.random(), Math.random()).normalize();
+        const angle = (Math.random() * 50 + 10) * Math.PI / 180; // 10°–60° tilt
+        const q = new THREE.Quaternion().setFromAxisAngle(axis, angle);
+
+        // Base vectors in XY plane
+        const pos = new THREE.Vector3(r, 0, 0).applyQuaternion(q).applyAxisAngle(new THREE.Vector3(0,1,0), theta);
+        // Ideal circular speed v = sqrt(GM/r)
+        const vMag = Math.sqrt(params.G * params.M / r);
+        const velDir = new THREE.Vector3(0, 1, 0).applyQuaternion(q).applyAxisAngle(new THREE.Vector3(0,1,0), theta);
+        const vel = velDir.multiplyScalar(vMag * (0.85 + Math.random()*0.3)); // mild eccentricity spread
+
+        const color = new THREE.Color().setHSL(THREE.MathUtils.randFloat(0.55, 0.68), 0.8, THREE.MathUtils.randFloat(0.55, 0.7));
+        const b = new Body({ position: pos, velocity: vel, mass: 1, color: color.getHex(), radius: THREE.MathUtils.randFloat(0.4, 0.8) });
+        b.computeAccel();
+        bodies.push(b);
+      }
+    }
+
+    function clearBodies() {
+      for (const b of bodies) b.dispose();
+      bodies = [];
+    }
+
+    function resetSystem() {
+      clearBodies();
+      buildBlackHole();
+      spawnOrbitingBodies(params.bodyCount);
+    }
+
+    resetSystem();
+
+    // -------------------------------
+    // Launch Interaction (click-drag on XY plane at z=0)
+    // -------------------------------
+    const raycaster = new THREE.Raycaster();
+    const ndc = new THREE.Vector2();
+    const launchPlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0); // z = 0 plane
+    let dragStart = null;
+    let dragEnd = null;
+    let arrow = null;
+
+    function getWorldPointOnPlane(clientX, clientY) {
+      ndc.x = (clientX / renderer.domElement.clientWidth) * 2 - 1;
+      ndc.y = -(clientY / renderer.domElement.clientHeight) * 2 + 1;
+      raycaster.setFromCamera(ndc, camera);
+      const out = new THREE.Vector3();
+      raycaster.ray.intersectPlane(launchPlane, out);
+      return out;
+    }
+
+    function beginDrag(e) {
+      const p = getWorldPointOnPlane(e.clientX, e.clientY);
+      if (!p) return;
+      dragStart = p;
+      dragEnd = p.clone();
+      if (!arrow) {
+        arrow = new THREE.ArrowHelper(new THREE.Vector3(1,0,0), dragStart, 1, 0xaad4ff, 2, 1);
+        scene.add(arrow);
+      }
+      arrow.position.copy(dragStart);
+      arrow.setDirection(new THREE.Vector3(1,0,0));
+      arrow.setLength(0.0001);
+    }
+
+    function moveDrag(e) {
+      if (!dragStart) return;
+      dragEnd = getWorldPointOnPlane(e.clientX, e.clientY);
+      const dir = dragEnd.clone().sub(dragStart);
+      const len = Math.max(0.0001, dir.length());
+      dir.normalize();
+      arrow.position.copy(dragStart);
+      arrow.setDirection(dir);
+      arrow.setLength(len, Math.min(2, len*0.2), Math.min(1, len*0.1));
+    }
+
+    function endDrag(e) {
+      if (!dragStart) return;
+      dragEnd = getWorldPointOnPlane(e.clientX, e.clientY);
+      const initPos = dragStart.clone();
+      const v = dragEnd.clone().sub(dragStart).multiplyScalar(params.launchScale / Math.max(1, camera.position.length()/120));
+      // Color the probe distinctly
+      const probe = new Body({ position: initPos, velocity: v, mass: 0.5, color: 0xffe08a, radius: 0.5 });
+      probe.computeAccel();
+      bodies.push(probe);
+      dragStart = dragEnd = null;
+      if (arrow) { scene.remove(arrow); arrow = null; }
+    }
+
+    renderer.domElement.addEventListener('pointerdown', beginDrag);
+    window.addEventListener('pointermove', moveDrag);
+    window.addEventListener('pointerup', endDrag);
+    window.addEventListener('pointerleave', endDrag);
+
+    // -------------------------------
+    // GUI Controls
+    // -------------------------------
+    const gui = new GUI({ title: 'Controls' });
+    gui.domElement.style.position = 'fixed';
+    gui.domElement.style.top = '12px';
+    gui.domElement.style.right = '12px';
+
+    gui.add(params, 'timeScale', 0.25, 3.0, 0.01).name('Time Scale');
+    gui.add(params, 'G', 0.2, 2.0, 0.01).name('G (gravity)').onFinishChange(() => {
+      // Recompute capture radius and rebuild visuals
+      buildBlackHole();
+    });
+    gui.add(params, 'softening', 0.1, 2.0, 0.05).name('Softening');
+    gui.add(params, 'trailLength', 30, 500, 1).name('Trail Length').onFinishChange(() => bodies.forEach(b => b.trail.maxPoints = params.trailLength));
+    gui.add(params, 'bodyCount', 0, 80, 1).name('# Bodies').onFinishChange(() => resetSystem());
+    gui.add(params, 'reset').name('Reset');
+
+    // -------------------------------
+    // Render Loop
+    // -------------------------------
+    let lastT = performance.now();
+
+    function tick(now) {
+      requestAnimationFrame(tick);
+      const elapsed = (now - lastT) / 1000;
+      lastT = now;
+
+      // Animate accretion disk
+      if (diskMesh) diskMesh.rotation.y += elapsed * 0.25;
+
+      // Fixed-step physics
+      const substeps = Math.max(1, Math.min(6, Math.round(params.timeScale)));
+      const dt = params.dt * (params.timeScale / substeps);
+      for (let s = 0; s < substeps; s++) {
+        // Remove captured bodies
+        for (let i = bodies.length - 1; i >= 0; i--) {
+          const b = bodies[i];
+          if (!b.alive) {
+            b.dispose();
+            bodies.splice(i, 1);
+            continue;
+          }
+          b.step(dt);
+        }
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(tick);
+
+    // -------------------------------
+    // Resize handling
+    // -------------------------------
+    function onResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', onResize);
+
+  </script>
+</body>
+</html>

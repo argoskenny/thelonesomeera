@@ -35,6 +35,7 @@
               <button class="tab" :class="{ active: activeTab === 'signuptest' }" @click="changeTab('signuptest')">SignUp Test</button>
               <button class="tab" :class="{ active: activeTab === 'solarsystem' }" @click="changeTab('solarsystem')">Solar System Test</button>
               <button class="tab" :class="{ active: activeTab === 'earthmoonsystem' }" @click="changeTab('earthmoonsystem')">Earth-Moon System Test</button>
+              <button class="tab" :class="{ active: activeTab === 'blackhole' }" @click="changeTab('blackhole')">Black Hole Test</button>
             </div>
           </div>
         </div>
@@ -112,6 +113,37 @@
           </div>
         </div>
       </section>
+
+      <!-- Black Hole Test 區塊（頁籤四） -->
+      <section v-else-if="activeTab === 'blackhole'" class="content-section projects-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-number">04</span>
+            <h2 class="section-title">Black Hole Test</h2>
+            <p class="section-subtitle">3D Black Hole Simulation Demos</p>
+          </div>
+          <div class="prompt-box">
+            <div class="prompt-title">提示詞</div>
+            <div class="prompt-text">Create a single-page HTML that dynamically demonstrates, in 3D, the most common model of a black hole in outer space. Simulate the motion trajectories of other celestial bodies under its gravitational influence. Add a feature that allows the user to launch an object toward the black hole, showing how the object moves and is affected as it approaches. Simulate gravitational interactions and physical behavior between the black hole and celestial bodies so that users can intuitively observe the dynamic demonstration. Please follow these principles:
+	•	Begin with a concise checklist (3–7 bullets) of what you will do; only describe conceptual steps.
+	•	After each major technical implementation or interaction design step, briefly verify the result and decide whether to self-correct.
+	•	If you need to import external 3D rendering tools (such as three.js), first give a short explanation of their purpose and necessary parameters.
+	•	If there are insurmountable technical limitations, clearly state them and suggest alternative approaches.</div>
+          </div>
+          <div class="content-grid">
+            <div class="content-card" v-for="item in blackholePages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <div class="card-content">
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.description }}</p>
+                <div class="card-tags">
+                  <span v-for="tag in item.tags" :key="tag" class="tag">{{ tag }}</span>
+                </div>
+                <a :href="item.link" class="card-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 
@@ -127,7 +159,7 @@
           mobileMenuOpen: false,
           // 行動版偵測
           isMobileView: window.innerWidth <= 768,
-          // 目前啟用的頁籤：'signuptest' | 'solarsystem' | 'earthmoonsystem'
+          // 目前啟用的頁籤：'signuptest' | 'solarsystem' | 'earthmoonsystem' | 'blackhole'
           activeTab: this.getInitialTab(),
 
           // signuptest 卡片資料
@@ -157,6 +189,14 @@
             { title: 'Earth-Moon System - Claude', description: '地月系統 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'earthmoonsystem/claude.html' },
             { title: 'Earth-Moon System - Gemini', description: '地月系統 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'earthmoonsystem/gemini.html' },
             { title: 'Earth-Moon System - Grok', description: '地月系統 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'earthmoonsystem/grok.html' }
+          ],
+
+          // blackhole 卡片資料
+          blackholePages: [
+            { title: 'Black Hole - ChatGPT', description: '黑洞 3D 模擬（ChatGPT）', tags: ['LLM', 'ChatGPT', '3D'], link: 'blackhole/chatgpt.html' },
+            { title: 'Black Hole - Claude', description: '黑洞 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'blackhole/claude.html' },
+            { title: 'Black Hole - Gemini', description: '黑洞 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'blackhole/gemini.html' },
+            { title: 'Black Hole - Grok', description: '黑洞 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'blackhole/grok.html' }
           ]
         }
       },
@@ -164,7 +204,7 @@
         // 根據 URL hash 取得初始頁籤
         getInitialTab() {
           const hash = window.location.hash.slice(1);
-          const validTabs = ['signuptest', 'solarsystem', 'earthmoonsystem'];
+          const validTabs = ['signuptest', 'solarsystem', 'earthmoonsystem', 'blackhole'];
           return validTabs.includes(hash) ? hash : 'signuptest';
         },
         // 切換頁籤並更新 URL hash

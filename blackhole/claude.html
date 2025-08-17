@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Black Hole Gravitational Simulation</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        #ui {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+            max-width: 300px;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        button {
+            background: #4444ff;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #6666ff;
+        }
+        input[type="range"] {
+            width: 150px;
+            margin: 5px;
+        }
+        .info {
+            font-size: 12px;
+            margin: 5px 0;
+        }
+        #crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 50;
+        }
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        #crosshair::before {
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            transform: translateY(-50%);
+        }
+        #crosshair::after {
+            left: 50%;
+            top: 0;
+            width: 1px;
+            height: 100%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="crosshair"></div>
+        <div id="ui">
+            <h3>Black Hole Simulation</h3>
+            <div class="info">Click anywhere to launch an object toward the black hole</div>
+            <div class="info">Use mouse to orbit camera</div>
+            <div class="info" id="stats">Objects: 0 | Active: 0</div>
+        </div>
+        <div id="controls">
+            <div>
+                <label>Launch Speed:</label>
+                <input type="range" id="speedControl" min="0.5" max="3" value="1.5" step="0.1">
+                <span id="speedValue">1.5</span>
+            </div>
+            <div>
+                <label>Object Mass:</label>
+                <input type="range" id="massControl" min="0.1" max="2" value="1" step="0.1">
+                <span id="massValue">1.0</span>
+            </div>
+            <button id="resetBtn">Reset Simulation</button>
+            <button id="pauseBtn">Pause</button>
+        </div>
+    </div>
+
+    <script>
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000011);
+        document.getElementById('container').appendChild(renderer.domElement);
+
+        // Physics constants
+        const G = 0.1; // Gravitational constant (scaled for simulation)
+        const BLACK_HOLE_MASS = 1000;
+        const SCHWARZSCHILD_RADIUS = 2; // Event horizon radius
+        const objects = [];
+        const trails = [];
+        let isPaused = false;
+        let objectCount = 0;
+
+        // Camera controls
+        let mouseDown = false;
+        let mouseX = 0;
+        let mouseY = 0;
+        let cameraDistance = 50;
+        let cameraTheta = 0;
+        let cameraPhi = Math.PI / 4;
+
+        // Create black hole
+        const blackHoleGeometry = new THREE.SphereGeometry(SCHWARZSCHILD_RADIUS, 32, 32);
+        const blackHoleMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0x000000,
+            transparent: true,
+            opacity: 0.9
+        });
+        const blackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
+        scene.add(blackHole);
+
+        // Create event horizon glow
+        const glowGeometry = new THREE.SphereGeometry(SCHWARZSCHILD_RADIUS * 1.2, 32, 32);
+        const glowMaterial = new THREE.MeshBasicMaterial({
+            color: 0xff4400,
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.BackSide
+        });
+        const eventHorizonGlow = new THREE.Mesh(glowGeometry, glowMaterial);
+        scene.add(eventHorizonGlow);
+
+        // Create accretion disk
+        const diskGeometry = new THREE.RingGeometry(SCHWARZSCHILD_RADIUS * 2, SCHWARZSCHILD_RADIUS * 8, 64);
+        const diskMaterial = new THREE.MeshBasicMaterial({
+            color: 0xffaa00,
+            transparent: true,
+            opacity: 0.4,
+            side: THREE.DoubleSide
+        });
+        const accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
+        accretionDisk.rotation.x = Math.PI / 2;
+        scene.add(accretionDisk);
+
+        // Add some initial celestial bodies
+        function createCelestialBody(x, y, z, vx, vy, vz, mass = 1, color = 0xffffff) {
+            const geometry = new THREE.SphereGeometry(Math.sqrt(mass) * 0.3, 16, 16);
+            const material = new THREE.MeshBasicMaterial({ color: color });
+            const mesh = new THREE.Mesh(geometry, material);
+            
+            const body = {
+                mesh: mesh,
+                position: new THREE.Vector3(x, y, z),
+                velocity: new THREE.Vector3(vx, vy, vz),
+                mass: mass,
+                trail: [],
+                active: true
+            };
+            
+            mesh.position.copy(body.position);
+            scene.add(mesh);
+            objects.push(body);
+            
+            // Create trail
+            const trailGeometry = new THREE.BufferGeometry();
+            const trailMaterial = new THREE.LineBasicMaterial({ 
+                color: color,
+                transparent: true,
+                opacity: 0.6
+            });
+            const trailLine = new THREE.Line(trailGeometry, trailMaterial);
+            scene.add(trailLine);
+            trails.push(trailLine);
+            
+            return body;
+        }
+
+        // Initialize some orbiting bodies
+        createCelestialBody(20, 0, 0, 0, 0, 0.8, 1, 0x4488ff);
+        createCelestialBody(-15, 10, 5, 0.5, 0, -0.6, 0.8, 0xff4488);
+        createCelestialBody(0, 25, -10, -0.7, 0, 0.3, 1.2, 0x44ff88);
+
+        // Physics simulation
+        function updatePhysics(deltaTime) {
+            if (isPaused) return;
+            
+            objects.forEach((obj, index) => {
+                if (!obj.active) return;
+                
+                // Calculate gravitational force from black hole
+                const distance = obj.position.length();
+                
+                // Check if object crossed event horizon
+                if (distance < SCHWARZSCHILD_RADIUS) {
+                    obj.active = false;
+                    obj.mesh.visible = false;
+                    return;
+                }
+                
+                // Gravitational acceleration
+                const force = G * BLACK_HOLE_MASS / (distance * distance);
+                const direction = obj.position.clone().normalize().multiplyScalar(-1);
+                const acceleration = direction.multiplyScalar(force);
+                
+                // Update velocity and position
+                obj.velocity.add(acceleration.multiplyScalar(deltaTime));
+                obj.position.add(obj.velocity.clone().multiplyScalar(deltaTime));
+                
+                // Update mesh position
+                obj.mesh.position.copy(obj.position);
+                
+                // Update trail
+                obj.trail.push(obj.position.clone());
+                if (obj.trail.length > 200) {
+                    obj.trail.shift();
+                }
+                
+                // Update trail geometry
+                const positions = [];
+                obj.trail.forEach(point => {
+                    positions.push(point.x, point.y, point.z);
+                });
+                
+                trails[index].geometry.setAttribute('position', 
+                    new THREE.Float32BufferAttribute(positions, 3));
+                trails[index].geometry.setDrawRange(0, obj.trail.length);
+            });
+        }
+
+        // Launch object toward target
+        function launchObject(targetX, targetY) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const mouse = new THREE.Vector2(
+                (targetX / rect.width) * 2 - 1,
+                -(targetY / rect.height) * 2 + 1
+            );
+            
+            const raycaster = new THREE.Raycaster();
+            raycaster.setFromCamera(mouse, camera);
+            
+            // Launch from camera position toward target
+            const launchSpeed = parseFloat(document.getElementById('speedControl').value);
+            const launchMass = parseFloat(document.getElementById('massControl').value);
+            
+            const startPos = camera.position.clone();
+            const direction = raycaster.ray.direction.normalize();
+            const velocity = direction.multiplyScalar(launchSpeed);
+            
+            // Add some randomness to color
+            const colors = [0xff6666, 0x66ff66, 0x6666ff, 0xffff66, 0xff66ff, 0x66ffff];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            createCelestialBody(
+                startPos.x, startPos.y, startPos.z,
+                velocity.x, velocity.y, velocity.z,
+                launchMass, color
+            );
+            
+            objectCount++;
+            updateStats();
+        }
+
+        // Mouse controls
+        renderer.domElement.addEventListener('mousedown', (e) => {
+            if (e.button === 0) { // Left click
+                mouseDown = true;
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }
+        });
+
+        renderer.domElement.addEventListener('mousemove', (e) => {
+            if (mouseDown) {
+                const deltaX = e.clientX - mouseX;
+                const deltaY = e.clientY - mouseY;
+                
+                cameraTheta += deltaX * 0.01;
+                cameraPhi += deltaY * 0.01;
+                cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi));
+                
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            }
+        });
+
+        renderer.domElement.addEventListener('mouseup', () => {
+            mouseDown = false;
+        });
+
+        renderer.domElement.addEventListener('click', (e) => {
+            if (!mouseDown) {
+                launchObject(e.clientX, e.clientY);
+            }
+        });
+
+        // Wheel zoom
+        renderer.domElement.addEventListener('wheel', (e) => {
+            cameraDistance += e.deltaY * 0.05;
+            cameraDistance = Math.max(10, Math.min(200, cameraDistance));
+        });
+
+        // Update camera position
+        function updateCamera() {
+            camera.position.x = Math.sin(cameraPhi) * Math.cos(cameraTheta) * cameraDistance;
+            camera.position.y = Math.cos(cameraPhi) * cameraDistance;
+            camera.position.z = Math.sin(cameraPhi) * Math.sin(cameraTheta) * cameraDistance;
+            camera.lookAt(0, 0, 0);
+        }
+
+        // UI controls
+        document.getElementById('speedControl').addEventListener('input', (e) => {
+            document.getElementById('speedValue').textContent = e.target.value;
+        });
+
+        document.getElementById('massControl').addEventListener('input', (e) => {
+            document.getElementById('massValue').textContent = e.target.value;
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            // Remove all objects except initial ones
+            objects.splice(3).forEach(obj => {
+                scene.remove(obj.mesh);
+            });
+            trails.splice(3).forEach(trail => {
+                scene.remove(trail);
+            });
+            objects.length = 3;
+            trails.length = 3;
+            objectCount = 0;
+            
+            // Reset initial objects
+            objects.forEach(obj => {
+                obj.active = true;
+                obj.mesh.visible = true;
+                obj.trail = [];
+            });
+            
+            updateStats();
+        });
+
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            isPaused = !isPaused;
+            document.getElementById('pauseBtn').textContent = isPaused ? 'Resume' : 'Pause';
+        });
+
+        function updateStats() {
+            const activeCount = objects.filter(obj => obj.active).length;
+            document.getElementById('stats').textContent = 
+                `Objects: ${objects.length} | Active: ${activeCount}`;
+        }
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const deltaTime = Math.min(clock.getDelta(), 0.05); // Cap delta time
+            
+            updatePhysics(deltaTime);
+            updateCamera();
+            
+            // Rotate accretion disk
+            accretionDisk.rotation.z += 0.005;
+            eventHorizonGlow.rotation.x += 0.002;
+            eventHorizonGlow.rotation.y += 0.003;
+            
+            renderer.render(scene, camera);
+            updateStats();
+        }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Initialize camera position
+        updateCamera();
+        updateStats();
+        
+        // Start animation
+        animate();
+    </script>
+</body>
+</html>
