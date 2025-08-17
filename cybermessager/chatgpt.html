@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NeonLink · Cyberpunk Chat</title>
+  <style>
+    :root {
+      /* Theme controls */
+      --hue: 290;               /* default neon violet */
+      --sat: 95%;
+      --light: 60%;
+      --bg: #0b0f14;           /* deep slate */
+      --bg-2: #0f1320;         /* slightly lighter */
+      --panel: #0c1220;
+      --text: #d9e7ff;
+      --muted: #89a0c0;
+      --danger: #ff3b6b;
+      --success: #1effa3;
+      --warning: #ffd166;
+      --radius: 16px;
+      --shadow: 0 8px 30px rgba(0,0,0,.5), inset 0 0 1px rgba(255,255,255,.05);
+      --glow: 0 0 12px hsla(var(--hue), var(--sat), 50%, .35), 0 0 30px hsla(var(--hue), 100%, 60%, .25);
+      --grid: rgba(255,255,255,.035);
+      --scanline-a: rgba(255,255,255,.05);
+      --scanline-b: rgba(0,0,0,.05);
+    }
+
+    /* Reset-ish */
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: ui-sans-serif, system-ui, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 80% -10%, hsla(var(--hue), 100%, 20%, .35), transparent 60%),
+                  linear-gradient(180deg, #080b11, #0a0f17 25%, #0a0f17);
+      color: var(--text);
+      overflow: hidden; /* the app itself scrolls */
+    }
+
+    /* Matrix canvas backdrop */
+    canvas#matrix { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .25; }
+
+    /* Scanlines toggleable */
+    .scanlines::after {
+      content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: overlay;
+      background-image:
+        linear-gradient(var(--scanline-a), var(--scanline-b)),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, rgba(0,0,0,.04) 1px 2px);
+      background-size: 100% 100%, 100% 2px;
+    }
+
+    /* App grid */
+    .app {
+      position: relative; z-index: 2;
+      display: grid; grid-template-columns: 320px 1fr; grid-template-rows: auto 1fr auto;
+      height: 100dvh; gap: 0;
+    }
+
+    /* Sidebar */
+    aside.sidebar {
+      grid-row: 1 / span 3; grid-column: 1;
+      background: linear-gradient(180deg, #0b1220, #081018);
+      border-right: 1px solid rgba(255,255,255,.06);
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .brand {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .brand .logo {
+      width: 28px; height: 28px; border-radius: 8px;
+      background: conic-gradient(from 180deg, hsla(var(--hue),100%,60%,.9), hsla(200,100%,60%,.6), hsla(140,100%,60%,.9));
+      box-shadow: 0 0 10px hsla(var(--hue),100%,60%,.8), inset 0 0 12px rgba(0,0,0,.5);
+    }
+    .brand h1 { font-size: 16px; margin: 0; letter-spacing: .12em; text-transform: uppercase; color: #eaf2ff; }
+
+    .sidebar .tools { display:flex; gap:8px; padding: 10px 16px; }
+    .chip {
+      font: 12px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      padding: 6px 8px; border-radius: 999px; color: #d7e6ff;
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: var(--glow);
+      cursor: pointer; user-select: none;
+    }
+    .chip[aria-pressed="true"] { outline: 2px solid hsla(var(--hue),100%,60%,.6); }
+
+    .search {
+      padding: 10px 16px; position: relative;
+    }
+    .search input {
+      width: 100%; border-radius: 12px; padding: 10px 36px 10px 12px; border: 1px solid rgba(255,255,255,.1);
+      background: #0b1220; color: var(--text);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.02), var(--shadow);
+    }
+    .search svg { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); opacity: .7; }
+
+    .contacts { overflow: auto; max-height: calc(100dvh - 160px); padding-bottom: 16px; }
+    .contact {
+      display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; padding: 10px 16px; cursor: pointer;
+      border-left: 2px solid transparent;
+    }
+    .contact:hover { background: rgba(255,255,255,.04); }
+    .contact.active { background: rgba(255,255,255,.06); border-left-color: hsl(var(--hue), 100%, 60%); }
+
+    .avatar {
+      width: 40px; height: 40px; border-radius: 12px; display:grid; place-items:center;
+      background: radial-gradient(circle at 30% 30%, hsla(var(--hue),100%,60%,.75), transparent 60%);
+      border: 1px solid rgba(255,255,255,.15);
+      box-shadow: var(--glow);
+      font: 700 14px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+
+    .contact .meta { display:flex; flex-direction:column; gap:4px; }
+    .contact .name { font-weight: 700; font-size: 14px; letter-spacing:.02em; }
+    .contact .last { color: var(--muted); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .badge { font: 11px/1 ui-monospace; padding: 4px 6px; border-radius: 6px; background: hsla(var(--hue), 100%, 60%, .15); border: 1px solid hsla(var(--hue),100%,60%,.35); }
+
+    /* Chat area */
+    main.chat { grid-column: 2; grid-row: 1 / span 3; display: grid; grid-template-rows: auto 1fr auto; background: radial-gradient(800px 400px at 30% 0%, rgba(255,255,255,.04), transparent), var(--bg-2); }
+
+    .chat header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
+      backdrop-filter: blur(6px);
+    }
+    .chat .title { display:flex; align-items:center; gap: 12px; }
+    .title .target {
+      font-weight: 800; letter-spacing: .04em; text-transform: uppercase; font-size: 14px;
+    }
+    .title .status { font: 12px/1 ui-monospace; color: var(--muted); }
+
+    .chat .actions { display:flex; gap: 8px; }
+    .btn {
+      display:inline-flex; align-items:center; gap: 8px; padding: 8px 12px; border-radius: 10px; cursor: pointer; user-select:none;
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.12); color: var(--text);
+      box-shadow: var(--glow);
+    }
+    .btn:focus-visible { outline: 2px solid hsl(var(--hue), 100%, 60%); outline-offset: 2px; }
+
+    /* Messages */
+    .thread { overflow: auto; padding: 16px; display:flex; flex-direction:column; gap: 10px; }
+    .day-sep {
+      align-self: center; font: 11px/1 ui-monospace; color: var(--muted); padding: 6px 10px; border-radius: 999px;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02)); border: 1px solid rgba(255,255,255,.1);
+    }
+
+    .msg { display:grid; grid-template-columns: 42px 1fr; gap:10px; align-items:flex-end; }
+    .msg.me { grid-template-columns: 1fr 42px; }
+    .msg .bubble {
+      position: relative; padding: 10px 12px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border: 1px solid rgba(255,255,255,.12); box-shadow: var(--shadow);
+    }
+    .msg.me .bubble {
+      background: linear-gradient(180deg, hsla(var(--hue),90%,24%,.6), rgba(255,255,255,.03));
+      border-color: hsla(var(--hue),100%,60%,.35);
+      box-shadow: 0 0 20px hsla(var(--hue), 100%, 60%, .18), inset 0 0 30px rgba(255,255,255,.04);
+    }
+
+    .bubble .text { white-space: pre-wrap; word-break: break-word; }
+    .bubble .meta { display:flex; justify-content:flex-end; gap: 8px; margin-top: 6px; color: var(--muted); font: 11px/1 ui-monospace; }
+    .ticks { display:inline-flex; gap:2px; }
+
+    .typing { align-self:flex-start; opacity:.8; }
+    .typing .bubble { display:flex; gap:6px; align-items:center; }
+    .dot { width:6px; height:6px; border-radius:999px; background: hsla(var(--hue),100%,70%,.8); filter: drop-shadow(0 0 6px hsla(var(--hue),100%,60%,.8)); animation: blink 1.2s infinite ease-in-out; }
+    .dot:nth-child(2) { animation-delay: .15s; }
+    .dot:nth-child(3) { animation-delay: .3s; }
+    @keyframes blink { 0%, 80%, 100% { transform: translateY(0); opacity:.5 } 40% { transform: translateY(-2px); opacity:1 } }
+
+    /* Composer */
+    .composer { display:grid; grid-template-columns: auto 1fr auto; gap: 10px; padding: 12px; border-top: 1px solid rgba(255,255,255,.08); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01)); }
+    .composer .iconbtn { width: 40px; height: 40px; display:grid; place-items:center; border-radius: 10px; border:1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.04); box-shadow: var(--glow); cursor:pointer; }
+    .composer textarea { resize: none; max-height: 40dvh; min-height: 42px; outline: none; border-radius: 12px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.12); background: #0a111c; color: var(--text); box-shadow: inset 0 0 0 1px rgba(255,255,255,.02); }
+    .composer .send { padding: 0 14px; display:inline-flex; align-items:center; gap:8px; border-radius: 12px; border:1px solid hsla(var(--hue),100%,60%,.4); background: radial-gradient(circle at 20% 20%, hsla(var(--hue),100%,60%,.35), rgba(255,255,255,.04)); box-shadow: var(--glow); cursor:pointer; font-weight:700; }
+
+    /* Emoji popover */
+    .emoji-pop { position:absolute; bottom:72px; left:14px; width: 280px; max-width: calc(100% - 28px); padding: 8px; border-radius: 12px; background: #0a1322; border:1px solid rgba(255,255,255,.12); box-shadow: 0 12px 40px rgba(0,0,0,.6), var(--glow); display:none; }
+    .emoji-grid { display:grid; grid-template-columns: repeat(8, 1fr); gap: 6px; }
+    .emoji-grid button { padding: 6px; border-radius: 8px; background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.12); cursor:pointer; }
+
+    /* Settings modal */
+    .modal { position: fixed; inset: 0; display:none; place-items:center; background: rgba(0,0,0,.45); z-index: 5; }
+    .modal .card { width: min(520px, 92vw); background: #0c1220; border:1px solid rgba(255,255,255,.12); border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,.6), var(--glow); padding: 16px; }
+    .modal h3 { margin: 0 0 12px; }
+    .row { display:flex; align-items:center; justify-content:space-between; padding: 8px 0; }
+    .row label { color: var(--muted); }
+    .row input[type="range"] { width: 60%; }
+
+    /* Responsive */
+    @media (max-width: 960px) {
+      .app { grid-template-columns: 72px 1fr; }
+      .brand h1, .search, .sidebar .tools .chip:not(.keep) { display:none; }
+      .contacts .last, .contacts .badge { display:none; }
+    }
+
+    @media (max-width: 720px) {
+      .app { grid-template-columns: 1fr; }
+      aside.sidebar { position: fixed; inset: 0 35% 0 0; transform: translateX(-100%); transition: transform .3s ease; z-index: 4; }
+      aside.sidebar.open { transform: translateX(0); }
+      .chat header .btn.toggle { display:inline-flex; }
+    }
+
+    @media (min-width: 721px) {
+      .chat header .btn.toggle { display:none; }
+    }
+
+    /* Focus outlines for a11y */
+    .contact:focus-visible, .chip:focus-visible, .iconbtn:focus-visible, .send:focus-visible { outline: 2px solid hsl(var(--hue),100%,60%); outline-offset: 2px; }
+  </style>
+</head>
+<body class="scanlines">
+  <canvas id="matrix" aria-hidden="true"></canvas>
+  <div class="app" id="app" role="application" aria-label="NeonLink Chat">
+    <aside class="sidebar" aria-label="Conversations">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <h1>NEONLINK</h1>
+      </div>
+      <div class="tools">
+        <button class="chip keep" id="newChatBtn" title="New chat (mock)">+ New</button>
+        <button class="chip" id="scanToggle" aria-pressed="true" title="Toggle scanlines">Scanlines</button>
+        <button class="chip" id="glitchToggle" aria-pressed="false" title="Toggle matrix rain">Matrix</button>
+      </div>
+      <div class="search">
+        <input id="searchInput" type="search" placeholder="Search contacts" aria-label="Search contacts" />
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="11" r="6" stroke="currentColor" stroke-width="1.5"/></svg>
+      </div>
+      <div class="contacts" id="contacts" role="listbox" aria-label="Contact list"></div>
+    </aside>
+
+    <main class="chat" aria-label="Chat thread">
+      <header>
+        <button class="btn toggle" id="sidebarToggle" aria-label="Open sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h10M4 18h16" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <div class="title">
+          <div class="avatar" id="headerAvatar" aria-hidden="true">NL</div>
+          <div>
+            <div class="target" id="targetName">NeonLink</div>
+            <div class="status" id="targetStatus">initializing secure channel…</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" id="themeBtn" aria-label="Theme settings">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3v2m0 14v2M3 12h2m14 0h2M5.64 5.64l1.41 1.41M16.95 16.95l1.41 1.41M5.64 18.36l1.41-1.41M16.95 7.05l1.41-1.41" stroke="currentColor" stroke-width="1.5"/></svg>
+            Settings
+          </button>
+        </div>
+      </header>
+
+      <div id="thread" class="thread" role="log" aria-live="polite" aria-relevant="additions"></div>
+
+      <form id="composer" class="composer" aria-label="Message composer">
+        <button type="button" class="iconbtn" id="emojiBtn" aria-label="Open emoji picker">😊</button>
+        <textarea id="input" placeholder="Type a message…  (Enter = Send · Shift+Enter = New line)" rows="1" aria-label="Message input"></textarea>
+        <button type="submit" class="send" aria-label="Send message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 12l18-9-9 18-2-7-7-2z" stroke="currentColor" stroke-width="1.5"/></svg>
+          Send
+        </button>
+        <div class="emoji-pop" id="emojiPop" role="dialog" aria-modal="true" aria-label="Emoji picker">
+          <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <!-- Settings modal -->
+  <div class="modal" id="settingsModal" aria-hidden="true" aria-label="Settings">
+    <div class="card" role="document">
+      <h3>Appearance & Behavior</h3>
+      <div class="row"><label for="hue">Accent hue</label><input id="hue" type="range" min="0" max="360" value="290"/></div>
+      <div class="row"><label for="scan">Scanlines</label><input id="scan" type="checkbox" checked></div>
+      <div class="row"><label for="matrix">Matrix rain</label><input id="matrixToggle" type="checkbox"></div>
+      <div class="row"><label for="persist">Persist preferences</label><input id="persist" type="checkbox" checked></div>
+      <div class="row" style="justify-content:flex-end; gap:8px;">
+        <button class="btn" id="closeSettings">Close</button>
+      </div>
+      <p style="color:var(--muted); font:12px/1.4 ui-monospace; margin-top:8px;">Tip: Try slash commands in the composer — <code>/theme cyan</code>, <code>/glitch on</code>, <code>/roll</code>, <code>/clear</code>.</p>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    const $ = (sel, el = document) => el.querySelector(sel);
+    const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+
+    /* ----------------------------- Data model ----------------------------- */
+    const STORE_KEY = 'neonlink_prefs_v1';
+    const state = {
+      contacts: [
+        { id: 'neo', name: 'Neo', status: 'online · low latency', color: 140, messages: [
+          { from: 'neo', text: 'We only see the code we choose to see.', t: Date.now() - 1000 * 60 * 60 * 18, status: 'read' },
+          { from: 'me', text: 'Load me in. ⚡', t: Date.now() - 1000 * 60 * 60 * 17.9, status: 'read' },
+        ]},
+        { id: 'gl1tch', name: 'GL1TCH', status: 'typing scripts…', color: 200, messages: [
+          { from: 'gl1tch', text: 'channel opened. encryption: on.', t: Date.now() - 1000 * 60 * 60 * 5, status: 'read' },
+          { from: 'me', text: 'send diagnostics.', t: Date.now() - 1000 * 60 * 60 * 4.8, status: 'read' },
+          { from: 'gl1tch', text: 'latency nominal. neon flux stable.', t: Date.now() - 1000 * 60 * 60 * 4.79, status: 'read' },
+        ]},
+        { id: 'ops', name: 'Ops Console', status: 'connected · 2049ms', color: 290, messages: [
+          { from: 'ops', text: 'Welcome to NeonLink. This is a simulated chat UI.', t: Date.now() - 1000 * 60 * 60 * 1.5, status: 'read' },
+          { from: 'me', text: 'Roger that. Running UI checks.', t: Date.now() - 1000 * 60 * 60 * 1.49, status: 'read' },
+        ]},
+      ],
+      active: 'ops',
+      prefs: { hue: 290, scanlines: true, matrix: false, persist: true }
+    };
+
+    // Restore prefs
+    try {
+      const saved = JSON.parse(localStorage.getItem(STORE_KEY) || 'null');
+      if (saved) state.prefs = Object.assign(state.prefs, saved);
+    } catch (e) {}
+
+    /* ------------------------------- Elements ------------------------------ */
+    const appEl = $('#app');
+    const contactsEl = $('#contacts');
+    const threadEl = $('#thread');
+    const inputEl = $('#input');
+    const emojiBtn = $('#emojiBtn');
+    const emojiPop = $('#emojiPop');
+    const emojiGrid = $('#emojiGrid');
+    const themeBtn = $('#themeBtn');
+    const settingsModal = $('#settingsModal');
+    const hueRange = $('#hue');
+    const scanChk = $('#scan');
+    const matrixChk = $('#matrixToggle');
+    const persistChk = $('#persist');
+    const closeSettings = $('#closeSettings');
+    const scanToggle = $('#scanToggle');
+    const glitchToggle = $('#glitchToggle');
+    const matrixCanvas = $('#matrix');
+    const sidebar = $('aside.sidebar');
+    const sidebarToggle = $('#sidebarToggle');
+    const searchInput = $('#searchInput');
+    const headerAvatar = $('#headerAvatar');
+    const targetName = $('#targetName');
+    const targetStatus = $('#targetStatus');
+
+    /* ------------------------------- Helpers -------------------------------- */
+    const fmtTime = t => new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute:'2-digit' }).format(t);
+
+    function savePrefs() {
+      if (!state.prefs.persist) return; 
+      try { localStorage.setItem(STORE_KEY, JSON.stringify(state.prefs)); } catch (e) {}
+    }
+
+    function setHue(h) {
+      document.documentElement.style.setProperty('--hue', String(h));
+    }
+
+    function applyPrefs() {
+      setHue(state.prefs.hue);
+      document.body.classList.toggle('scanlines', !!state.prefs.scanlines);
+      if (state.prefs.matrix) startMatrix(); else stopMatrix();
+      hueRange.value = state.prefs.hue;
+      scanChk.checked = state.prefs.scanlines;
+      matrixChk.checked = state.prefs.matrix;
+      persistChk.checked = state.prefs.persist;
+      scanToggle.setAttribute('aria-pressed', String(!!state.prefs.scanlines));
+      glitchToggle.setAttribute('aria-pressed', String(!!state.prefs.matrix));
+    }
+
+    /* ---------------------------- Render sidebar --------------------------- */
+    function renderContacts(filter = '') {
+      const frag = document.createDocumentFragment();
+      const q = filter.trim().toLowerCase();
+      state.contacts.forEach(c => {
+        if (q && !c.name.toLowerCase().includes(q) && !c.id.toLowerCase().includes(q)) return;
+        const el = document.createElement('div');
+        el.className = 'contact' + (state.active === c.id ? ' active' : '');
+        el.setAttribute('role', 'option');
+        el.setAttribute('tabindex', '0');
+        el.dataset.id = c.id;
+        el.innerHTML = `
+          <div class="avatar" style="background: radial-gradient(circle at 30% 30%, hsla(${c.color},100%,60%,.75), transparent 60%);">${c.name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase()}</div>
+          <div class="meta">
+            <div class="name">${c.name}</div>
+            <div class="last">${c.messages[c.messages.length-1]?.text || ''}</div>
+          </div>
+          <div class="badge" aria-hidden="true">${c.status.split(' ')[0]}</div>
+        `;
+        frag.appendChild(el);
+      });
+      contactsEl.innerHTML = '';
+      contactsEl.appendChild(frag);
+    }
+
+    /* ----------------------------- Render thread --------------------------- */
+    function setHeader(contact) {
+      headerAvatar.textContent = contact.name.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
+      headerAvatar.style.background = `radial-gradient(circle at 30% 30%, hsla(${contact.color},100%,60%,.75), transparent 60%)`;
+      targetName.textContent = contact.name;
+      targetStatus.textContent = contact.status;
+    }
+
+    function renderThread(id = state.active) {
+      const contact = state.contacts.find(c => c.id === id);
+      if (!contact) return;
+      setHeader(contact);
+      threadEl.innerHTML = '';
+
+      // Insert a day separator for today
+      const day = document.createElement('div');
+      day.className = 'day-sep';
+      day.textContent = 'Today';
+      threadEl.appendChild(day);
+
+      for (const m of contact.messages) {
+        threadEl.appendChild(renderMsg(m));
+      }
+      scrollBottom();
+    }
+
+    function renderMsg(msg) {
+      const el = document.createElement('div');
+      const isMe = msg.from === 'me';
+      el.className = 'msg ' + (isMe ? 'me' : 'other');
+      el.innerHTML = `
+        ${isMe ? '' : `<div class="avatar" aria-hidden="true">${targetName.textContent.slice(0,2).toUpperCase()}</div>`}
+        <div class="bubble">
+          <div class="text"></div>
+          <div class="meta">
+            <span class="time">${fmtTime(msg.t)}</span>
+            ${isMe ? `<span class="ticks" aria-label="status">${renderTicks(msg.status)}</span>` : ''}
+          </div>
+        </div>
+        ${isMe ? `<div class="avatar" aria-hidden="true">ME</div>` : ''}
+      `;
+      $('.text', el).textContent = msg.text;
+      return el;
+    }
+
+    function renderTicks(status) {
+      // rendering tiny SVG ticks based on status
+      const dim = 'currentColor';
+      const on = 'hsla(var(--hue),100%,70%,.95)';
+      if (status === 'sending') return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="opacity:.6"><circle cx="12" cy="12" r="9" stroke="${dim}" stroke-width="1.5" stroke-dasharray="40" stroke-linecap="round"><animate attributeName="stroke-dashoffset" values="40;0;40" dur="1.4s" repeatCount="indefinite"/></circle></svg>`;
+      if (status === 'sent') return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="${on}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      if (status === 'delivered' || status === 'read') return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M20 7l-9 9-4-4" stroke="${on}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M23 7l-9 9" stroke="${on}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+      return '';
+    }
+
+    function scrollBottom() {
+      requestAnimationFrame(() => { threadEl.scrollTop = threadEl.scrollHeight; });
+    }
+
+    /* --------------------------- Interactions: UI -------------------------- */
+    // Settings modal
+    themeBtn.addEventListener('click', () => { settingsModal.style.display = 'grid'; settingsModal.setAttribute('aria-hidden','false'); $('#hue').focus(); });
+    closeSettings.addEventListener('click', () => { settingsModal.style.display = 'none'; settingsModal.setAttribute('aria-hidden','true'); themeBtn.focus(); });
+    settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeSettings.click(); });
+
+    hueRange.addEventListener('input', (e) => { state.prefs.hue = Number(e.target.value); setHue(state.prefs.hue); savePrefs(); });
+    scanChk.addEventListener('change', (e) => { state.prefs.scanlines = e.target.checked; document.body.classList.toggle('scanlines', state.prefs.scanlines); scanToggle.setAttribute('aria-pressed', String(state.prefs.scanlines)); savePrefs(); });
+    persistChk.addEventListener('change', (e) => { state.prefs.persist = e.target.checked; savePrefs(); });
+    matrixChk.addEventListener('change', (e) => { state.prefs.matrix = e.target.checked; if (state.prefs.matrix) startMatrix(); else stopMatrix(); glitchToggle.setAttribute('aria-pressed', String(state.prefs.matrix)); savePrefs(); });
+
+    scanToggle.addEventListener('click', () => { scanChk.checked = !scanChk.checked; scanChk.dispatchEvent(new Event('change')); });
+    glitchToggle.addEventListener('click', () => { matrixChk.checked = !matrixChk.checked; matrixChk.dispatchEvent(new Event('change')); });
+
+    // Sidebar behavior
+    sidebarToggle.addEventListener('click', () => { sidebar.classList.add('open'); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { sidebar.classList.remove('open'); emojiPop.style.display = 'none'; if (settingsModal.style.display === 'grid') closeSettings.click(); }});
+
+    // Contacts
+    contactsEl.addEventListener('click', (e) => {
+      const el = e.target.closest('.contact');
+      if (!el) return;
+      state.active = el.dataset.id;
+      $$('.contact', contactsEl).forEach(n => n.classList.toggle('active', n.dataset.id === state.active));
+      renderThread();
+      sidebar.classList.remove('open');
+    });
+    contactsEl.addEventListener('keydown', (e) => { if (e.key === 'Enter') e.target.click(); });
+
+    // Search
+    searchInput.addEventListener('input', () => { renderContacts(searchInput.value); });
+
+    // Emoji popover
+    const EMOJI = ['😀','😎','🤖','👾','⚡','🌐','💾','🛰️','🧪','🔧','🧩','🎛️','🪩','🧠','✨','🔥','❄️','💡','📡','🕶️','🚀','🎲','🎯','🪄','🫧','🍀','💫','🧬','🌀','🔮','🕳️','🛡️','⚙️','🗝️','♟️','🎧','🧯','💣','☣️','☢️','♻️','🦾'];
+    function buildEmoji() {
+      emojiGrid.innerHTML = '';
+      EMOJI.forEach(e => {
+        const b = document.createElement('button'); b.type='button'; b.textContent = e; b.addEventListener('click', () => { insertAtCursor(inputEl, e + ' '); emojiPop.style.display = 'none'; inputEl.focus(); });
+        emojiGrid.appendChild(b);
+      });
+    }
+    emojiBtn.addEventListener('click', () => { emojiPop.style.display = (emojiPop.style.display === 'block' ? 'none' : 'block'); if (emojiPop.style.display === 'block') buildEmoji(); });
+
+    function insertAtCursor(el, text) {
+      const s = el.selectionStart, e = el.selectionEnd;
+      const val = el.value;
+      el.value = val.slice(0, s) + text + val.slice(e);
+      el.selectionStart = el.selectionEnd = s + text.length;
+      el.dispatchEvent(new Event('input'));
+    }
+
+    /* -------------------------- Messaging mechanics ------------------------ */
+    $('#composer').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = inputEl.value; if (!raw.trim()) return;
+      if (raw.startsWith('/')) { handleSlash(raw); inputEl.value = ''; return; }
+      sendMessage(raw);
+      inputEl.value = '';
+    });
+
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); $('#composer').dispatchEvent(new Event('submit')); }
+    });
+
+    function sendMessage(text) {
+      const contact = state.contacts.find(c => c.id === state.active);
+      const msg = { from: 'me', text, t: Date.now(), status: 'sending' };
+      contact.messages.push(msg);
+      threadEl.appendChild(renderMsg(msg));
+      scrollBottom();
+
+      // Simulate status progression
+      setTimeout(() => { msg.status = 'sent'; updateLastStatus(); }, 300);
+      setTimeout(() => { msg.status = 'delivered'; updateLastStatus(); }, 700);
+      setTimeout(() => { msg.status = 'read'; updateLastStatus(); }, 1400);
+
+      // Simulate a reply with typing indicator
+      simulateReply(contact);
+    }
+
+    function updateLastStatus() {
+      const ticks = $$('.msg.me .ticks');
+      if (ticks.length) { ticks[ticks.length - 1].innerHTML = renderTicks('read'); }
+    }
+
+    let typingTimeout;
+    function simulateReply(contact) {
+      clearTimeout(typingTimeout);
+      const t = document.createElement('div');
+      t.className = 'msg typing';
+      t.innerHTML = `<div class="avatar" aria-hidden="true">${contact.name.slice(0,2).toUpperCase()}</div><div class="bubble" aria-live="polite"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>`;
+      threadEl.appendChild(t);
+      scrollBottom();
+
+      typingTimeout = setTimeout(() => {
+        t.remove();
+        const replyText = generateBotReply(contact);
+        const reply = { from: contact.id, text: replyText, t: Date.now(), status: 'read' };
+        contact.messages.push(reply);
+        threadEl.appendChild(renderMsg(reply));
+        scrollBottom();
+      }, Math.random()*1500 + 800);
+    }
+
+    function generateBotReply(contact) {
+      const last = contact.messages[contact.messages.length-2]; // user's last message is -1
+      const canned = [
+        'acknowledged. executing…',
+        'signal strength rising.',
+        'routing through a safer node.',
+        'parsing packets… complete.',
+        'neon capacitors warmed.',
+        '✨ online and luminous.'
+      ];
+      // lightweight behavior based on user text
+      const me = contact.messages.filter(m=>m.from==='me').pop()?.text || '';
+      if (/hello|hi|yo|hey/i.test(me)) return 'hey. ⚡ what are we building today?';
+      if (/status|diag|health/i.test(me)) return 'all systems nominal. temp 37°C · ping 24ms';
+      if (/time/i.test(me)) return 'local time: ' + new Date().toLocaleTimeString();
+      return canned[Math.floor(Math.random()*canned.length)];
+    }
+
+    /* ----------------------------- Slash commands -------------------------- */
+    function handleSlash(raw) {
+      const [cmd, ...rest] = raw.slice(1).trim().split(/\s+/);
+      const arg = rest.join(' ').toLowerCase();
+      switch (cmd.toLowerCase()) {
+        case 'theme': {
+          const map = { cyan: 190, violet: 290, pink: 330, amber: 40, lime: 110 };
+          const h = map[arg] ?? Number(arg);
+          if (Number.isFinite(h)) { state.prefs.hue = ((h % 360) + 360) % 360; setHue(state.prefs.hue); hueRange.value = state.prefs.hue; savePrefs(); toast(`Theme hue → ${state.prefs.hue}°`); } else toast('Usage: /theme [cyan|violet|pink|amber|lime|0-359]');
+          break;
+        }
+        case 'glitch': {
+          const on = ['on','1','true','enable'].includes(arg);
+          const off = ['off','0','false','disable'].includes(arg);
+          if (on || off) { state.prefs.matrix = on; matrixChk.checked = on; glitchToggle.setAttribute('aria-pressed', String(on)); if (on) startMatrix(); else stopMatrix(); savePrefs(); toast(`Matrix ${on ? 'enabled' : 'disabled'}`); }
+          else toast('Usage: /glitch [on|off]');
+          break;
+        }
+        case 'clear': {
+          const c = state.contacts.find(c => c.id === state.active); c.messages = []; renderThread(); toast('Thread cleared'); break;
+        }
+        case 'roll': {
+          const n = Math.floor(Math.random()*100)+1; sendMessage(`🎲 rolled ${n}`); break;
+        }
+        default:
+          toast(`Unknown command: /${cmd}`);
+      }
+    }
+
+    /* --------------------------------- Toast -------------------------------- */
+    let toastTimer;
+    function toast(text) {
+      let t = $('#toast');
+      if (!t) { t = document.createElement('div'); t.id = 'toast'; t.setAttribute('role','status'); t.style.cssText = 'position:fixed;left:50%;bottom:20px;transform:translateX(-50%);padding:10px 14px;border-radius:10px;background:#0e1728;color:#dbe7ff;border:1px solid rgba(255,255,255,.15);box-shadow:0 12px 30px rgba(0,0,0,.5)'; document.body.appendChild(t); }
+      t.textContent = text; t.style.opacity = '1';
+      clearTimeout(toastTimer); toastTimer = setTimeout(() => { t.style.transition = 'opacity .4s'; t.style.opacity = '0'; }, 1200);
+    }
+
+    /* ----------------------------- Matrix effect --------------------------- */
+    let matrixRAF = null;
+    let matrixCtx = null;
+    function startMatrix() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const cw = matrixCanvas.width = Math.floor(window.innerWidth * dpr);
+      const ch = matrixCanvas.height = Math.floor(window.innerHeight * dpr);
+      matrixCanvas.style.width = '100%'; matrixCanvas.style.height = '100%';
+      matrixCtx = matrixCanvas.getContext('2d');
+      const cols = Math.floor(cw / (14 * dpr));
+      const drops = new Array(cols).fill(0).map(() => Math.random() * -50);
+      const glyphs = 'アカサタナハマヤラワ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      matrixCtx.font = `${14 * dpr}px ui-monospace, monospace`;
+      matrixCtx.fillStyle = 'rgba(0,0,0,0.08)';
+
+      function step() {
+        matrixRAF = requestAnimationFrame(step);
+        matrixCtx.fillRect(0, 0, cw, ch);
+        for (let i = 0; i < cols; i++) {
+          const x = i * 14 * dpr, y = drops[i] * 14 * dpr;
+          const char = glyphs.charAt(Math.floor(Math.random() * glyphs.length));
+          matrixCtx.fillStyle = 'rgba(0,0,0,0.08)';
+          matrixCtx.fillRect(x, y - 14 * dpr, 14 * dpr, 14 * dpr);
+          matrixCtx.fillStyle = `hsla(${state.prefs.hue}, 100%, 70%, .95)`;
+          matrixCtx.fillText(char, x, y);
+          drops[i] += Math.random() * 1.5 + 0.8;
+          if (y > ch && Math.random() > 0.975) drops[i] = 0;
+        }
+      }
+      if (!matrixRAF) step();
+    }
+    function stopMatrix() { if (matrixRAF) cancelAnimationFrame(matrixRAF); matrixRAF = null; matrixCtx = null; const g = matrixCanvas.getContext('2d'); g && g.clearRect(0,0,matrixCanvas.width,matrixCanvas.height); }
+    window.addEventListener('resize', () => { if (state.prefs.matrix) startMatrix(); });
+
+    /* ------------------------------ Boot sequence --------------------------- */
+    function boot() {
+      applyPrefs();
+      renderContacts();
+      renderThread();
+      inputEl.focus();
+    }
+
+    boot();
+  })();
+  </script>
+</body>
+</html>
