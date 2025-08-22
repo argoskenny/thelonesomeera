@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=5.0, user-scalable=yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
   <meta name="description" content="AI Demo Hub - 整合 signuptest、solarsystem、earthmoonsystem 的示範頁面">
   <title>AI Demo Hub | The Lonesome Era</title>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
@@ -215,49 +215,173 @@
       color: var(--text-primary);
     }
     
+    /* 手機選單按鈕 */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1001;
+      background: var(--accent-color);
+      color: var(--primary-dark);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.25rem;
+      transition: var(--transition);
+    }
+    
+    .mobile-menu-btn:hover {
+      background: #4dd0d0;
+      transform: translateY(-1px);
+    }
+    
+    /* 遮罩層 */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+      opacity: 1;
+    }
+    
     /* 響應式設計 */
     @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      
       .sidebar {
         transform: translateX(-100%);
         transition: transform 0.3s ease;
+        width: 280px;
       }
       
       .sidebar.open {
         transform: translateX(0);
       }
       
+      .sidebar-overlay {
+        display: block;
+      }
+      
       .content-area {
         margin-left: 0;
+        padding-top: 4rem;
       }
       
       .content-container {
-        padding: 2rem 1rem;
+        padding: 1.5rem 1rem;
       }
       
       .test-title {
-        font-size: 2rem;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .test-subtitle {
+        font-size: 0.875rem;
+        margin-bottom: 2rem;
       }
       
       .ai-grid {
         grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .ai-card {
+        padding: 1rem;
+      }
+      
+      .ai-card h3 {
+        font-size: 1rem;
+      }
+      
+      .ai-card p {
+        font-size: 0.8rem;
+      }
+      
+      .prompt-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .prompt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .prompt-text {
+        font-size: 0.8rem;
+        padding: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      
+      .copy-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
+    
+    /* 平板尺寸 */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .sidebar {
+        width: 240px;
+      }
+      
+      .content-area {
+        margin-left: 240px;
+      }
+      
+      .content-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      .test-title {
+        font-size: 2.25rem;
+      }
+      
+      .ai-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
       }
     }
   </style>
 </head>
 <body>
     <div id="aiHubApp">
+    <!-- 手機選單按鈕 -->
+    <button class="mobile-menu-btn" @click="toggleMobileMenu" v-if="isMobileView">
+      ☰
+    </button>
+    
+    <!-- 遮罩層 -->
+    <div class="sidebar-overlay" :class="{ active: mobileMenuOpen }" @click="closeMobileMenu"></div>
+    
     <!-- 側邊欄 -->
-    <aside class="sidebar">
+    <aside class="sidebar" :class="{ open: mobileMenuOpen }">
       <div class="sidebar-header">
         <div class="sidebar-title">AI Demo Hub</div>
         <div class="sidebar-subtitle">AI 模型測試平台</div>
       </div>
       <nav class="sidebar-nav">
-        <a href="#signuptest" class="nav-item" :class="{ active: activeTab === 'signuptest' }" @click="changeTab('signuptest')">SignUp Test</a>
-        <a href="#solarsystem" class="nav-item" :class="{ active: activeTab === 'solarsystem' }" @click="changeTab('solarsystem')">Solar System Test</a>
-        <a href="#earthmoonsystem" class="nav-item" :class="{ active: activeTab === 'earthmoonsystem' }" @click="changeTab('earthmoonsystem')">Earth-Moon System Test</a>
-        <a href="#blackhole" class="nav-item" :class="{ active: activeTab === 'blackhole' }" @click="changeTab('blackhole')">Black Hole Test</a>
-        <a href="#cybermessager" class="nav-item" :class="{ active: activeTab === 'cybermessager' }" @click="changeTab('cybermessager')">Cyber Messager Test</a>
+        <a href="#signuptest" class="nav-item" :class="{ active: activeTab === 'signuptest' }" @click="handleNavClick('signuptest')">SignUp Test</a>
+        <a href="#solarsystem" class="nav-item" :class="{ active: activeTab === 'solarsystem' }" @click="handleNavClick('solarsystem')">Solar System Test</a>
+        <a href="#earthmoonsystem" class="nav-item" :class="{ active: activeTab === 'earthmoonsystem' }" @click="handleNavClick('earthmoonsystem')">Earth-Moon System Test</a>
+        <a href="#blackhole" class="nav-item" :class="{ active: activeTab === 'blackhole' }" @click="handleNavClick('blackhole')">Black Hole Test</a>
+        <a href="#cybermessager" class="nav-item" :class="{ active: activeTab === 'cybermessager' }" @click="handleNavClick('cybermessager')">Cyber Messager Test</a>
       </nav>
     </aside>
 
@@ -461,6 +585,24 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             window.location.hash = tab;
           }
         },
+        // 處理導航點擊（手機版會關閉選單）
+        handleNavClick(tab) {
+          this.changeTab(tab);
+          if (this.isMobileView) {
+            this.closeMobileMenu();
+          }
+        },
+        // 切換手機選單
+        toggleMobileMenu() {
+          this.mobileMenuOpen = !this.mobileMenuOpen;
+          // 防止背景滾動
+          document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
+        },
+        // 關閉手機選單
+        closeMobileMenu() {
+          this.mobileMenuOpen = false;
+          document.body.style.overflow = '';
+        },
         // 處理 hash 變化
         handleHashChange() {
           const newTab = this.getInitialTab();
@@ -521,7 +663,13 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
         this.activeTab = this.getInitialTab();
         
         // 響應式狀態
-        const onResize = () => { this.isMobileView = window.innerWidth <= 768; };
+        const onResize = () => { 
+          this.isMobileView = window.innerWidth <= 768; 
+          // 如果從手機切換到桌面，關閉手機選單
+          if (!this.isMobileView) {
+            this.closeMobileMenu();
+          }
+        };
         window.addEventListener('resize', onResize);
         this.$once('hook:beforeUnmount', () => window.removeEventListener('resize', onResize));
         // 監聽 hash 變化
