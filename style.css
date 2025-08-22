@@ -112,6 +112,9 @@ body {
     transition: var(--transition);
     position: relative;
     white-space: nowrap;
+    /* 觸控優化 */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .nav-menu a:hover {
@@ -269,11 +272,25 @@ body {
     cursor: pointer;
     transition: var(--transition);
     box-shadow: 0 4px 15px rgba(100, 255, 218, 0.3);
+    /* 觸控優化 */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
+/* 桌面版 hover 效果 */
+@media (hover: hover) and (pointer: fine) {
+    .cta-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(100, 255, 218, 0.4);
+    }
+}
+
+/* 手機版觸控反饋 */
+@media (hover: none) and (pointer: coarse) {
+    .cta-button:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
 }
 
 /* 內容區塊樣式 - 響應式優化 */
@@ -336,12 +353,26 @@ body {
     transition: var(--transition);
     border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+    /* 觸控優化 */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
 }
 
-.content-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    border-color: var(--accent-color);
+/* 桌面版 hover 效果 */
+@media (hover: hover) and (pointer: fine) {
+    .content-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        border-color: var(--accent-color);
+    }
+}
+
+/* 手機版觸控反饋 */
+@media (hover: none) and (pointer: coarse) {
+    .content-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+    }
 }
 
 .card-image {
@@ -427,6 +458,9 @@ body {
 
 .article-card {
     background: rgba(255, 255, 255, 0.05);
+    /* 觸控優化 */
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
     border-radius: var(--card-radius);
     padding: clamp(1rem, 3vw, 1.5rem);
     transition: var(--transition);

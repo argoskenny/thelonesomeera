@@ -130,11 +130,25 @@
       font-weight: 500;
       cursor: pointer;
       transition: var(--transition);
+      /* 觸控優化 */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
-    .copy-btn:hover {
-      background: #4dd0d0;
-      transform: translateY(-1px);
+    /* 桌面版 hover 效果 */
+    @media (hover: hover) and (pointer: fine) {
+      .copy-btn:hover {
+        background: #4dd0d0;
+        transform: translateY(-1px);
+      }
+    }
+    
+    /* 手機版觸控反饋 */
+    @media (hover: none) and (pointer: coarse) {
+      .copy-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
     }
     
     .copy-btn.copied {
@@ -166,12 +180,26 @@
       padding: 1.5rem;
       transition: var(--transition);
       cursor: pointer;
+      /* 觸控優化 */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
-    .ai-card:hover {
-      transform: translateY(-2px);
-      border-color: var(--accent-color);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    /* 桌面版 hover 效果 */
+    @media (hover: hover) and (pointer: fine) {
+      .ai-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-color);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      }
+    }
+    
+    /* 手機版觸控反饋 */
+    @media (hover: none) and (pointer: coarse) {
+      .ai-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
     }
     
     .ai-card h3 {
@@ -651,11 +679,19 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             event.preventDefault();
             event.stopPropagation();
           }
-          if (this.isMobileView) {
-            window.location.href = link;
-          } else {
-            window.open(link, '_blank', 'noopener,noreferrer');
+          
+          // 防抖機制：防止快速重複點擊
+          if (this._clickTimeout) {
+            clearTimeout(this._clickTimeout);
           }
+          
+          this._clickTimeout = setTimeout(() => {
+            if (this.isMobileView) {
+              window.location.href = link;
+            } else {
+              window.open(link, '_blank', 'noopener,noreferrer');
+            }
+          }, 150); // 150ms 防抖延遲
         }
       },
       mounted() {

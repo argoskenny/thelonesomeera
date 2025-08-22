@@ -241,12 +241,19 @@ createApp({
                     event.stopPropagation();
                 }
                 
-                // 根據裝置類型決定開啟方式
-                if (this.isMobileView) {
-                    window.location.href = link;
-                } else {
-                    window.open(link, '_blank', 'noopener,noreferrer');
+                // 防抖機制：防止快速重複點擊
+                if (this._clickTimeout) {
+                    clearTimeout(this._clickTimeout);
                 }
+                
+                this._clickTimeout = setTimeout(() => {
+                    // 根據裝置類型決定開啟方式
+                    if (this.isMobileView) {
+                        window.location.href = link;
+                    } else {
+                        window.open(link, '_blank', 'noopener,noreferrer');
+                    }
+                }, 150); // 150ms 防抖延遲
             }
         },
         
