@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfie Cat - 所有 Ticket 提示詞</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .phase-section {
+            margin-bottom: 40px;
+            border-left: 4px solid #E79223;
+            padding-left: 20px;
+        }
+        
+        .phase-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #E79223;
+            margin-bottom: 15px;
+        }
+        
+        .ticket-item {
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .ticket-number {
+            font-weight: bold;
+            color: #E79223;
+            min-width: 60px;
+            font-size: 14px;
+        }
+        
+        .prompt-text {
+            flex: 1;
+            font-size: 14px;
+            color: #333;
+            word-break: break-word;
+            font-family: 'Courier New', monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        
+        .copy-btn {
+            background: #E79223;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #c97a1a;
+        }
+        
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .copy-btn.copied {
+            background: #4caf50;
+        }
+        
+        .stats {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .stats strong {
+            color: #E79223;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Selfie Cat - 所有 Ticket 提示詞</h1>
+        <div class="subtitle">點擊複製按鈕即可複製對應的提示詞</div>
+        
+        <div class="stats" id="stats"></div>
+        
+        <div id="content"></div>
+    </div>
+
+    <script>
+        // 定義所有 phase 和 ticket
+        const tickets = [
+            { phase: 1, file: 'phase-01-foundation.md', count: 7 },
+            { phase: 2, file: 'phase-02-data-layer.md', count: 7 },
+            { phase: 3, file: 'phase-03-navigation.md', count: 9 },
+            { phase: 4, file: 'phase-04-camera.md', count: 12 },
+            { phase: 5, file: 'phase-05-laser-animation.md', count: 9 },
+            { phase: 6, file: 'phase-06-gallery.md', count: 13 },
+            { phase: 7, file: 'phase-07-ball-physics.md', count: 13 },
+            { phase: 8, file: 'phase-08-fireworks.md', count: 13 },
+            { phase: 9, file: 'phase-09-fish.md', count: 13 },
+            { phase: 10, file: 'phase-10-toybox-monetization.md', count: 15 },
+            { phase: 11, file: 'phase-11-tutorial-about.md', count: 13 },
+            { phase: 12, file: 'phase-12-localization.md', count: 15 },
+            { phase: 13, file: 'phase-13-polish-optimization.md', count: 16 },
+            { phase: 14, file: 'phase-14-final-testing.md', count: 15 }
+        ];
+        
+        // 生成提示詞
+        function generatePrompt(phase, ticketNum, fileName) {
+            return `「根據 \`tickets/${fileName}\` Ticket ${phase}.${ticketNum} 進行開發工作，參考 \`tickets/README.md\` 作為開發總覽，階段性工作完成之後請更新文件狀態為已完成[x]」`;
+        }
+        
+        // 渲染統計信息
+        function renderStats() {
+            const totalTickets = tickets.reduce((sum, t) => sum + t.count, 0);
+            const totalPhases = tickets.length;
+            document.getElementById('stats').innerHTML = `
+                共 <strong>${totalPhases}</strong> 個 Phase，<strong>${totalTickets}</strong> 個 Tickets
+            `;
+        }
+        
+        // 渲染內容
+        function renderContent() {
+            const contentDiv = document.getElementById('content');
+            let html = '';
+            
+            tickets.forEach(ticket => {
+                html += `<div class="phase-section">`;
+                html += `<div class="phase-title">Phase ${ticket.phase}: ${ticket.file}</div>`;
+                
+                for (let i = 1; i <= ticket.count; i++) {
+                    const prompt = generatePrompt(ticket.phase, i, ticket.file);
+                    const id = `phase-${ticket.phase}-ticket-${i}`;
+                    
+                    // 轉義用於顯示的提示詞
+                    const escapedPrompt = escapeHtml(prompt);
+                    // 轉義用於 data 屬性的提示詞（需要處理引號）
+                    const dataPrompt = prompt.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+                    
+                    html += `
+                        <div class="ticket-item">
+                            <div class="ticket-number">${ticket.phase}.${i}</div>
+                            <div class="prompt-text">${escapedPrompt}</div>
+                            <button class="copy-btn" data-prompt="${dataPrompt}" onclick="copyPrompt(this)">複製</button>
+                        </div>
+                    `;
+                }
+                
+                html += `</div>`;
+            });
+            
+            contentDiv.innerHTML = html;
+        }
+        
+        // 複製提示詞
+        function copyPrompt(btn) {
+            // 從 data 屬性獲取提示詞（需要解碼 HTML 實體）
+            let prompt = btn.getAttribute('data-prompt');
+            prompt = prompt.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+            
+            navigator.clipboard.writeText(prompt).then(() => {
+                const originalText = btn.textContent;
+                btn.textContent = '已複製！';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('複製失敗:', err);
+                // 降級方案：使用 textarea 方法
+                const textarea = document.createElement('textarea');
+                textarea.value = prompt;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                textarea.style.left = '-9999px';
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    const originalText = btn.textContent;
+                    btn.textContent = '已複製！';
+                    btn.classList.add('copied');
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                } catch (e) {
+                    alert('複製失敗，請手動複製');
+                }
+                document.body.removeChild(textarea);
+            });
+        }
+        
+        // HTML 轉義
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 初始化
+        renderStats();
+        renderContent();
+    </script>
+</body>
+</html>
