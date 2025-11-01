@@ -61,6 +61,12 @@
             display: flex;
             align-items: flex-start;
             gap: 12px;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+        
+        .ticket-item.copied {
+            background: #e8f5e9;
+            border-color: #4caf50;
         }
         
         .ticket-number {
@@ -149,6 +155,9 @@
             { phase: 14, file: 'phase-14-final-testing.md', count: 15 }
         ];
         
+        // 儲存所有提示詞的物件
+        const promptsMap = {};
+        
         // 生成提示詞
         function generatePrompt(phase, ticketNum, fileName) {
             return `「根據 \`tickets/${fileName}\` Ticket ${phase}.${ticketNum} 進行開發工作，參考 \`tickets/README.md\` 作為開發總覽，階段性工作完成之後請更新文件狀態為已完成[x]」`;
@@ -176,16 +185,17 @@
                     const prompt = generatePrompt(ticket.phase, i, ticket.file);
                     const id = `phase-${ticket.phase}-ticket-${i}`;
                     
+                    // 儲存提示詞到物件中
+                    promptsMap[id] = prompt;
+                    
                     // 轉義用於顯示的提示詞
                     const escapedPrompt = escapeHtml(prompt);
-                    // 轉義用於 data 屬性的提示詞（需要處理引號）
-                    const dataPrompt = prompt.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
                     
                     html += `
-                        <div class="ticket-item">
+                        <div class="ticket-item" id="${id}">
                             <div class="ticket-number">${ticket.phase}.${i}</div>
                             <div class="prompt-text">${escapedPrompt}</div>
-                            <button class="copy-btn" data-prompt="${dataPrompt}" onclick="copyPrompt(this)">複製</button>
+                            <button class="copy-btn" data-item-id="${id}">複製</button>
                         </div>
                     `;
                 }
@@ -194,47 +204,116 @@
             });
             
             contentDiv.innerHTML = html;
+            
+            // 綁定複製按鈕事件
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    copyPrompt(this);
+                });
+            });
         }
         
         // 複製提示詞
         function copyPrompt(btn) {
-            // 從 data 屬性獲取提示詞（需要解碼 HTML 實體）
-            let prompt = btn.getAttribute('data-prompt');
-            prompt = prompt.replace(/&quot;/g, '"').replace(/&#39;/g, "'");
-            
-            navigator.clipboard.writeText(prompt).then(() => {
-                const originalText = btn.textContent;
-                btn.textContent = '已複製！';
-                btn.classList.add('copied');
+            try {
+                // 從 data 屬性獲取 ID
+                const itemId = btn.getAttribute('data-item-id');
+                if (!itemId) {
+                    console.error('無法取得項目 ID');
+                    return;
+                }
                 
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.classList.remove('copied');
-                }, 2000);
-            }).catch(err => {
-                console.error('複製失敗:', err);
-                // 降級方案：使用 textarea 方法
-                const textarea = document.createElement('textarea');
-                textarea.value = prompt;
-                textarea.style.position = 'fixed';
-                textarea.style.opacity = '0';
-                textarea.style.left = '-9999px';
-                document.body.appendChild(textarea);
-                textarea.select();
-                try {
-                    document.execCommand('copy');
-                    const originalText = btn.textContent;
-                    btn.textContent = '已複製！';
-                    btn.classList.add('copied');
-                    setTimeout(() => {
-                        btn.textContent = originalText;
-                        btn.classList.remove('copied');
-                    }, 2000);
-                } catch (e) {
+                // 從物件中獲取提示詞
+                const prompt = promptsMap[itemId];
+                if (!prompt) {
+                    console.error('無法找到提示詞');
+                    return;
+                }
+                
+                // 取得父區塊（ticket-item）
+                const ticketItem = btn.closest('.ticket-item');
+                if (!ticketItem) {
+                    // 如果 closest 失敗，嘗試用 ID
+                    const ticketItemById = document.getElementById(itemId);
+                    if (ticketItemById) {
+                        copyToClipboard(prompt, btn, ticketItemById);
+                        return;
+                    }
+                    console.error('無法找到 ticket-item 區塊');
+                    return;
+                }
+                
+                copyToClipboard(prompt, btn, ticketItem);
+            } catch (error) {
+                console.error('複製功能錯誤:', error);
+                alert('複製功能發生錯誤');
+            }
+        }
+        
+        // 執行複製並更新 UI
+        function copyToClipboard(text, btn, ticketItem) {
+            const originalText = btn.textContent;
+            
+            // 使用 Clipboard API
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    updateUI(btn, ticketItem, originalText);
+                }).catch(err => {
+                    console.error('Clipboard API 失敗:', err);
+                    // 降級方案
+                    fallbackCopy(text, btn, ticketItem, originalText);
+                });
+            } else {
+                // 降級方案
+                fallbackCopy(text, btn, ticketItem, originalText);
+            }
+        }
+        
+        // 更新 UI 狀態
+        function updateUI(btn, ticketItem, originalText) {
+            // 先清除所有其他區塊和按鈕的變色狀態
+            document.querySelectorAll('.ticket-item.copied').forEach(item => {
+                item.classList.remove('copied');
+            });
+            document.querySelectorAll('.copy-btn.copied').forEach(button => {
+                button.classList.remove('copied');
+                // 恢復按鈕文字為「複製」
+                if (button.textContent === '已複製！') {
+                    button.textContent = '複製';
+                }
+            });
+            
+            // 設置當前按鈕和區塊為變色狀態
+            btn.textContent = '已複製！';
+            btn.classList.add('copied');
+            ticketItem.classList.add('copied');
+        }
+        
+        // 降級複製方案
+        function fallbackCopy(text, btn, ticketItem, originalText) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            textarea.style.left = '-9999px';
+            textarea.style.top = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    updateUI(btn, ticketItem, originalText);
+                } else {
                     alert('複製失敗，請手動複製');
                 }
+            } catch (e) {
+                console.error('降級複製方案失敗:', e);
+                alert('複製失敗，請手動複製');
+            } finally {
                 document.body.removeChild(textarea);
-            });
+            }
         }
         
         // HTML 轉義
