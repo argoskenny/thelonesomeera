@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D太阳系模拟器</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #000;
+        }
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 14px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="info">
+        <strong>3D太阳系模拟器</strong><br>
+        鼠标拖拽：旋转视角<br>
+        滚轮：缩放
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js"></script>
+    
+    <script>
+        // ==================== 场景初始化 ====================
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        document.body.appendChild(renderer.domElement);
+        
+        camera.position.set(0, 30, 50);
+        camera.lookAt(0, 0, 0);
+        
+        // ==================== 星空背景 ====================
+        const starsGeometry = new THREE.BufferGeometry();
+        const starsVertices = [];
+        for (let i = 0; i < 10000; i++) {
+            const x = (Math.random() - 0.5) * 2000;
+            const y = (Math.random() - 0.5) * 2000;
+            const z = (Math.random() - 0.5) * 2000;
+            starsVertices.push(x, y, z);
+        }
+        starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+        const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 2 });
+        const stars = new THREE.Points(starsGeometry, starsMaterial);
+        scene.add(stars);
+        
+        // ==================== 光照系统 ====================
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
+        
+        const sunLight = new THREE.PointLight(0xffffff, 2, 200);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.width = 2048;
+        sunLight.shadow.mapSize.height = 2048;
+        scene.add(sunLight);
+        
+        // ==================== 行星数据 ====================
+        const planetsData = [
+            { name: '太阳', radius: 5, distance: 0, speed: 0, color: 0xffff00, emissive: 0xffaa00 },
+            { name: '水星', radius: 0.4, distance: 8, speed: 0.04, color: 0xaaaaaa },
+            { name: '金星', radius: 0.7, distance: 11, speed: 0.025, color: 0xffd700 },
+            { name: '地球', radius: 0.8, distance: 14, speed: 0.017, color: 0x0066ff },
+            { name: '火星', radius: 0.6, distance: 17, speed: 0.01, color: 0xff4500 },
+            { name: '木星', radius: 2.5, distance: 25, speed: 0.005, color: 0xffa500 },
+            { name: '土星', radius: 2.0, distance: 32, speed: 0.003, color: 0xffd700 }
+        ];
+        
+        const planets = [];
+        
+        // ==================== 创建行星 ====================
+        planetsData.forEach((data, index) => {
+            const geometry = new THREE.SphereGeometry(data.radius, 32, 32);
+            const material = new THREE.MeshPhongMaterial({ 
+                color: data.color,
+                emissive: data.emissive || 0x000000,
+                emissiveIntensity: index === 0 ? 0.3 : 0
+            });
+            
+            const planet = new THREE.Mesh(geometry, material);
+            planet.castShadow = index !== 0;
+            planet.receiveShadow = index !== 0;
+            
+            const orbitGroup = new THREE.Group();
+            orbitGroup.add(planet);
+            planet.position.x = data.distance;
+            
+            scene.add(orbitGroup);
+            planets.push({ mesh: planet, orbitGroup, data });
+            
+            // 土星环
+            if (index === 6) {
+                const ringGeometry = new THREE.RingGeometry(data.radius + 0.5, data.radius + 1.5, 32);
+                const ringMaterial = new THREE.MeshBasicMaterial({ 
+                    color: 0xaaaaaa, 
+                    side: THREE.DoubleSide,
+                    transparent: true,
+                    opacity: 0.6
+                });
+                const ring = new THREE.Mesh(ringGeometry, ringMaterial);
+                ring.rotation.x = Math.PI / 2;
+                planet.add(ring);
+            }
+        });
+        
+        // ==================== 鼠标控制 ====================
+        let targetX = 0, targetY = 0;
+        let isMouseDown = false;
+        let previousMouseX = 0, previousMouseY = 0;
+        
+        document.addEventListener('mousedown', (event) => {
+            isMouseDown = true;
+            previousMouseX = event.clientX;
+            previousMouseY = event.clientY;
+        });
+        document.addEventListener('mouseup', () => { isMouseDown = false; });
+        document.addEventListener('mousemove', (event) => {
+            if (isMouseDown) {
+                targetX += (event.clientX - previousMouseX) * 0.01;
+                targetY += (event.clientY - previousMouseY) * 0.01;
+                targetY = Math.max(-Math.PI/2, Math.min(Math.PI/2, targetY));
+                previousMouseX = event.clientX;
+                previousMouseY = event.clientY;
+            }
+        });
+        
+        document.addEventListener('wheel', (event) => {
+            const direction = event.deltaY > 0 ? 1 : -1;
+            camera.position.multiplyScalar(1 + direction * 0.1);
+            camera.position.clampLength(10, 200);
+        });
+        
+        // ==================== 动画循环 ====================
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 平滑相机旋转
+            const radius = camera.position.length();
+            camera.position.x = radius * Math.sin(targetX) * Math.cos(targetY);
+            camera.position.y = radius * Math.sin(targetY);
+            camera.position.z = radius * Math.cos(targetX) * Math.cos(targetY);
+            camera.lookAt(scene.position);
+            
+            // 行星运动
+            planets.forEach((planet, index) => {
+                if (index > 0) {
+                    planet.orbitGroup.rotation.y += planet.data.speed;
+                }
+                planet.mesh.rotation.y += 0.01;
+            });
+            
+            renderer.render(scene, camera);
+        }
+        
+        // ==================== 窗口调整 ====================
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // 启动
+        animate();
+    </script>
+</body>
+</html>

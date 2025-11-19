@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 3D 太陽系模擬</title>
+    <style>
+        :root {
+            /* 定義行星公轉速度 (秒) - 為了視覺效果，這不是真實比例，但保持了相對快慢 */
+            --mercury-time: 5s;
+            --venus-time: 8s;
+            --earth-time: 12s;
+            --mars-time: 16s;
+            --jupiter-time: 30s;
+            --saturn-time: 45s;
+            --uranus-time: 70s;
+            --neptune-time: 90s;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #050505;
+            background-image: radial-gradient(circle at center, #1a1a2e 0%, #000000 100%);
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+
+        /* 星空背景容器 */
+        #stars-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: twinkle 2s infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        /* 太陽系容器 */
+        .solar-system {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d; /* 如果未來想做3D傾斜可保留 */
+            z-index: 1;
+        }
+
+        /* 太陽 */
+        .sun {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at center, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 40px #ff8c00, 0 0 80px #ff4500;
+            z-index: 100;
+        }
+
+        /* 軌道通用樣式 */
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            transition: border-color 0.3s;
+        }
+
+        .solar-system:hover .orbit {
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* 行星容器 (負責旋轉) */
+        .pos {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            animation: orbit linear infinite;
+        }
+
+        /* 行星本體通用樣式 */
+        .planet {
+            position: absolute;
+            top: 0; /* 位於軌道頂端 */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5); /* 陰影增加立體感 */
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        /* 行星名稱標籤 */
+        .planet::after {
+            content: attr(data-name);
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            background: rgba(0,0,0,0.7);
+            padding: 2px 6px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .planet:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 200;
+        }
+
+        .planet:hover::after {
+            opacity: 1;
+        }
+
+        /* 懸停時暫停動畫，方便觀察 */
+        .planet:hover {
+            /* 注意：這裡無法直接暫停父層動畫，
+               我們改用 JS 或簡單的 CSS hack (hover container 暫停所有) 
+               這裡選擇讓使用者單純放大觀察，不暫停軌道以免錯位 */
+        }
+
+        /* --- 各個行星的設定 (大小、軌道半徑、顏色、速度) --- */
+
+        /* 水星 */
+        .mercury-orbit { width: 140px; height: 140px; }
+        .mercury-pos { animation-duration: var(--mercury-time); }
+        .mercury { width: 10px; height: 10px; background: #a5a5a5; }
+
+        /* 金星 */
+        .venus-orbit { width: 200px; height: 200px; }
+        .venus-pos { animation-duration: var(--venus-time); }
+        .venus { width: 18px; height: 18px; background: #d4a354; }
+
+        /* 地球 */
+        .earth-orbit { width: 280px; height: 280px; }
+        .earth-pos { animation-duration: var(--earth-time); }
+        .earth { width: 20px; height: 20px; background: #2266cc; }
+        /* 月球 (簡單實作：附著在地球上) - 在此簡化省略，避免層級過於複雜 */
+
+        /* 火星 */
+        .mars-orbit { width: 360px; height: 360px; }
+        .mars-pos { animation-duration: var(--mars-time); }
+        .mars { width: 14px; height: 14px; background: #dd4422; }
+
+        /* 木星 */
+        .jupiter-orbit { width: 500px; height: 500px; }
+        .jupiter-pos { animation-duration: var(--jupiter-time); }
+        .jupiter { width: 50px; height: 50px; background: #d9bb88; background: radial-gradient(circle at 30% 30%, #e0ae6f, #8c6e42); }
+
+        /* 土星 */
+        .saturn-orbit { width: 650px; height: 650px; }
+        .saturn-pos { animation-duration: var(--saturn-time); }
+        .saturn { width: 40px; height: 40px; background: #e8dcb3; position: relative; }
+        /* 土星環 */
+        .saturn::before {
+            content: '';
+            position: absolute;
+            width: 70px;
+            height: 16px;
+            background: rgba(199, 180, 139, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 0 2px rgba(160, 140, 100, 0.3);
+        }
+
+        /* 天王星 */
+        .uranus-orbit { width: 800px; height: 800px; }
+        .uranus-pos { animation-duration: var(--uranus-time); }
+        .uranus { width: 30px; height: 30px; background: #88ddff; }
+
+        /* 海王星 */
+        .neptune-orbit { width: 920px; height: 920px; }
+        .neptune-pos { animation-duration: var(--neptune-time); }
+        .neptune { width: 28px; height: 28px; background: #4466ff; }
+
+        /* 軌道動畫關鍵影格 */
+        @keyframes orbit {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* 資訊面板 */
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: rgba(255,255,255,0.5);
+            font-size: 12px;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="stars-container"></div>
+
+    <div class="solar-system">
+        <div class="sun"></div>
+
+        <div class="orbit mercury-orbit">
+            <div class="pos mercury-pos">
+                <div class="planet mercury" data-name="水星 Mercury"></div>
+            </div>
+        </div>
+
+        <div class="orbit venus-orbit">
+            <div class="pos venus-pos">
+                <div class="planet venus" data-name="金星 Venus"></div>
+            </div>
+        </div>
+
+        <div class="orbit earth-orbit">
+            <div class="pos earth-pos">
+                <div class="planet earth" data-name="地球 Earth"></div>
+            </div>
+        </div>
+
+        <div class="orbit mars-orbit">
+            <div class="pos mars-pos">
+                <div class="planet mars" data-name="火星 Mars"></div>
+            </div>
+        </div>
+
+        <div class="orbit jupiter-orbit">
+            <div class="pos jupiter-pos">
+                <div class="planet jupiter" data-name="木星 Jupiter"></div>
+            </div>
+        </div>
+
+        <div class="orbit saturn-orbit">
+            <div class="pos saturn-pos">
+                <div class="planet saturn" data-name="土星 Saturn"></div>
+            </div>
+        </div>
+
+        <div class="orbit uranus-orbit">
+            <div class="pos uranus-pos">
+                <div class="planet uranus" data-name="天王星 Uranus"></div>
+            </div>
+        </div>
+
+        <div class="orbit neptune-orbit">
+            <div class="pos neptune-pos">
+                <div class="planet neptune" data-name="海王星 Neptune"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="info-panel">
+        <p>提示：將滑鼠移到行星上可查看名稱</p>
+    </div>
+
+    <script>
+        // 產生隨機星空的簡單腳本
+        document.addEventListener("DOMContentLoaded", function() {
+            const starsContainer = document.getElementById('stars-container');
+            const starCount = 200; // 星星數量
+
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                
+                // 隨機位置
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // 隨機大小 (製造景深感)
+                const size = Math.random() * 2 + 1;
+                
+                // 隨機閃爍延遲
+                const delay = Math.random() * 2;
+
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDelay = `${delay}s`;
+
+                starsContainer.appendChild(star);
+            }
+        });
+    </script>
+</body>
+</html>

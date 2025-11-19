@@ -439,6 +439,14 @@
           <h1 class="test-title">Solar System Test</h1>
           <p class="test-subtitle">LLM Themed Demos</p>
           
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt('請使用 HTML 前端技術，製作一個模擬太陽系的網頁，相關程式請集中在一個 html 檔案內')">複製提示詞</button>
+            </div>
+            <div class="prompt-text">請使用 HTML 前端技術，製作一個模擬太陽系的網頁，相關程式請集中在一個 html 檔案內</div>
+          </div>
+          
           <div class="ai-grid">
             <div class="ai-card" v-for="item in solarsystemPages" :key="item.link" @click="handleCardClick(item.link, $event)">
               <h3>{{ item.title }}</h3>
@@ -566,6 +574,7 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             { title: 'Solar System - ChatGPT', description: '太陽系主題互動示範（ChatGPT）', image: 'tle_logo.png', tags: ['LLM', 'ChatGPT', 'SolarSystem'], link: 'solarsystem/chatgpt.html' },
             { title: 'Solar System - Claude', description: '太陽系主題互動示範（Claude）', image: 'tle_logo.png', tags: ['LLM', 'Claude', 'SolarSystem'], link: 'solarsystem/claude.html' },
             { title: 'Solar System - Gemini', description: '太陽系主題互動示範（Gemini）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'SolarSystem'], link: 'solarsystem/gemini.html' },
+            { title: 'Solar System - Gemini 3', description: '太陽系主題互動示範（Gemini 3）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'SolarSystem'], link: 'solarsystem/gemini3.html' },
             { title: 'Solar System - Grok', description: '太陽系主題互動示範（Grok）', image: 'tle_logo.png', tags: ['LLM', 'Grok', 'SolarSystem'], link: 'solarsystem/grok.html' },
             { title: 'Solar System - DeepSeek', description: '太陽系主題互動示範（DeepSeek）', image: 'tle_logo.png', tags: ['LLM', 'DeepSeek', 'SolarSystem'], link: 'solarsystem/deepseek.html' },
             { title: 'Solar System - Qwen', description: '太陽系主題互動示範（Qwen）', image: 'tle_logo.png', tags: ['LLM', 'Qwen', 'SolarSystem'], link: 'solarsystem/qwen.html' }
@@ -576,6 +585,7 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             { title: 'Earth-Moon System - ChatGPT', description: '地月系統 3D 模擬（ChatGPT）', tags: ['LLM', 'ChatGPT', '3D'], link: 'earthmoonsystem/chatgpt.html' },
             { title: 'Earth-Moon System - Claude', description: '地月系統 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'earthmoonsystem/claude.html' },
             { title: 'Earth-Moon System - Gemini', description: '地月系統 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'earthmoonsystem/gemini.html' },
+            { title: 'Earth-Moon System - Gemini 3', description: '地月系統 3D 模擬（Gemini 3）', tags: ['LLM', 'Gemini', '3D'], link: 'earthmoonsystem/gemini3.html' },
             { title: 'Earth-Moon System - Grok', description: '地月系統 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'earthmoonsystem/grok.html' }
           ],
 
@@ -584,6 +594,7 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             { title: 'Black Hole - ChatGPT', description: '黑洞 3D 模擬（ChatGPT）', tags: ['LLM', 'ChatGPT', '3D'], link: 'blackhole/chatgpt.html' },
             { title: 'Black Hole - Claude', description: '黑洞 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'blackhole/claude.html' },
             { title: 'Black Hole - Gemini', description: '黑洞 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'blackhole/gemini.html' },
+            { title: 'Black Hole - Gemini 3', description: '黑洞 3D 模擬（Gemini 3）', tags: ['LLM', 'Gemini', '3D'], link: 'blackhole/gemini3.html' },
             { title: 'Black Hole - Grok', description: '黑洞 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'blackhole/grok.html' }
           ],
 
@@ -592,6 +603,7 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             { title: 'Cyber Messager - ChatGPT', description: '賽博朋克通訊應用（ChatGPT）', tags: ['LLM', 'ChatGPT', 'UI/UX'], link: 'cybermessager/chatgpt.html' },
             { title: 'Cyber Messager - Claude', description: '賽博朋克通訊應用（Claude）', tags: ['LLM', 'Claude', 'UI/UX'], link: 'cybermessager/claude.html' },
             { title: 'Cyber Messager - Gemini', description: '賽博朋克通訊應用（Gemini）', tags: ['LLM', 'Gemini', 'UI/UX'], link: 'cybermessager/gemini.html' },
+            { title: 'Cyber Messager - Gemini 3', description: '賽博朋克通訊應用（Gemini 3）', tags: ['LLM', 'Gemini', 'UI/UX'], link: 'cybermessager/gemini3.html' },
             { title: 'Cyber Messager - Grok', description: '賽博朋克通訊應用（Grok）- 空檔案', tags: ['LLM', 'Grok', 'UI/UX'], link: 'cybermessager/grok.html' }
           ]
         }

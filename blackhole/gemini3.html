@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Interactive Black Hole Simulation</title>
+    <style>
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
+        #info {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            pointer-events: none;
+            text-shadow: 0 0 5px #000;
+        }
+        .controls {
+            pointer-events: auto;
+            background: rgba(255,255,255,0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="info">
+        <h2>Black Hole Gravity Simulation</h2>
+        <p class="controls">
+            <strong>Left Click</strong> anywhere to launch a probe.<br>
+            <strong>Left Click + Drag</strong> to rotate view.<br>
+            <strong>Scroll</strong> to zoom.
+        </p>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import * as THREE from 'three';
+        import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+        // --- 1. SCENE SETUP ---
+        const scene = new THREE.Scene();
+        // Add a subtle starry background
+        const loader = new THREE.TextureLoader();
+        // Creating a simple star field procedurally
+        const starGeometry = new THREE.BufferGeometry();
+        const starCount = 2000;
+        const starPos = new Float32Array(starCount * 3);
+        for(let i=0; i<starCount*3; i++) {
+            starPos[i] = (Math.random() - 0.5) * 600;
+        }
+        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+        const starMaterial = new THREE.PointsMaterial({color: 0xffffff, size: 0.5});
+        const stars = new THREE.Points(starGeometry, starMaterial);
+        scene.add(stars);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 20, 60);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+
+        // --- 2. BLACK HOLE CONSTRUCTION ---
+        const BH_RADIUS = 4;
+        const BH_MASS = 1000; // Arbitrary units for simulation
+        const G = 0.5; // Gravitational constant for simulation scaling
+
+        // Event Horizon (The Black Sphere)
+        const eventHorizonGeo = new THREE.SphereGeometry(BH_RADIUS, 32, 32);
+        const eventHorizonMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
+        const blackHole = new THREE.Mesh(eventHorizonGeo, eventHorizonMat);
+        scene.add(blackHole);
+
+        // Accretion Disk (The Glowing Ring)
+        // Using a flattened torus to simulate the disk
+        const diskGeo = new THREE.TorusGeometry(BH_RADIUS * 2.5, 1.5, 16, 100);
+        const diskMat = new THREE.MeshBasicMaterial({ 
+            color: 0xff4400, 
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.7
+        });
+        const accretionDisk = new THREE.Mesh(diskGeo, diskMat);
+        accretionDisk.scale.set(1, 0.05, 1); // Flatten it
+        accretionDisk.rotation.x = Math.PI / 6; // Slight tilt
+        scene.add(accretionDisk);
+
+        // Glow Light
+        const diskLight = new THREE.PointLight(0xffaa00, 2, 100);
+        diskLight.position.set(0, 0, 0);
+        scene.add(diskLight);
+
+        // --- 3. SIMULATION OBJECTS ---
+        let objects = [];
+
+        // Helper to create objects
+        function createBody(radius, color, position, velocity) {
+            const geometry = new THREE.SphereGeometry(radius, 16, 16);
+            const material = new THREE.MeshStandardMaterial({ 
+                color: color, 
+                roughness: 0.4,
+                emissive: color,
+                emissiveIntensity: 0.2
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.copy(position);
+            
+            scene.add(mesh);
+
+            // Store physics properties in the mesh user data
+            mesh.userData = {
+                velocity: velocity,
+                mass: 1,
+                active: true
+            };
+            objects.push(mesh);
+        }
+
+        // Initial Orbiting Bodies
+        createBody(0.8, 0x00ffff, new THREE.Vector3(30, 0, 0), new THREE.Vector3(0, 0, 3.5)); // Stable circular-ish
+        createBody(0.6, 0x00ff00, new THREE.Vector3(-40, 5, 0), new THREE.Vector3(0, 0, -3.0)); // Outer orbit
+
+        // --- 4. PHYSICS ENGINE ---
+        function updatePhysics() {
+            const dt = 0.05; // Time step
+
+            for (let i = objects.length - 1; i >= 0; i--) {
+                const obj = objects[i];
+                if (!obj.userData.active) continue;
+
+                // Calculate distance vector
+                // Black hole is at (0,0,0)
+                const distanceVec = new THREE.Vector3().copy(obj.position).multiplyScalar(-1); 
+                const distance = distanceVec.length();
+
+                // Event Horizon Collision
+                if (distance < BH_RADIUS) {
+                    // "Spaghettification" or simple absorption
+                    scene.remove(obj);
+                    objects.splice(i, 1);
+                    continue;
+                }
+
+                // Gravity Formula: F = G * M * m / r^2
+                // Direction is normalized distance vector
+                distanceVec.normalize();
+                const forceMagnitude = (G * BH_MASS * obj.userData.mass) / (distance * distance);
+                const acceleration = distanceVec.multiplyScalar(forceMagnitude / obj.userData.mass);
+
+                // Update Velocity
+                obj.userData.velocity.add(acceleration.multiplyScalar(dt));
+
+                // Update Position
+                obj.position.add(obj.userData.velocity.clone().multiplyScalar(dt));
+            }
+        }
+
+        // --- 5. INTERACTION (LAUNCHER) ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        window.addEventListener('mousedown', (event) => {
+            // 1. Get mouse coordinates in Normalized Device Coordinates (-1 to +1)
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            // 2. Raycast from camera
+            raycaster.setFromCamera(mouse, camera);
+
+            // 3. Launch direction: The direction the ray is pointing
+            const launchDir = raycaster.ray.direction.clone();
+            
+            // 4. Spawn position: Slightly in front of the camera
+            const spawnPos = camera.position.clone().add(launchDir.clone().multiplyScalar(5));
+
+            // 5. Velocity: Ray direction * speed
+            const launchVel = launchDir.multiplyScalar(15); // Speed 15
+            
+            // Create the projectile (Red Probe)
+            createBody(0.5, 0xff0000, spawnPos, launchVel);
+        });
+
+        // --- 6. ANIMATION LOOP ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate accretion disk for visual effect
+            accretionDisk.rotation.z -= 0.005;
+
+            updatePhysics();
+            controls.update();
+            renderer.render(scene, camera);
+        }
+
+        // Handle Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+    </script>
+</body>
+</html>

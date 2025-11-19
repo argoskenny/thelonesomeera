@@ -1,432 +1,243 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>太阳系模拟器</title>
+    <title>3D太阳系模拟器</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #000428, #004e92);
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .container {
-            max-width: 1200px;
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        #info {
+            position: absolute;
+            top: 10px;
             width: 100%;
-            padding: 20px;
             text-align: center;
-            z-index: 10;
-        }
-        
-        header {
-            margin-bottom: 30px;
-            text-align: center;
-        }
-        
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
-            background: linear-gradient(to right, #ff9966, #ff5e62);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 25px;
-            color: #c0e0ff;
-            line-height: 1.6;
-        }
-        
-        .solar-system {
-            position: relative;
-            width: 800px;
-            height: 800px;
-            margin: 0 auto;
-            border-radius: 50%;
-            transform: scale(0.9);
-        }
-        
-        .sun {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70px;
-            height: 70px;
-            background: radial-gradient(circle, #ffd200, #f7971e, #ff4e50);
-            border-radius: 50%;
-            box-shadow: 0 0 50px #ff4e50, 0 0 100px #f7971e;
-            z-index: 10;
-            animation: sun-pulse 4s infinite alternate;
-        }
-        
-        .orbit {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-        }
-        
-        .mercury { background: linear-gradient(to right, #a9a9a9, #808080); }
-        .venus { background: linear-gradient(to right, #e39e1c, #d2691e); }
-        .earth { background: linear-gradient(to right, #1e90ff, #006400); }
-        .mars { background: linear-gradient(to right, #ff4500, #b22222); }
-        .jupiter { background: linear-gradient(to right, #ffa07a, #cd5c5c); }
-        .saturn { background: linear-gradient(to right, #f0e68c, #daa520); }
-        .uranus { background: linear-gradient(to right, #40e0d0, #20b2aa); }
-        .neptune { background: linear-gradient(to right, #1e90ff, #0000cd); }
-        
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-        }
-        
-        button:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .planet-info {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-            max-width: 500px;
-            margin: 30px auto 0;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-        
-        .planet-info h2 {
-            margin-bottom: 15px;
-            color: #ffd700;
-        }
-        
-        .planet-info p {
-            line-height: 1.6;
-            color: #c0e0ff;
-        }
-        
-        .stars {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            font-family: Arial, sans-serif;
             pointer-events: none;
-            z-index: -1;
-        }
-        
-        .star {
-            position: absolute;
-            background-color: white;
-            border-radius: 50%;
-        }
-        
-        .saturn::after {
-            content: '';
-            position: absolute;
-            width: 200%;
-            height: 8px;
-            background: linear-gradient(to right, transparent, #f0e68c, transparent);
-            top: 50%;
-            left: -50%;
-            transform: translateY(-50%);
-            border-radius: 4px;
-        }
-        
-        .moon {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(to right, #d3d3d3, #a9a9a9);
-            transform: translate(-50%, -50%);
-        }
-        
-        @keyframes sun-pulse {
-            0% { box-shadow: 0 0 50px #ff4e50, 0 0 100px #f7971e; }
-            100% { box-shadow: 0 0 70px #ff4e50, 0 0 140px #f7971e; }
-        }
-        
-        @media (max-width: 900px) {
-            .solar-system {
-                width: 600px;
-                height: 600px;
-                transform: scale(0.8);
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-        }
-        
-        @media (max-width: 650px) {
-            .solar-system {
-                width: 400px;
-                height: 400px;
-                transform: scale(0.7);
-            }
-            
-            .subtitle {
-                font-size: 1rem;
-            }
-            
-            .controls {
-                gap: 10px;
-            }
-            
-            button {
-                padding: 10px 15px;
-                font-size: 14px;
-            }
+            text-shadow: 0 0 5px black;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
-    <div class="stars" id="stars"></div>
-    
-    <div class="container">
-        <header>
-            <h1>太阳系模拟器</h1>
-            <p class="subtitle">这个交互式模拟展示了太阳系中的八大行星围绕太阳运行的轨道。每个行星的大小、颜色和轨道周期都经过精心设计，以反映其在天文学中的特征。</p>
-        </header>
-        
-        <div class="solar-system" id="solarSystem">
-            <div class="sun"></div>
-            <!-- 行星将通过JavaScript动态生成 -->
-        </div>
-        
-        <div class="controls">
-            <button id="pauseBtn">暂停/继续</button>
-            <button id="speedUp">加速</button>
-            <button id="speedDown">减速</button>
-            <button id="resetBtn">重置</button>
-        </div>
-        
-        <div class="planet-info">
-            <h2>太阳系小知识</h2>
-            <p>太阳系形成于约46亿年前，由巨大的星际分子云引力坍缩后形成。太阳的质量占整个太阳系总质量的99.86%。八大行星中，水星距离太阳最近，海王星最远。木星是最大的行星，其质量是其他所有行星质量总和的2.5倍。</p>
-        </div>
-    </div>
-
+    <div id="info">太阳系模拟器 - 使用鼠标拖动旋转，滚轮缩放</div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script>
-        // 创建星星背景
-        function createStars() {
-            const starsContainer = document.getElementById('stars');
-            const starsCount = 200;
+        // 场景设置
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x000010);
+
+        // 相机设置
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 50;
+
+        // 渲染器设置
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        document.body.appendChild(renderer.domElement);
+
+        // 添加轨道控制
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+
+        // 添加环境光
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        scene.add(ambientLight);
+
+        // 添加点光源模拟太阳光
+        const sunLight = new THREE.PointLight(0xffffff, 1.5, 300);
+        scene.add(sunLight);
+
+        // 创建太阳
+        function createSun() {
+            const geometry = new THREE.SphereGeometry(5, 32, 32);
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load('https://threejs.org/examples/textures/planets/sun.jpg');
+            const material = new THREE.MeshBasicMaterial({ map: texture });
+            const sun = new THREE.Mesh(geometry, material);
             
-            for (let i = 0; i < starsCount; i++) {
-                const star = document.createElement('div');
-                star.classList.add('star');
-                
-                const size = Math.random() * 3;
-                star.style.width = `${size}px`;
-                star.style.height = `${size}px`;
-                
-                star.style.left = `${Math.random() * 100}%`;
-                star.style.top = `${Math.random() * 100}%`;
-                
-                star.style.opacity = Math.random() * 0.8 + 0.2;
-                star.style.animation = `twinkle ${Math.random() * 5 + 3}s infinite alternate`;
-                
-                starsContainer.appendChild(star);
+            // 添加太阳光晕效果
+            const sunGlowGeometry = new THREE.SphereGeometry(5.5, 32, 32);
+            const sunGlowMaterial = new THREE.MeshBasicMaterial({
+                color: 0xffa500,
+                transparent: true,
+                opacity: 0.3
+            });
+            const sunGlow = new THREE.Mesh(sunGlowGeometry, sunGlowMaterial);
+            sun.add(sunGlow);
+            
+            scene.add(sun);
+            sunLight.position.copy(sun.position);
+            return sun;
+        }
+
+        // 创建行星
+        function createPlanet(size, textureUrl, orbitRadius, orbitSpeed) {
+            const geometry = new THREE.SphereGeometry(size, 32, 32);
+            const textureLoader = new THREE.TextureLoader();
+            const texture = textureLoader.load(textureUrl);
+            const material = new THREE.MeshStandardMaterial({ map: texture });
+            const planet = new THREE.Mesh(geometry, material);
+            
+            // 创建轨道线
+            const orbitGeometry = new THREE.RingGeometry(orbitRadius - 0.1, orbitRadius + 0.1, 64);
+            const orbitMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0xffffff, 
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.2
+            });
+            const orbit = new THREE.Mesh(orbitGeometry, orbitMaterial);
+            orbit.rotation.x = Math.PI / 2;
+            scene.add(orbit);
+            
+            return {
+                mesh: planet,
+                orbitRadius: orbitRadius,
+                orbitSpeed: orbitSpeed,
+                angle: Math.random() * Math.PI * 2
+            };
+        }
+
+        // 行星数据
+        const planetsData = [
+            { name: "水星", size: 0.4, texture: "https://threejs.org/examples/textures/planets/mercury.jpg", orbitRadius: 10, orbitSpeed: 0.04 },
+            { name: "金星", size: 0.9, texture: "https://threejs.org/examples/textures/planets/venus.jpg", orbitRadius: 15, orbitSpeed: 0.015 },
+            { name: "地球", size: 1, texture: "https://threejs.org/examples/textures/planets/earth.jpg", orbitRadius: 20, orbitSpeed: 0.01 },
+            { name: "火星", size: 0.5, texture: "https://threejs.org/examples/textures/planets/mars.jpg", orbitRadius: 25, orbitSpeed: 0.008 },
+            { name: "木星", size: 2, texture: "https://threejs.org/examples/textures/planets/jupiter.jpg", orbitRadius: 35, orbitSpeed: 0.004 },
+            { name: "土星", size: 1.8, texture: "https://threejs.org/examples/textures/planets/saturn.jpg", orbitRadius: 45, orbitSpeed: 0.003 },
+            { name: "天王星", size: 1.2, texture: "https://threejs.org/examples/textures/planets/uranus.jpg", orbitRadius: 55, orbitSpeed: 0.002 },
+            { name: "海王星", size: 1.2, texture: "https://threejs.org/examples/textures/planets/neptune.jpg", orbitRadius: 65, orbitSpeed: 0.001 }
+        ];
+
+        // 创建太阳和行星
+        const sun = createSun();
+        const planets = [];
+
+        planetsData.forEach(data => {
+            const planet = createPlanet(data.size, data.texture, data.orbitRadius, data.orbitSpeed);
+            planet.name = data.name;
+            planets.push(planet);
+            scene.add(planet.mesh);
+        });
+
+        // 添加星空背景
+        function createStarfield() {
+            const starGeometry = new THREE.BufferGeometry();
+            const starCount = 10000;
+            const positions = new Float32Array(starCount * 3);
+            
+            for (let i = 0; i < starCount * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 2000;
             }
             
-            // 添加闪烁动画
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes twinkle {
-                    0% { opacity: ${Math.random() * 0.3 + 0.2}; }
-                    100% { opacity: ${Math.random() * 0.8 + 0.2}; }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-        
-        // 行星数据
-        const planets = [
-            { name: "水星", colorClass: "mercury", size: 8, orbitRadius: 100, speed: 0.04, angle: 0 },
-            { name: "金星", colorClass: "venus", size: 12, orbitRadius: 140, speed: 0.015, angle: 30 },
-            { name: "地球", colorClass: "earth", size: 13, orbitRadius: 190, speed: 0.01, angle: 60 },
-            { name: "火星", colorClass: "mars", size: 10, orbitRadius: 240, speed: 0.008, angle: 90 },
-            { name: "木星", colorClass: "jupiter", size: 30, orbitRadius: 320, speed: 0.004, angle: 120 },
-            { name: "土星", colorClass: "saturn", size: 25, orbitRadius: 400, speed: 0.003, angle: 150 },
-            { name: "天王星", colorClass: "uranus", size: 18, orbitRadius: 480, speed: 0.002, angle: 180 },
-            { name: "海王星", colorClass: "neptune", size: 17, orbitRadius: 540, speed: 0.001, angle: 210 }
-        ];
-        
-        // 创建太阳系
-        function createSolarSystem() {
-            const solarSystem = document.getElementById('solarSystem');
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
             
-            // 创建轨道
-            planets.forEach(planet => {
-                const orbit = document.createElement('div');
-                orbit.classList.add('orbit');
-                orbit.style.width = `${planet.orbitRadius * 2}px`;
-                orbit.style.height = `${planet.orbitRadius * 2}px`;
-                solarSystem.appendChild(orbit);
+            const starMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 1,
+                sizeAttenuation: true
             });
             
-            // 创建行星
-            planets.forEach(planet => {
-                const planetElem = document.createElement('div');
-                planetElem.classList.add('planet', planet.colorClass);
-                planetElem.style.width = `${planet.size}px`;
-                planetElem.style.height = `${planet.size}px`;
-                planetElem.dataset.name = planet.name;
-                solarSystem.appendChild(planetElem);
-                
-                // 为地球添加月球
-                if (planet.name === "地球") {
-                    const moon = document.createElement('div');
-                    moon.classList.add('moon');
-                    moon.style.width = '4px';
-                    moon.style.height = '4px';
-                    planetElem.appendChild(moon);
-                }
-            });
+            const stars = new THREE.Points(starGeometry, starMaterial);
+            scene.add(stars);
         }
-        
-        // 更新行星位置
-        let animationId = null;
-        let isPaused = false;
-        let speedFactor = 1;
-        
-        function updatePositions() {
-            const solarSystem = document.getElementById('solarSystem');
-            const planetElems = solarSystem.querySelectorAll('.planet');
+
+        // 调用创建星空函数
+        createStarfield();
+
+        // 创建行星标签
+        function createPlanetLabels() {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = 256;
+            canvas.height = 128;
             
             planets.forEach((planet, index) => {
-                const planetElem = planetElems[index];
+                // 清除画布
+                context.clearRect(0, 0, canvas.width, canvas.height);
                 
-                if (!isPaused) {
-                    planet.angle += planet.speed * speedFactor;
-                }
+                // 绘制文本
+                context.font = '24px Arial';
+                context.fillStyle = 'white';
+                context.textAlign = 'center';
+                context.fillText(planet.name, canvas.width / 2, canvas.height / 2);
                 
-                const centerX = solarSystem.offsetWidth / 2;
-                const centerY = solarSystem.offsetHeight / 2;
+                // 创建纹理
+                const texture = new THREE.CanvasTexture(canvas);
+                const material = new THREE.SpriteMaterial({ map: texture });
+                const sprite = new THREE.Sprite(material);
                 
-                const x = centerX + planet.orbitRadius * Math.cos(planet.angle);
-                const y = centerY + planet.orbitRadius * Math.sin(planet.angle);
+                // 设置标签位置
+                sprite.position.set(
+                    Math.cos(planet.angle) * planet.orbitRadius,
+                    3,
+                    Math.sin(planet.angle) * planet.orbitRadius
+                );
+                sprite.scale.set(8, 4, 1);
                 
-                planetElem.style.left = `${x}px`;
-                planetElem.style.top = `${y}px`;
-                
-                // 更新月球位置（如果有）
-                const moon = planetElem.querySelector('.moon');
-                if (moon) {
-                    const moonAngle = planet.angle * 8; // 月球更快的速度
-                    const moonDistance = 15;
-                    const moonX = planet.size/2 + moonDistance * Math.cos(moonAngle);
-                    const moonY = planet.size/2 + moonDistance * Math.sin(moonAngle);
-                    moon.style.left = `${moonX}px`;
-                    moon.style.top = `${moonY}px`;
-                }
-            });
-            
-            if (!isPaused) {
-                animationId = requestAnimationFrame(updatePositions);
-            }
-        }
-        
-        // 初始化
-        function init() {
-            createStars();
-            createSolarSystem();
-            updatePositions();
-            
-            // 添加事件监听器
-            document.getElementById('pauseBtn').addEventListener('click', () => {
-                isPaused = !isPaused;
-                if (!isPaused) {
-                    updatePositions();
-                }
-            });
-            
-            document.getElementById('speedUp').addEventListener('click', () => {
-                speedFactor = Math.min(speedFactor + 0.5, 5);
-            });
-            
-            document.getElementById('speedDown').addEventListener('click', () => {
-                speedFactor = Math.max(speedFactor - 0.5, 0.5);
-            });
-            
-            document.getElementById('resetBtn').addEventListener('click', () => {
-                planets.forEach(planet => {
-                    planet.angle = Math.random() * Math.PI * 2;
-                });
-                speedFactor = 1;
-                isPaused = false;
-                updatePositions();
-            });
-            
-            // 行星悬停效果
-            document.querySelectorAll('.planet').forEach(planet => {
-                planet.addEventListener('mouseenter', function() {
-                    const name = this.dataset.name;
-                    const infoBox = document.querySelector('.planet-info');
-                    infoBox.querySelector('h2').textContent = name;
-                    
-                    // 为每个行星提供简短的描述
-                    const descriptions = {
-                        "水星": "太阳系中最小且最靠近太阳的行星，没有卫星，表面布满陨石坑。",
-                        "金星": "被称为地球的'姐妹星'，是太阳系中最热的行星，大气层主要由二氧化碳组成。",
-                        "地球": "我们的家园，太阳系中唯一已知存在生命的行星，拥有一个天然卫星——月球。",
-                        "火星": "被称为'红色星球'，拥有太阳系最高的火山和最大的峡谷，有两颗小卫星。",
-                        "木星": "太阳系中最大的行星，是一个气态巨行星，拥有著名的大红斑和79颗已知卫星。",
-                        "土星": "以其壮观的环系而闻名，这些环主要由冰粒和岩石碎片组成，拥有82颗卫星。",
-                        "天王星": "一个冰巨行星，其自转轴几乎与公转轨道平行，看起来像是'躺着'旋转。",
-                        "海王星": "太阳系中最远的行星，是一个冰巨行星，拥有太阳系最强的风暴。"
-                    };
-                    
-                    infoBox.querySelector('p').textContent = descriptions[name] || "行星信息不可用";
-                });
+                scene.add(sprite);
+                planet.label = sprite;
             });
         }
-        
-        // 页面加载完成后初始化
-        window.addEventListener('load', init);
+
+        // 调用创建标签函数
+        createPlanetLabels();
+
+        // 更新标签位置
+        function updateLabels() {
+            planets.forEach(planet => {
+                if (planet.label) {
+                    planet.label.position.set(
+                        planet.mesh.position.x,
+                        planet.mesh.position.y + 3,
+                        planet.mesh.position.z
+                    );
+                }
+            });
+        }
+
+        // 动画循环
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // 更新行星位置
+            planets.forEach(planet => {
+                planet.angle += planet.orbitSpeed;
+                planet.mesh.position.x = Math.cos(planet.angle) * planet.orbitRadius;
+                planet.mesh.position.z = Math.sin(planet.angle) * planet.orbitRadius;
+                
+                // 行星自转
+                planet.mesh.rotation.y += 0.01;
+            });
+            
+            // 更新标签位置
+            updateLabels();
+            
+            // 太阳自转
+            sun.rotation.y += 0.005;
+            
+            // 更新控制器
+            controls.update();
+            
+            // 渲染场景
+            renderer.render(scene, camera);
+        }
+
+        // 启动动画
+        animate();
+
+        // 窗口大小调整
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>

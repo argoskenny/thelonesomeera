@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEON_LINK // V.1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #0ff;    /* Cyan */
+            --secondary: #f0f;  /* Magenta */
+            --bg-dark: #050505;
+            --bg-panel: #0a0a0a;
+            --text-dim: #666;
+            --grid-color: rgba(0, 255, 255, 0.05);
+            --glitch-red: red;
+            --glitch-blue: blue;
+        }
+
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--bg-dark);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border: 1px solid var(--primary); }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            background-image: 
+                linear-gradient(var(--grid-color) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* CRT Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(255,255,255,0),
+                rgba(255,255,255,0) 50%,
+                rgba(0,0,0,0.1) 50%,
+                rgba(0,0,0,0.1)
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 999;
+            animation: flicker 0.15s infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.27; }
+            50% { opacity: 0.3; }
+            100% { opacity: 0.27; }
+        }
+
+        /* Main Interface Container */
+        .interface-container {
+            width: 95%;
+            max-width: 1200px;
+            height: 90vh;
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            border: 1px solid var(--primary);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+            background: rgba(10, 10, 10, 0.95);
+            position: relative;
+        }
+
+        /* Decorative Corners */
+        .corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border: 2px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+        .tl { top: -2px; left: -2px; border-bottom: none; border-right: none; }
+        .tr { top: -2px; right: -2px; border-bottom: none; border-left: none; }
+        .bl { bottom: -2px; left: -2px; border-top: none; border-right: none; }
+        .br { bottom: -2px; right: -2px; border-top: none; border-left: none; }
+
+        /* Sidebar */
+        .sidebar {
+            border-right: 1px solid var(--primary);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h3 {
+            margin-top: 0;
+            border-bottom: 1px dashed var(--primary);
+            padding-bottom: 10px;
+            text-shadow: 0 0 5px var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .user-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .user-item {
+            padding: 10px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .user-item:hover, .user-item.active {
+            border: 1px solid var(--secondary);
+            background: rgba(255, 0, 255, 0.1);
+            text-shadow: 0 0 5px var(--secondary);
+            box-shadow: inset 0 0 10px rgba(255, 0, 255, 0.1);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #333;
+            box-shadow: 0 0 5px #333;
+        }
+        .online { background: #0f0; box-shadow: 0 0 8px #0f0; }
+        .busy { background: #f00; box-shadow: 0 0 8px #f00; }
+
+        /* Chat Area */
+        .chat-area {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--primary);
+            background: rgba(0, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .connection-status {
+            font-size: 0.8em;
+            color: var(--secondary);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        /* Messages Log */
+        .message-log {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 10px 15px;
+            border: 1px solid;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+            line-height: 1.4;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.received {
+            align-self: flex-start;
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(0, 255, 255, 0.05);
+            box-shadow: -2px 2px 0px var(--primary);
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            border-color: var(--secondary);
+            color: var(--secondary);
+            background: rgba(255, 0, 255, 0.05);
+            box-shadow: 2px 2px 0px var(--secondary);
+            text-align: right;
+        }
+
+        .timestamp {
+            font-size: 0.6em;
+            opacity: 0.7;
+            display: block;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px;
+            border-top: 1px solid var(--primary);
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            padding: 10px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            font-family: 'Share Tech Mono', monospace;
+            padding: 0 25px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover {
+            background: var(--primary);
+            color: var(--bg-dark);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .interface-container {
+                grid-template-columns: 1fr;
+                height: 100vh;
+                width: 100%;
+                border: none;
+            }
+            .sidebar {
+                display: none; /* Hidden on mobile for this demo */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scanlines"></div>
+
+    <div class="interface-container">
+        <div class="corner tl"></div>
+        <div class="corner tr"></div>
+        <div class="corner bl"></div>
+        <div class="corner br"></div>
+
+        <aside class="sidebar">
+            <h3>Net_Contacts</h3>
+            <ul class="user-list">
+                <li class="user-item active">
+                    <span>> Ghost_Shell</span>
+                    <div class="status-dot online"></div>
+                </li>
+                <li class="user-item">
+                    <span>> Neo_Tokyo</span>
+                    <div class="status-dot busy"></div>
+                </li>
+                <li class="user-item">
+                    <span>> Data_Broker</span>
+                    <div class="status-dot online"></div>
+                </li>
+                <li class="user-item">
+                    <span>> Sys_Admin</span>
+                    <div class="status-dot"></div>
+                </li>
+            </ul>
+            
+            <div style="margin-top: auto; border: 1px solid var(--text-dim); padding: 10px; font-size: 0.8em;">
+                SYS_INTEGRITY: 98%<br>
+                ENCRYPTION: ON
+            </div>
+        </aside>
+
+        <main class="chat-area">
+            <div class="chat-header">
+                <span>TARGET: <strong>Ghost_Shell</strong></span>
+                <span class="connection-status">SECURE_LINK_ESTABLISHED</span>
+            </div>
+
+            <div class="message-log" id="messageLog">
+                <div class="message received">
+                    <span class="timestamp">10:42:05 :: NET_ID_884</span>
+                    Wake up, Samurai. We have data to burn.
+                </div>
+            </div>
+
+            <div class="input-area">
+                <input type="text" id="msgInput" placeholder="ENTER COMMAND OR MESSAGE..." autocomplete="off">
+                <button id="sendBtn">TX_DATA</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('msgInput');
+            const sendBtn = document.getElementById('sendBtn');
+            const messageLog = document.getElementById('messageLog');
+
+            // Sound effect simulation (Audio context not allowed without interaction, using visual cue)
+            
+            function getTimestamp() {
+                const now = new Date();
+                return now.toLocaleTimeString('en-US', { hour12: false }) + " :: USR_LOC";
+            }
+
+            function appendMessage(text, type) {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = `message ${type}`;
+                
+                const timeSpan = document.createElement('span');
+                timeSpan.className = 'timestamp';
+                timeSpan.textContent = type === 'sent' ? getTimestamp() : "SYSTEM :: AUTO_REPLY";
+                
+                msgDiv.appendChild(timeSpan);
+                msgDiv.appendChild(document.createTextNode(text));
+                
+                messageLog.appendChild(msgDiv);
+                
+                // Auto scroll to bottom
+                messageLog.scrollTop = messageLog.scrollHeight;
+            }
+
+            function handleSend() {
+                const text = input.value.trim();
+                if (text === "") return;
+
+                // 1. User sends message
+                appendMessage(text, 'sent');
+                input.value = '';
+
+                // 2. Simulate "typing" delay and bot response
+                setTimeout(() => {
+                    const responses = [
+                        "Packet received. Decrypting...",
+                        "The grid is unstable right now.",
+                        "Affirmative. Proceeding with protocol.",
+                        "I'm tracing the connection.",
+                        "Data uploaded to the neural cloud."
+                    ];
+                    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                    appendMessage(randomResponse, 'received');
+                }, 1000 + Math.random() * 1500);
+            }
+
+            // Event Listeners
+            sendBtn.addEventListener('click', handleSend);
+            
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    handleSend();
+                }
+            });
+
+            // Initial focus
+            input.focus();
+        });
+    </script>
+</body>
+</html>

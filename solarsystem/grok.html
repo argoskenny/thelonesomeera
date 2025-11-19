@@ -3,199 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solar System Simulation</title>
+    <title>3D Solar System Simulator</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: black;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .solar-system {
-            position: relative;
-            width: 800px;
-            height: 800px;
-        }
-
-        .sun {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80px;
-            height: 80px;
-            background-color: yellow;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px orange;
-        }
-
-        .orbit {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            animation: rotate linear infinite;
-        }
-
-        .planet {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            transform: translateX(-50%);
-        }
-
-        /* Mercury */
-        #mercury-orbit {
-            width: 150px;
-            height: 150px;
-            animation-duration: 8s; /* Faster orbit */
-        }
-        #mercury {
-            background-color: gray;
-            width: 20px;
-            height: 20px;
-            top: -10px;
-        }
-
-        /* Venus */
-        #venus-orbit {
-            width: 220px;
-            height: 220px;
-            animation-duration: 15s;
-        }
-        #venus {
-            background-color: orange;
-        }
-
-        /* Earth */
-        #earth-orbit {
-            width: 300px;
-            height: 300px;
-            animation-duration: 20s;
-        }
-        #earth {
-            background-color: blue;
-        }
-
-        /* Mars */
-        #mars-orbit {
-            width: 380px;
-            height: 380px;
-            animation-duration: 25s;
-        }
-        #mars {
-            background-color: red;
-        }
-
-        /* Jupiter */
-        #jupiter-orbit {
-            width: 500px;
-            height: 500px;
-            animation-duration: 40s;
-        }
-        #jupiter {
-            background-color: brown;
-            width: 50px;
-            height: 50px;
-            top: -25px;
-        }
-
-        /* Saturn */
-        #saturn-orbit {
-            width: 600px;
-            height: 600px;
-            animation-duration: 50s;
-        }
-        #saturn {
-            background-color: gold;
-            width: 40px;
-            height: 40px;
-            top: -20px;
-        }
-
-        /* Uranus */
-        #uranus-orbit {
-            width: 700px;
-            height: 700px;
-            animation-duration: 60s;
-        }
-        #uranus {
-            background-color: lightblue;
-        }
-
-        /* Neptune */
-        #neptune-orbit {
-            width: 780px;
-            height: 780px;
-            animation-duration: 70s;
-        }
-        #neptune {
-            background-color: darkblue;
-        }
-
-        @keyframes rotate {
-            from {
-                transform: translate(-50%, -50%) rotate(0deg);
-            }
-            to {
-                transform: translate(-50%, -50%) rotate(360deg);
-            }
-        }
+        body { margin: 0; overflow: hidden; }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-    <div class="solar-system">
-        <div class="sun"></div>
-        
-        <!-- Mercury -->
-        <div id="mercury-orbit" class="orbit">
-            <div id="mercury" class="planet"></div>
-        </div>
-        
-        <!-- Venus -->
-        <div id="venus-orbit" class="orbit">
-            <div id="venus" class="planet"></div>
-        </div>
-        
-        <!-- Earth -->
-        <div id="earth-orbit" class="orbit">
-            <div id="earth" class="planet"></div>
-        </div>
-        
-        <!-- Mars -->
-        <div id="mars-orbit" class="orbit">
-            <div id="mars" class="planet"></div>
-        </div>
-        
-        <!-- Jupiter -->
-        <div id="jupiter-orbit" class="orbit">
-            <div id="jupiter" class="planet"></div>
-        </div>
-        
-        <!-- Saturn -->
-        <div id="saturn-orbit" class="orbit">
-            <div id="saturn" class="planet"></div>
-        </div>
-        
-        <!-- Uranus -->
-        <div id="uranus-orbit" class="orbit">
-            <div id="uranus" class="planet"></div>
-        </div>
-        
-        <!-- Neptune -->
-        <div id="neptune-orbit" class="orbit">
-            <div id="neptune" class="planet"></div>
-        </div>
-    </div>
+    <script>
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const ambientLight = new THREE.AmbientLight(0x333333);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1, 0);
+        pointLight.position.set(0, 0, 0);
+        scene.add(pointLight);
+
+        const textureLoader = new THREE.TextureLoader();
+
+        // Sun
+        const sunTexture = textureLoader.load('https://threejs.org/examples/textures/2k_sun.jpg');
+        const sun = new THREE.Mesh(
+            new THREE.SphereGeometry(5, 32, 32),
+            new THREE.MeshBasicMaterial({ map: sunTexture })
+        );
+        scene.add(sun);
+
+        // Planets data
+        const planets = [
+            { name: 'Mercury', radius: 0.5, distance: 10, texture: 'https://threejs.org/examples/textures/2k_mercury.jpg' },
+            { name: 'Venus', radius: 0.8, distance: 15, texture: 'https://threejs.org/examples/textures/2k_venus_surface.jpg' },
+            { name: 'Earth', radius: 1, distance: 20, texture: 'https://threejs.org/examples/textures/2k_earth_daymap.jpg' },
+            { name: 'Mars', radius: 0.7, distance: 25, texture: 'https://threejs.org/examples/textures/2k_mars.jpg' },
+            { name: 'Jupiter', radius: 3, distance: 35, texture: 'https://threejs.org/examples/textures/2k_jupiter.jpg' },
+            { name: 'Saturn', radius: 2.5, distance: 45, texture: 'https://threejs.org/examples/textures/2k_saturn.jpg' },
+            { name: 'Uranus', radius: 2, distance: 55, texture: 'https://threejs.org/examples/textures/2k_uranus.jpg' },
+            { name: 'Neptune', radius: 2, distance: 65, texture: 'https://threejs.org/examples/textures/2k_neptune.jpg' }
+        ];
+
+        const planetMeshes = [];
+        planets.forEach(planet => {
+            const texture = textureLoader.load(planet.texture);
+            const mesh = new THREE.Mesh(
+                new THREE.SphereGeometry(planet.radius, 32, 32),
+                new THREE.MeshPhongMaterial({ map: texture })
+            );
+            mesh.position.x = planet.distance;
+            scene.add(mesh);
+            planetMeshes.push({ mesh, distance: planet.distance, angle: 0, speed: 0.001 / (planet.distance / 20) });
+        });
+
+        // Saturn rings
+        const ringGeometry = new THREE.RingGeometry(3, 5, 64);
+        const ringMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa, side: THREE.DoubleSide });
+        const saturnRing = new THREE.Mesh(ringGeometry, ringMaterial);
+        saturnRing.rotation.x = Math.PI / 2;
+        planetMeshes[5].mesh.add(saturnRing);
+
+        camera.position.z = 100;
+
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.25;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            sun.rotation.y += 0.001;
+
+            planetMeshes.forEach(planet => {
+                planet.angle += planet.speed;
+                planet.mesh.position.x = planet.distance * Math.cos(planet.angle);
+                planet.mesh.position.z = planet.distance * Math.sin(planet.angle);
+                planet.mesh.rotation.y += 0.005;
+            });
+
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
 </body>
 </html>
