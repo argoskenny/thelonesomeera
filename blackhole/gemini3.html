@@ -3,37 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Interactive Black Hole Simulation</title>
+    <title>3D Black Hole Dynamics Simulation</title>
     <style>
-        body { margin: 0; overflow: hidden; background-color: #000; font-family: sans-serif; }
-        #info {
+        body { margin: 0; overflow: hidden; background-color: #000; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        #ui-container {
             position: absolute;
-            top: 10px;
+            top: 20px;
+            left: 20px;
+            color: #fff;
+            pointer-events: none;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        h1 { margin: 0 0 10px 0; font-size: 1.2rem; color: #aaaaff; }
+        p { margin: 5px 0; font-size: 0.9rem; color: #ccc; }
+        .key { color: #ffaa00; font-weight: bold; }
+        #warning {
+            position: absolute;
+            bottom: 20px;
             width: 100%;
             text-align: center;
-            color: white;
+            color: #ff4444;
+            font-weight: bold;
             pointer-events: none;
-            text-shadow: 0 0 5px #000;
-        }
-        .controls {
-            pointer-events: auto;
-            background: rgba(255,255,255,0.1);
-            padding: 5px 10px;
-            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
     </style>
 </head>
 <body>
-
-    <div id="info">
-        <h2>Black Hole Gravity Simulation</h2>
-        <p class="controls">
-            <strong>Left Click</strong> anywhere to launch a probe.<br>
-            <strong>Left Click + Drag</strong> to rotate view.<br>
-            <strong>Scroll</strong> to zoom.
-        </p>
+    <div id="ui-container">
+        <h1>Black Hole Gravity Sim</h1>
+        <p>• <span class="key">Left Click</span>: Launch object</p>
+        <p>• <span class="key">Right Drag</span>: Rotate Camera</p>
+        <p>• <span class="key">Scroll</span>: Zoom</p>
+        <p>Objects: <span id="obj-count">0</span></p>
     </div>
+    <div id="warning">EVENT HORIZON BREACH DETECTED</div>
 
+    <!-- Import Three.js and OrbitControls from CDN -->
     <script type="importmap">
         {
             "imports": {
@@ -47,172 +57,282 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-        // --- 1. SCENE SETUP ---
-        const scene = new THREE.Scene();
-        // Add a subtle starry background
-        const loader = new THREE.TextureLoader();
-        // Creating a simple star field procedurally
-        const starGeometry = new THREE.BufferGeometry();
-        const starCount = 2000;
-        const starPos = new Float32Array(starCount * 3);
-        for(let i=0; i<starCount*3; i++) {
-            starPos[i] = (Math.random() - 0.5) * 600;
+        // --- 設定 ---
+        const CONFIG = {
+            G: 0.5,                // 重力常數 (視覺效果調整)
+            BH_MASS: 1000,         // 黑洞質量
+            BH_RADIUS: 5,          // 史瓦西半徑 (大約視覺大小)
+            LAUNCH_SPEED: 8,       // 發射物體速度
+            TRAIL_LENGTH: 50,      // 軌跡長度
+            MAX_OBJECTS: 100       // 最大物體數量以防止卡頓
+        };
+
+        // --- 狀態 ---
+        const objects = []; // 儲存物體資訊: mesh, velocity, trailPoints, line
+        let scene, camera, renderer, controls;
+        let blackHole, accretionDisk;
+        
+        // --- 初始化 ---
+        function init() {
+            // 1. 場景設定
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.002);
+
+            // 2. 攝影機
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(30, 20, 50);
+
+            // 3. 渲染器
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+
+            // 4. 控制器
+            controls = new OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // 5. 燈光
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5); // 柔和白光
+            scene.add(ambientLight);
+            
+            const pointLight = new THREE.PointLight(0xffffff, 2, 100);
+            pointLight.position.set(10, 10, 10);
+            scene.add(pointLight);
+
+            // 6. 建立世界
+            createStarfield();
+            createBlackHole();
+            
+            // 7. 互動
+            window.addEventListener('resize', onWindowResize);
+            window.addEventListener('pointerdown', onPointerDown);
+
+            // 8. 啟動循環
+            animate();
         }
-        starGeometry.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-        const starMaterial = new THREE.PointsMaterial({color: 0xffffff, size: 0.5});
-        const stars = new THREE.Points(starGeometry, starMaterial);
-        scene.add(stars);
 
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 20, 60);
+        // --- 建立物體 ---
+        function createBlackHole() {
+            // 事件視界 (黑色球體)
+            const bhGeometry = new THREE.SphereGeometry(CONFIG.BH_RADIUS, 64, 64);
+            const bhMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
+            blackHole = new THREE.Mesh(bhGeometry, bhMaterial);
+            scene.add(blackHole);
 
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        document.body.appendChild(renderer.domElement);
+            // 吸積盤 (發光環)
+            // 使用 Canvas 建立漸層紋理
+            const canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            const context = canvas.getContext('2d');
+            const gradient = context.createRadialGradient(256, 256, 100, 256, 256, 256);
+            gradient.addColorStop(0, 'rgba(255, 200, 100, 1)');
+            gradient.addColorStop(0.2, 'rgba(255, 100, 50, 0.8)');
+            gradient.addColorStop(0.5, 'rgba(100, 0, 0, 0.2)');
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            context.fillStyle = gradient;
+            context.fillRect(0, 0, 512, 512);
 
-        const controls = new OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-
-        // --- 2. BLACK HOLE CONSTRUCTION ---
-        const BH_RADIUS = 4;
-        const BH_MASS = 1000; // Arbitrary units for simulation
-        const G = 0.5; // Gravitational constant for simulation scaling
-
-        // Event Horizon (The Black Sphere)
-        const eventHorizonGeo = new THREE.SphereGeometry(BH_RADIUS, 32, 32);
-        const eventHorizonMat = new THREE.MeshBasicMaterial({ color: 0x000000 });
-        const blackHole = new THREE.Mesh(eventHorizonGeo, eventHorizonMat);
-        scene.add(blackHole);
-
-        // Accretion Disk (The Glowing Ring)
-        // Using a flattened torus to simulate the disk
-        const diskGeo = new THREE.TorusGeometry(BH_RADIUS * 2.5, 1.5, 16, 100);
-        const diskMat = new THREE.MeshBasicMaterial({ 
-            color: 0xff4400, 
-            side: THREE.DoubleSide,
-            transparent: true,
-            opacity: 0.7
-        });
-        const accretionDisk = new THREE.Mesh(diskGeo, diskMat);
-        accretionDisk.scale.set(1, 0.05, 1); // Flatten it
-        accretionDisk.rotation.x = Math.PI / 6; // Slight tilt
-        scene.add(accretionDisk);
-
-        // Glow Light
-        const diskLight = new THREE.PointLight(0xffaa00, 2, 100);
-        diskLight.position.set(0, 0, 0);
-        scene.add(diskLight);
-
-        // --- 3. SIMULATION OBJECTS ---
-        let objects = [];
-
-        // Helper to create objects
-        function createBody(radius, color, position, velocity) {
-            const geometry = new THREE.SphereGeometry(radius, 16, 16);
-            const material = new THREE.MeshStandardMaterial({ 
-                color: color, 
-                roughness: 0.4,
-                emissive: color,
-                emissiveIntensity: 0.2
+            const diskTexture = new THREE.CanvasTexture(canvas);
+            const diskGeometry = new THREE.PlaneGeometry(CONFIG.BH_RADIUS * 8, CONFIG.BH_RADIUS * 8);
+            const diskMaterial = new THREE.MeshBasicMaterial({ 
+                map: diskTexture, 
+                side: THREE.DoubleSide, 
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
             });
+            accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
+            accretionDisk.rotation.x = -Math.PI / 2;
+            scene.add(accretionDisk);
+
+            // 重力透鏡 / 偽發光 (後方較大球體)
+            const glowGeo = new THREE.SphereGeometry(CONFIG.BH_RADIUS * 1.2, 32, 32);
+            const glowMat = new THREE.MeshBasicMaterial({
+                color: 0x4444ff,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.BackSide,
+                blending: THREE.AdditiveBlending
+            });
+            const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+            scene.add(glowMesh);
+        }
+
+        function createStarfield() {
+            const starGeo = new THREE.BufferGeometry();
+            const starCount = 2000;
+            const posArray = new Float32Array(starCount * 3);
+            
+            for(let i = 0; i < starCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 400; 
+            }
+            
+            starGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
+            const stars = new THREE.Points(starGeo, starMat);
+            scene.add(stars);
+        }
+
+        function spawnBody(position, velocity) {
+            if (objects.length >= CONFIG.MAX_OBJECTS) {
+                const old = objects.shift();
+                scene.remove(old.mesh);
+                scene.remove(old.line);
+            }
+
+            // 視覺表現
+            const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+            const color = new THREE.Color().setHSL(Math.random(), 0.8, 0.5);
+            const material = new THREE.MeshPhongMaterial({ color: color, emissive: color, emissiveIntensity: 0.5 });
             const mesh = new THREE.Mesh(geometry, material);
             mesh.position.copy(position);
-            
             scene.add(mesh);
 
-            // Store physics properties in the mesh user data
-            mesh.userData = {
-                velocity: velocity,
-                mass: 1,
+            // 軌跡線
+            const trailGeo = new THREE.BufferGeometry();
+            const positions = new Float32Array(CONFIG.TRAIL_LENGTH * 3);
+            trailGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const trailMat = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.5 });
+            const line = new THREE.Line(trailGeo, trailMat);
+            line.frustumCulled = false; // 防止當原點在視野外時消失
+            scene.add(line);
+
+            // 在起始位置初始化軌跡點
+            const trailPoints = [];
+            for (let i=0; i<CONFIG.TRAIL_LENGTH; i++) {
+                trailPoints.push(position.clone());
+            }
+
+            objects.push({
+                mesh: mesh,
+                velocity: velocity.clone(),
+                trailPoints: trailPoints,
+                line: line,
                 active: true
-            };
-            objects.push(mesh);
+            });
+            
+            updateObjCount();
         }
 
-        // Initial Orbiting Bodies
-        createBody(0.8, 0x00ffff, new THREE.Vector3(30, 0, 0), new THREE.Vector3(0, 0, 3.5)); // Stable circular-ish
-        createBody(0.6, 0x00ff00, new THREE.Vector3(-40, 5, 0), new THREE.Vector3(0, 0, -3.0)); // Outer orbit
-
-        // --- 4. PHYSICS ENGINE ---
+        // --- 物理與動畫 ---
         function updatePhysics() {
-            const dt = 0.05; // Time step
+            const center = new THREE.Vector3(0, 0, 0);
+            const dt = 0.016; // 假設約 60fps
 
             for (let i = objects.length - 1; i >= 0; i--) {
                 const obj = objects[i];
-                if (!obj.userData.active) continue;
+                if (!obj.active) continue;
 
-                // Calculate distance vector
-                // Black hole is at (0,0,0)
-                const distanceVec = new THREE.Vector3().copy(obj.position).multiplyScalar(-1); 
-                const distance = distanceVec.length();
+                const pos = obj.mesh.position;
+                const distSq = pos.lengthSq();
+                const dist = Math.sqrt(distSq);
 
-                // Event Horizon Collision
-                if (distance < BH_RADIUS) {
-                    // "Spaghettification" or simple absorption
-                    scene.remove(obj);
+                // 與事件視界碰撞
+                if (dist < CONFIG.BH_RADIUS) {
+                    triggerEventHorizonEffect();
+                    scene.remove(obj.mesh);
+                    scene.remove(obj.line);
                     objects.splice(i, 1);
+                    updateObjCount();
                     continue;
                 }
 
-                // Gravity Formula: F = G * M * m / r^2
-                // Direction is normalized distance vector
-                distanceVec.normalize();
-                const forceMagnitude = (G * BH_MASS * obj.userData.mass) / (distance * distance);
-                const acceleration = distanceVec.multiplyScalar(forceMagnitude / obj.userData.mass);
+                // 重力公式: F = G * M * m / r^2  => a = GM / r^2
+                // 向量方向: center - pos (標準化)
+                const dir = center.clone().sub(pos).normalize();
+                const forceMagnitude = (CONFIG.G * CONFIG.BH_MASS) / distSq;
+                const acceleration = dir.multiplyScalar(forceMagnitude);
 
-                // Update Velocity
-                obj.userData.velocity.add(acceleration.multiplyScalar(dt));
+                obj.velocity.add(acceleration.multiplyScalar(dt));
+                pos.add(obj.velocity.clone().multiplyScalar(dt));
 
-                // Update Position
-                obj.position.add(obj.userData.velocity.clone().multiplyScalar(dt));
+                // 更新軌跡
+                obj.trailPoints.shift();
+                obj.trailPoints.push(pos.clone());
+                
+                const positions = obj.line.geometry.attributes.position.array;
+                for (let j = 0; j < CONFIG.TRAIL_LENGTH; j++) {
+                    positions[j * 3] = obj.trailPoints[j].x;
+                    positions[j * 3 + 1] = obj.trailPoints[j].y;
+                    positions[j * 3 + 2] = obj.trailPoints[j].z;
+                }
+                obj.line.geometry.attributes.position.needsUpdate = true;
             }
         }
 
-        // --- 5. INTERACTION (LAUNCHER) ---
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
+        function triggerEventHorizonEffect() {
+            const warning = document.getElementById('warning');
+            warning.style.opacity = 1;
+            setTimeout(() => { warning.style.opacity = 0; }, 1000);
+        }
 
-        window.addEventListener('mousedown', (event) => {
-            // 1. Get mouse coordinates in Normalized Device Coordinates (-1 to +1)
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-            // 2. Raycast from camera
-            raycaster.setFromCamera(mouse, camera);
-
-            // 3. Launch direction: The direction the ray is pointing
-            const launchDir = raycaster.ray.direction.clone();
-            
-            // 4. Spawn position: Slightly in front of the camera
-            const spawnPos = camera.position.clone().add(launchDir.clone().multiplyScalar(5));
-
-            // 5. Velocity: Ray direction * speed
-            const launchVel = launchDir.multiplyScalar(15); // Speed 15
-            
-            // Create the projectile (Red Probe)
-            createBody(0.5, 0xff0000, spawnPos, launchVel);
-        });
-
-        // --- 6. ANIMATION LOOP ---
         function animate() {
             requestAnimationFrame(animate);
 
-            // Rotate accretion disk for visual effect
-            accretionDisk.rotation.z -= 0.005;
+            controls.update();
+            
+            // 緩慢旋轉吸積盤
+            if (accretionDisk) {
+                accretionDisk.rotation.z += 0.005;
+            }
 
             updatePhysics();
-            controls.update();
             renderer.render(scene, camera);
         }
 
-        // Handle Resize
-        window.addEventListener('resize', () => {
+        // --- 輸入處理 ---
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function onPointerDown(event) {
+            if (event.button !== 0) return; // 僅限左鍵
+
+            // 計算滑鼠在標準化設備座標中的位置
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+
+            // Raycast 以從攝影機投射
+            raycaster.setFromCamera(mouse, camera);
+            
+            const spawnDist = 40;
+            const spawnPos = new THREE.Vector3();
+            raycaster.ray.at(spawnDist, spawnPos); // 射線上的點
+
+            // 計算指向中心的向量，並加上隨機偏轉以形成軌道
+            const toCenter = new THREE.Vector3(0,0,0).sub(spawnPos).normalize();
+            
+            const velocityDir = toCenter.clone()
+                .applyAxisAngle(new THREE.Vector3(0,1,0), (Math.random() - 0.5) * 1.5) // 隨機偏轉
+                .multiplyScalar(CONFIG.LAUNCH_SPEED);
+            
+            spawnBody(spawnPos, velocityDir);
+        }
+
+        function onWindowResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
-        });
+        }
 
-        animate();
+        function updateObjCount() {
+            document.getElementById('obj-count').innerText = objects.length;
+        }
+
+        // Boot
+        init();
+        
+        // Add some initial debris
+        for(let i=0; i<5; i++) {
+            const pos = new THREE.Vector3((Math.random()-0.5)*40, (Math.random()-0.5)*10, (Math.random()-0.5)*40);
+            if(pos.length() < 15) pos.setLength(15);
+            const vel = pos.clone().cross(new THREE.Vector3(0,1,0)).normalize().multiplyScalar(5);
+            spawnBody(pos, vel);
+        }
+
     </script>
 </body>
 </html>
+

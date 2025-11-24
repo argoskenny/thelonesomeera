@@ -1,418 +1,747 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Black Hole Gravitational Simulation</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <title>黑洞重力模擬 - Black Hole Gravitational Simulation</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            overflow: hidden;
-            background: #000;
-            font-family: Arial, sans-serif;
-            color: white;
+            box-sizing: border-box;
         }
-        #container {
-            position: relative;
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        #canvas-container {
             width: 100vw;
             height: 100vh;
         }
-        #ui {
+        
+        #controls {
             position: absolute;
             top: 20px;
             left: 20px;
-            z-index: 100;
             background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
+            border: 1px solid #444;
             max-width: 300px;
         }
-        #controls {
+        
+        h1 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            color: #ccc;
+        }
+        
+        input[type="range"] {
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #45a049;
+        }
+        
+        button.danger {
+            background: #f44336;
+        }
+        
+        button.danger:hover {
+            background: #da190b;
+        }
+        
+        .info {
+            font-size: 12px;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        #stats {
             position: absolute;
             bottom: 20px;
             left: 20px;
-            z-index: 100;
             background: rgba(0, 0, 0, 0.7);
             padding: 15px;
             border-radius: 10px;
-        }
-        button {
-            background: #4444ff;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #6666ff;
-        }
-        input[type="range"] {
-            width: 150px;
-            margin: 5px;
-        }
-        .info {
+            border: 1px solid #444;
             font-size: 12px;
-            margin: 5px 0;
+            min-width: 200px;
         }
-        #crosshair {
+        
+        .stat-line {
+            margin-bottom: 5px;
+        }
+        
+        #instructions {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 20px;
-            height: 20px;
-            pointer-events: none;
-            z-index: 50;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #444;
+            max-width: 280px;
+            font-size: 13px;
+            line-height: 1.6;
         }
-        #crosshair::before,
-        #crosshair::after {
-            content: '';
-            position: absolute;
-            background: rgba(255, 255, 255, 0.8);
-        }
-        #crosshair::before {
-            top: 50%;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            transform: translateY(-50%);
-        }
-        #crosshair::after {
-            left: 50%;
-            top: 0;
-            width: 1px;
-            height: 100%;
-            transform: translateX(-50%);
+        
+        .instruction-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4CAF50;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <div id="crosshair"></div>
-        <div id="ui">
-            <h3>Black Hole Simulation</h3>
-            <div class="info">Click anywhere to launch an object toward the black hole</div>
-            <div class="info">Use mouse to orbit camera</div>
-            <div class="info" id="stats">Objects: 0 | Active: 0</div>
+    <div id="canvas-container"></div>
+    
+    <div id="controls">
+        <h1>🌌 黑洞控制面板</h1>
+        
+        <div class="control-group">
+            <label>發射速度: <span id="velocity-value">50</span></label>
+            <input type="range" id="velocity" min="10" max="100" value="50">
         </div>
-        <div id="controls">
-            <div>
-                <label>Launch Speed:</label>
-                <input type="range" id="speedControl" min="0.5" max="3" value="1.5" step="0.1">
-                <span id="speedValue">1.5</span>
-            </div>
-            <div>
-                <label>Object Mass:</label>
-                <input type="range" id="massControl" min="0.1" max="2" value="1" step="0.1">
-                <span id="massValue">1.0</span>
-            </div>
-            <button id="resetBtn">Reset Simulation</button>
-            <button id="pauseBtn">Pause</button>
+        
+        <div class="control-group">
+            <label>物體質量: <span id="mass-value">5</span></label>
+            <input type="range" id="mass" min="1" max="20" value="5">
+        </div>
+        
+        <div class="control-group">
+            <label>發射角度: <span id="angle-value">0</span>°</label>
+            <input type="range" id="angle" min="-90" max="90" value="0">
+        </div>
+        
+        <button id="launch-btn">🚀 發射物體</button>
+        <button id="clear-btn" class="danger">🗑️ 清除所有物體</button>
+        <button id="toggle-trails">✨ 切換軌跡顯示</button>
+        
+        <div class="info">
+            點擊 3D 場景也可以發射物體！
         </div>
     </div>
+    
+    <div id="instructions">
+        <div class="instruction-title">操作說明</div>
+        <div>🖱️ 拖曳滑鼠：旋轉視角</div>
+        <div>🖱️ 滾輪：縮放視野</div>
+        <div>🖱️ 右鍵拖曳：平移視角</div>
+        <div style="margin-top: 10px;">
+            <strong>物理特性：</strong><br>
+            • 黑洞質量：10⁶ 太陽質量<br>
+            • 事件視界：無法逃脫的邊界<br>
+            • 吸積盤：高速旋轉的物質環<br>
+            • 重力透鏡：光線彎曲效應
+        </div>
+    </div>
+    
+    <div id="stats">
+        <div class="stat-line">活動物體: <span id="object-count">0</span></div>
+        <div class="stat-line">已吞噬: <span id="consumed-count">0</span></div>
+        <div class="stat-line">時間: <span id="time-elapsed">0</span>s</div>
+    </div>
 
+    <!-- 引入 Three.js 核心庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- 引入軌道控制器，用於相機互動 -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
     <script>
-        // Scene setup
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000011);
-        document.getElementById('container').appendChild(renderer.domElement);
-
-        // Physics constants
-        const G = 0.1; // Gravitational constant (scaled for simulation)
-        const BLACK_HOLE_MASS = 1000;
-        const SCHWARZSCHILD_RADIUS = 2; // Event horizon radius
-        const objects = [];
-        const trails = [];
-        let isPaused = false;
+        // ============================================
+        // Three.js 說明：
+        // - THREE.Scene: 3D 場景容器
+        // - THREE.PerspectiveCamera: 透視相機，模擬人眼視角
+        // - THREE.WebGLRenderer: WebGL 渲染器
+        // - OrbitControls: 允許用戶旋轉、縮放和平移相機
+        // ============================================
+        
+        // 初始化場景、相機和渲染器
+        let scene, camera, renderer, controls;
+        let blackHole, accretionDisk, eventHorizon;
+        let celestialBodies = [];
+        let launchedObjects = [];
+        let trails = [];
+        let showTrails = true;
+        
+        // 物理常數
+        const G = 6.674; // 重力常數（簡化版）
+        const BLACK_HOLE_MASS = 1000; // 黑洞質量
+        const EVENT_HORIZON_RADIUS = 15; // 事件視界半徑
+        const TIME_SCALE = 0.016; // 時間縮放因子
+        
+        // 統計數據
         let objectCount = 0;
-
-        // Camera controls
-        let mouseDown = false;
-        let mouseX = 0;
-        let mouseY = 0;
-        let cameraDistance = 50;
-        let cameraTheta = 0;
-        let cameraPhi = Math.PI / 4;
-
-        // Create black hole
-        const blackHoleGeometry = new THREE.SphereGeometry(SCHWARZSCHILD_RADIUS, 32, 32);
-        const blackHoleMaterial = new THREE.MeshBasicMaterial({ 
-            color: 0x000000,
-            transparent: true,
-            opacity: 0.9
-        });
-        const blackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
-        scene.add(blackHole);
-
-        // Create event horizon glow
-        const glowGeometry = new THREE.SphereGeometry(SCHWARZSCHILD_RADIUS * 1.2, 32, 32);
-        const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0xff4400,
-            transparent: true,
-            opacity: 0.3,
-            side: THREE.BackSide
-        });
-        const eventHorizonGlow = new THREE.Mesh(glowGeometry, glowMaterial);
-        scene.add(eventHorizonGlow);
-
-        // Create accretion disk
-        const diskGeometry = new THREE.RingGeometry(SCHWARZSCHILD_RADIUS * 2, SCHWARZSCHILD_RADIUS * 8, 64);
-        const diskMaterial = new THREE.MeshBasicMaterial({
-            color: 0xffaa00,
-            transparent: true,
-            opacity: 0.4,
-            side: THREE.DoubleSide
-        });
-        const accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
-        accretionDisk.rotation.x = Math.PI / 2;
-        scene.add(accretionDisk);
-
-        // Add some initial celestial bodies
-        function createCelestialBody(x, y, z, vx, vy, vz, mass = 1, color = 0xffffff) {
-            const geometry = new THREE.SphereGeometry(Math.sqrt(mass) * 0.3, 16, 16);
-            const material = new THREE.MeshBasicMaterial({ color: color });
-            const mesh = new THREE.Mesh(geometry, material);
+        let consumedCount = 0;
+        let startTime = Date.now();
+        
+        function init() {
+            // 創建場景
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.001);
             
-            const body = {
-                mesh: mesh,
-                position: new THREE.Vector3(x, y, z),
-                velocity: new THREE.Vector3(vx, vy, vz),
-                mass: mass,
-                trail: [],
-                active: true
-            };
+            // 設置相機
+            camera = new THREE.PerspectiveCamera(
+                75, // 視角
+                window.innerWidth / window.innerHeight, // 寬高比
+                0.1, // 近裁剪面
+                2000 // 遠裁剪面
+            );
+            camera.position.set(0, 100, 200);
+            camera.lookAt(0, 0, 0);
             
-            mesh.position.copy(body.position);
-            scene.add(mesh);
-            objects.push(body);
+            // 創建渲染器
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
             
-            // Create trail
-            const trailGeometry = new THREE.BufferGeometry();
-            const trailMaterial = new THREE.LineBasicMaterial({ 
-                color: color,
-                transparent: true,
-                opacity: 0.6
-            });
-            const trailLine = new THREE.Line(trailGeometry, trailMaterial);
-            scene.add(trailLine);
-            trails.push(trailLine);
+            // 添加軌道控制器
+            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+            controls.maxDistance = 500;
+            controls.minDistance = 50;
             
-            return body;
+            // 添加環境光
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            scene.add(ambientLight);
+            
+            // 添加點光源（模擬吸積盤發光）
+            const pointLight = new THREE.PointLight(0xff6600, 2, 500);
+            pointLight.position.set(0, 0, 0);
+            scene.add(pointLight);
+            
+            // 創建星空背景
+            createStarField();
+            
+            // 創建黑洞
+            createBlackHole();
+            
+            // 創建軌道天體
+            createOrbitalBodies();
+            
+            // 事件監聽
+            setupEventListeners();
+            
+            // 開始動畫循環
+            animate();
         }
-
-        // Initialize some orbiting bodies
-        createCelestialBody(20, 0, 0, 0, 0, 0.8, 1, 0x4488ff);
-        createCelestialBody(-15, 10, 5, 0.5, 0, -0.6, 0.8, 0xff4488);
-        createCelestialBody(0, 25, -10, -0.7, 0, 0.3, 1.2, 0x44ff88);
-
-        // Physics simulation
-        function updatePhysics(deltaTime) {
-            if (isPaused) return;
+        
+        // 創建星空背景
+        function createStarField() {
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 1,
+                transparent: true,
+                opacity: 0.8
+            });
             
-            objects.forEach((obj, index) => {
-                if (!obj.active) return;
-                
-                // Calculate gravitational force from black hole
-                const distance = obj.position.length();
-                
-                // Check if object crossed event horizon
-                if (distance < SCHWARZSCHILD_RADIUS) {
-                    obj.active = false;
-                    obj.mesh.visible = false;
-                    return;
-                }
-                
-                // Gravitational acceleration
-                const force = G * BLACK_HOLE_MASS / (distance * distance);
-                const direction = obj.position.clone().normalize().multiplyScalar(-1);
-                const acceleration = direction.multiplyScalar(force);
-                
-                // Update velocity and position
-                obj.velocity.add(acceleration.multiplyScalar(deltaTime));
-                obj.position.add(obj.velocity.clone().multiplyScalar(deltaTime));
-                
-                // Update mesh position
-                obj.mesh.position.copy(obj.position);
-                
-                // Update trail
-                obj.trail.push(obj.position.clone());
-                if (obj.trail.length > 200) {
-                    obj.trail.shift();
-                }
-                
-                // Update trail geometry
-                const positions = [];
-                obj.trail.forEach(point => {
-                    positions.push(point.x, point.y, point.z);
+            const starsVertices = [];
+            for (let i = 0; i < 10000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starsVertices.push(x, y, z);
+            }
+            
+            starsGeometry.setAttribute('position', 
+                new THREE.Float32BufferAttribute(starsVertices, 3));
+            
+            const stars = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(stars);
+        }
+        
+        // 創建黑洞系統
+        function createBlackHole() {
+            // 黑洞核心（完全黑暗）
+            const blackHoleGeometry = new THREE.SphereGeometry(EVENT_HORIZON_RADIUS, 32, 32);
+            const blackHoleMaterial = new THREE.MeshBasicMaterial({
+                color: 0x000000,
+                transparent: true,
+                opacity: 1
+            });
+            blackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
+            scene.add(blackHole);
+            
+            // 事件視界光環
+            const horizonGeometry = new THREE.SphereGeometry(EVENT_HORIZON_RADIUS + 1, 32, 32);
+            const horizonMaterial = new THREE.MeshBasicMaterial({
+                color: 0xff4400,
+                transparent: true,
+                opacity: 0.3,
+                wireframe: true
+            });
+            eventHorizon = new THREE.Mesh(horizonGeometry, horizonMaterial);
+            scene.add(eventHorizon);
+            
+            // 吸積盤
+            createAccretionDisk();
+            
+            // 添加發光效果
+            const glowGeometry = new THREE.SphereGeometry(EVENT_HORIZON_RADIUS * 1.5, 32, 32);
+            const glowMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0 }
+                },
+                vertexShader: `
+                    varying vec3 vNormal;
+                    void main() {
+                        vNormal = normalize(normalMatrix * normal);
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    varying vec3 vNormal;
+                    uniform float time;
+                    void main() {
+                        float intensity = pow(0.7 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.0);
+                        vec3 glow = vec3(1.0, 0.3, 0.0) * intensity;
+                        gl_FragColor = vec4(glow, intensity * 0.5);
+                    }
+                `,
+                transparent: true,
+                blending: THREE.AdditiveBlending,
+                side: THREE.BackSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            scene.add(glow);
+            blackHole.glow = glow;
+        }
+        
+        // 創建吸積盤
+        function createAccretionDisk() {
+            const diskGeometry = new THREE.RingGeometry(
+                EVENT_HORIZON_RADIUS * 1.5, // 內半徑
+                EVENT_HORIZON_RADIUS * 4,   // 外半徑
+                64,                          // 分段數
+                8
+            );
+            
+            const diskMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    time: { value: 0 },
+                    innerRadius: { value: EVENT_HORIZON_RADIUS * 1.5 },
+                    outerRadius: { value: EVENT_HORIZON_RADIUS * 4 }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+                    varying vec3 vPosition;
+                    void main() {
+                        vUv = uv;
+                        vPosition = position;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform float time;
+                    uniform float innerRadius;
+                    uniform float outerRadius;
+                    varying vec2 vUv;
+                    varying vec3 vPosition;
+                    
+                    void main() {
+                        float dist = length(vPosition.xy);
+                        float normalized = (dist - innerRadius) / (outerRadius - innerRadius);
+                        
+                        // 旋轉效果
+                        float angle = atan(vPosition.y, vPosition.x);
+                        float spiral = sin(angle * 8.0 + time * 2.0 - normalized * 10.0) * 0.5 + 0.5;
+                        
+                        // 顏色漸變（從內到外：白->橙->紅->暗紅）
+                        vec3 innerColor = vec3(1.0, 0.9, 0.7);
+                        vec3 midColor = vec3(1.0, 0.4, 0.1);
+                        vec3 outerColor = vec3(0.5, 0.1, 0.0);
+                        
+                        vec3 color = mix(innerColor, midColor, normalized * 0.5);
+                        color = mix(color, outerColor, normalized * 0.5 + 0.5);
+                        
+                        // 添加螺旋紋理
+                        color *= spiral * 0.3 + 0.7;
+                        
+                        // 透明度隨距離變化
+                        float alpha = (1.0 - normalized) * 0.7;
+                        
+                        gl_FragColor = vec4(color, alpha);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide,
+                blending: THREE.AdditiveBlending
+            });
+            
+            accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
+            accretionDisk.rotation.x = Math.PI / 2;
+            scene.add(accretionDisk);
+        }
+        
+        // 創建軌道天體
+        function createOrbitalBodies() {
+            const bodyConfigs = [
+                { distance: 80, velocity: 0.8, size: 3, color: 0x4444ff, mass: 5 },
+                { distance: 120, velocity: 0.6, size: 4, color: 0xff4444, mass: 8 },
+                { distance: 160, velocity: 0.5, size: 2.5, color: 0x44ff44, mass: 4 },
+                { distance: 200, velocity: 0.4, size: 3.5, color: 0xffff44, mass: 6 },
+            ];
+            
+            bodyConfigs.forEach(config => {
+                const geometry = new THREE.SphereGeometry(config.size, 16, 16);
+                const material = new THREE.MeshStandardMaterial({
+                    color: config.color,
+                    emissive: config.color,
+                    emissiveIntensity: 0.3,
+                    metalness: 0.5,
+                    roughness: 0.5
                 });
                 
-                trails[index].geometry.setAttribute('position', 
-                    new THREE.Float32BufferAttribute(positions, 3));
-                trails[index].geometry.setDrawRange(0, obj.trail.length);
+                const body = new THREE.Mesh(geometry, material);
+                
+                // 隨機起始角度
+                const angle = Math.random() * Math.PI * 2;
+                body.position.x = Math.cos(angle) * config.distance;
+                body.position.z = Math.sin(angle) * config.distance;
+                body.position.y = (Math.random() - 0.5) * 10;
+                
+                // 計算初始速度（垂直於半徑方向）
+                const speed = config.velocity;
+                body.velocity = new THREE.Vector3(
+                    -Math.sin(angle) * speed,
+                    0,
+                    Math.cos(angle) * speed
+                );
+                
+                body.mass = config.mass;
+                body.trail = [];
+                
+                scene.add(body);
+                celestialBodies.push(body);
             });
         }
-
-        // Launch object toward target
-        function launchObject(targetX, targetY) {
-            const rect = renderer.domElement.getBoundingClientRect();
-            const mouse = new THREE.Vector2(
-                (targetX / rect.width) * 2 - 1,
-                -(targetY / rect.height) * 2 + 1
-            );
+        
+        // 發射物體
+        function launchObject(velocity, mass, angle) {
+            const geometry = new THREE.SphereGeometry(mass * 0.5, 16, 16);
+            const material = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: 0x888888,
+                emissiveIntensity: 0.5
+            });
             
-            const raycaster = new THREE.Raycaster();
-            raycaster.setFromCamera(mouse, camera);
+            const obj = new THREE.Mesh(geometry, material);
             
-            // Launch from camera position toward target
-            const launchSpeed = parseFloat(document.getElementById('speedControl').value);
-            const launchMass = parseFloat(document.getElementById('massControl').value);
+            // 從相機方向發射
+            const cameraDirection = new THREE.Vector3();
+            camera.getWorldDirection(cameraDirection);
             
-            const startPos = camera.position.clone();
-            const direction = raycaster.ray.direction.normalize();
-            const velocity = direction.multiplyScalar(launchSpeed);
+            // 設置起始位置（距離黑洞較遠）
+            obj.position.copy(camera.position).add(cameraDirection.multiplyScalar(30));
             
-            // Add some randomness to color
-            const colors = [0xff6666, 0x66ff66, 0x6666ff, 0xffff66, 0xff66ff, 0x66ffff];
-            const color = colors[Math.floor(Math.random() * colors.length)];
+            // 計算發射方向（加入角度調整）
+            const angleRad = angle * Math.PI / 180;
+            const right = new THREE.Vector3();
+            right.crossVectors(camera.up, cameraDirection).normalize();
             
-            createCelestialBody(
-                startPos.x, startPos.y, startPos.z,
-                velocity.x, velocity.y, velocity.z,
-                launchMass, color
-            );
+            const direction = cameraDirection.clone();
+            direction.applyAxisAngle(right, angleRad).normalize();
             
+            obj.velocity = direction.multiplyScalar(velocity * 0.5);
+            obj.mass = mass;
+            obj.trail = [];
+            obj.isLaunched = true;
+            
+            scene.add(obj);
+            launchedObjects.push(obj);
             objectCount++;
-            updateStats();
-        }
-
-        // Mouse controls
-        renderer.domElement.addEventListener('mousedown', (e) => {
-            if (e.button === 0) { // Left click
-                mouseDown = true;
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            }
-        });
-
-        renderer.domElement.addEventListener('mousemove', (e) => {
-            if (mouseDown) {
-                const deltaX = e.clientX - mouseX;
-                const deltaY = e.clientY - mouseY;
-                
-                cameraTheta += deltaX * 0.01;
-                cameraPhi += deltaY * 0.01;
-                cameraPhi = Math.max(0.1, Math.min(Math.PI - 0.1, cameraPhi));
-                
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            }
-        });
-
-        renderer.domElement.addEventListener('mouseup', () => {
-            mouseDown = false;
-        });
-
-        renderer.domElement.addEventListener('click', (e) => {
-            if (!mouseDown) {
-                launchObject(e.clientX, e.clientY);
-            }
-        });
-
-        // Wheel zoom
-        renderer.domElement.addEventListener('wheel', (e) => {
-            cameraDistance += e.deltaY * 0.05;
-            cameraDistance = Math.max(10, Math.min(200, cameraDistance));
-        });
-
-        // Update camera position
-        function updateCamera() {
-            camera.position.x = Math.sin(cameraPhi) * Math.cos(cameraTheta) * cameraDistance;
-            camera.position.y = Math.cos(cameraPhi) * cameraDistance;
-            camera.position.z = Math.sin(cameraPhi) * Math.sin(cameraTheta) * cameraDistance;
-            camera.lookAt(0, 0, 0);
-        }
-
-        // UI controls
-        document.getElementById('speedControl').addEventListener('input', (e) => {
-            document.getElementById('speedValue').textContent = e.target.value;
-        });
-
-        document.getElementById('massControl').addEventListener('input', (e) => {
-            document.getElementById('massValue').textContent = e.target.value;
-        });
-
-        document.getElementById('resetBtn').addEventListener('click', () => {
-            // Remove all objects except initial ones
-            objects.splice(3).forEach(obj => {
-                scene.remove(obj.mesh);
-            });
-            trails.splice(3).forEach(trail => {
-                scene.remove(trail);
-            });
-            objects.length = 3;
-            trails.length = 3;
-            objectCount = 0;
-            
-            // Reset initial objects
-            objects.forEach(obj => {
-                obj.active = true;
-                obj.mesh.visible = true;
-                obj.trail = [];
-            });
             
             updateStats();
-        });
-
-        document.getElementById('pauseBtn').addEventListener('click', () => {
-            isPaused = !isPaused;
-            document.getElementById('pauseBtn').textContent = isPaused ? 'Resume' : 'Pause';
-        });
-
+        }
+        
+        // 計算重力
+        function applyGravity(body) {
+            const distance = body.position.length();
+            
+            // 如果進入事件視界，標記為被吞噬
+            if (distance < EVENT_HORIZON_RADIUS) {
+                body.consumed = true;
+                return;
+            }
+            
+            // 計算重力加速度: a = GM/r²
+            const forceMagnitude = (G * BLACK_HOLE_MASS * body.mass) / (distance * distance);
+            
+            // 重力方向指向黑洞中心
+            const forceDirection = body.position.clone().normalize().multiplyScalar(-1);
+            
+            // 加速度 = 力 / 質量
+            const acceleration = forceDirection.multiplyScalar(forceMagnitude / body.mass);
+            
+            // 更新速度
+            body.velocity.add(acceleration.multiplyScalar(TIME_SCALE));
+            
+            // 限制最大速度（避免數值爆炸）
+            const maxSpeed = 20;
+            if (body.velocity.length() > maxSpeed) {
+                body.velocity.normalize().multiplyScalar(maxSpeed);
+            }
+        }
+        
+        // 更新物體位置
+        function updateBodies() {
+            // 更新天體
+            celestialBodies.forEach(body => {
+                applyGravity(body);
+                body.position.add(body.velocity.clone().multiplyScalar(TIME_SCALE));
+                
+                // 記錄軌跡
+                if (showTrails && body.trail.length < 100) {
+                    body.trail.push(body.position.clone());
+                }
+            });
+            
+            // 更新發射物體
+            for (let i = launchedObjects.length - 1; i >= 0; i--) {
+                const body = launchedObjects[i];
+                
+                applyGravity(body);
+                body.position.add(body.velocity.clone().multiplyScalar(TIME_SCALE));
+                
+                // 記錄軌跡
+                if (showTrails && body.trail.length < 200) {
+                    body.trail.push(body.position.clone());
+                }
+                
+                // 移除被吞噬或飛太遠的物體
+                if (body.consumed) {
+                    scene.remove(body);
+                    launchedObjects.splice(i, 1);
+                    consumedCount++;
+                    objectCount--;
+                    
+                    // 創建吞噬特效
+                    createConsumptionEffect(body.position.clone());
+                } else if (body.position.length() > 800) {
+                    scene.remove(body);
+                    launchedObjects.splice(i, 1);
+                    objectCount--;
+                }
+            }
+            
+            updateStats();
+        }
+        
+        // 創建吞噬特效
+        function createConsumptionEffect(position) {
+            const particleCount = 50;
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const colors = [];
+            
+            for (let i = 0; i < particleCount; i++) {
+                positions.push(
+                    position.x + (Math.random() - 0.5) * 10,
+                    position.y + (Math.random() - 0.5) * 10,
+                    position.z + (Math.random() - 0.5) * 10
+                );
+                colors.push(1, Math.random() * 0.5, 0);
+            }
+            
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 2,
+                vertexColors: true,
+                transparent: true,
+                opacity: 1
+            });
+            
+            const particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            
+            // 淡出動畫
+            let opacity = 1;
+            const fadeOut = setInterval(() => {
+                opacity -= 0.05;
+                material.opacity = opacity;
+                if (opacity <= 0) {
+                    scene.remove(particles);
+                    clearInterval(fadeOut);
+                }
+            }, 50);
+        }
+        
+        // 繪製軌跡
+        function drawTrails() {
+            // 清除舊軌跡
+            trails.forEach(trail => scene.remove(trail));
+            trails = [];
+            
+            if (!showTrails) return;
+            
+            // 繪製天體軌跡
+            celestialBodies.forEach(body => {
+                if (body.trail.length > 1) {
+                    const points = body.trail.map(p => new THREE.Vector3(p.x, p.y, p.z));
+                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                    const material = new THREE.LineBasicMaterial({
+                        color: body.material.color,
+                        transparent: true,
+                        opacity: 0.3
+                    });
+                    const line = new THREE.Line(geometry, material);
+                    scene.add(line);
+                    trails.push(line);
+                }
+            });
+            
+            // 繪製發射物體軌跡
+            launchedObjects.forEach(body => {
+                if (body.trail.length > 1) {
+                    const points = body.trail.map(p => new THREE.Vector3(p.x, p.y, p.z));
+                    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                    const material = new THREE.LineBasicMaterial({
+                        color: 0xffffff,
+                        transparent: true,
+                        opacity: 0.5
+                    });
+                    const line = new THREE.Line(geometry, material);
+                    scene.add(line);
+                    trails.push(line);
+                }
+            });
+        }
+        
+        // 更新統計
         function updateStats() {
-            const activeCount = objects.filter(obj => obj.active).length;
-            document.getElementById('stats').textContent = 
-                `Objects: ${objects.length} | Active: ${activeCount}`;
+            document.getElementById('object-count').textContent = objectCount;
+            document.getElementById('consumed-count').textContent = consumedCount;
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('time-elapsed').textContent = elapsed;
         }
-
-        // Animation loop
-        const clock = new THREE.Clock();
+        
+        // 設置事件監聽
+        function setupEventListeners() {
+            // 發射按鈕
+            document.getElementById('launch-btn').addEventListener('click', () => {
+                const velocity = parseFloat(document.getElementById('velocity').value);
+                const mass = parseFloat(document.getElementById('mass').value);
+                const angle = parseFloat(document.getElementById('angle').value);
+                launchObject(velocity, mass, angle);
+            });
+            
+            // 清除按鈕
+            document.getElementById('clear-btn').addEventListener('click', () => {
+                launchedObjects.forEach(obj => scene.remove(obj));
+                launchedObjects = [];
+                objectCount = 0;
+                consumedCount = 0;
+                updateStats();
+            });
+            
+            // 切換軌跡
+            document.getElementById('toggle-trails').addEventListener('click', () => {
+                showTrails = !showTrails;
+                if (!showTrails) {
+                    celestialBodies.forEach(body => body.trail = []);
+                    launchedObjects.forEach(body => body.trail = []);
+                }
+            });
+            
+            // 滑桿數值顯示
+            document.getElementById('velocity').addEventListener('input', (e) => {
+                document.getElementById('velocity-value').textContent = e.target.value;
+            });
+            
+            document.getElementById('mass').addEventListener('input', (e) => {
+                document.getElementById('mass-value').textContent = e.target.value;
+            });
+            
+            document.getElementById('angle').addEventListener('input', (e) => {
+                document.getElementById('angle-value').textContent = e.target.value;
+            });
+            
+            // 點擊場景發射
+            renderer.domElement.addEventListener('click', (event) => {
+                const velocity = parseFloat(document.getElementById('velocity').value);
+                const mass = parseFloat(document.getElementById('mass').value);
+                const angle = parseFloat(document.getElementById('angle').value);
+                launchObject(velocity, mass, angle);
+            });
+            
+            // 視窗大小調整
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+        
+        // 動畫循環
         function animate() {
             requestAnimationFrame(animate);
             
-            const deltaTime = Math.min(clock.getDelta(), 0.05); // Cap delta time
+            // 更新控制器
+            controls.update();
             
-            updatePhysics(deltaTime);
-            updateCamera();
+            // 更新物理
+            updateBodies();
             
-            // Rotate accretion disk
-            accretionDisk.rotation.z += 0.005;
-            eventHorizonGlow.rotation.x += 0.002;
-            eventHorizonGlow.rotation.y += 0.003;
+            // 旋轉效果
+            if (eventHorizon) {
+                eventHorizon.rotation.y += 0.005;
+            }
             
+            if (accretionDisk) {
+                accretionDisk.rotation.z += 0.01;
+                accretionDisk.material.uniforms.time.value += 0.016;
+            }
+            
+            if (blackHole && blackHole.glow) {
+                blackHole.glow.material.uniforms.time.value += 0.016;
+            }
+            
+            // 更新軌跡
+            drawTrails();
+            
+            // 渲染場景
             renderer.render(scene, camera);
-            updateStats();
         }
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // Initialize camera position
-        updateCamera();
-        updateStats();
         
-        // Start animation
-        animate();
+        // 初始化應用
+        init();
     </script>
 </body>
 </html>
+

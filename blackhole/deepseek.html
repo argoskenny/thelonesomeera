@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Black Hole Gravity Simulation</title>
+    <title>Black Hole Gravitational Simulation</title>
     <style>
         body {
             margin: 0;
@@ -21,344 +21,354 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
-            z-index: 100;
             max-width: 300px;
+            z-index: 100;
         }
         #controls {
             position: absolute;
             bottom: 10px;
             left: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.7);
             padding: 10px;
             border-radius: 5px;
             z-index: 100;
         }
         button {
-            background-color: #4a4a9c;
+            background: #4a4a9c;
             color: white;
             border: none;
-            padding: 8px 15px;
+            padding: 8px 12px;
             margin: 5px;
             border-radius: 4px;
             cursor: pointer;
         }
         button:hover {
-            background-color: #5a5aac;
+            background: #5a5aac;
         }
-        .slider-container {
-            margin: 10px 0;
-        }
-        input[type="range"] {
-            width: 200px;
+        #launch-info {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 100;
         }
     </style>
 </head>
 <body>
     <div id="container">
         <div id="info">
-            <h3>Black Hole Gravity Simulation</h3>
-            <p>Click and drag to rotate the view. Scroll to zoom.</p>
-            <p>Click "Launch Object" to send a test object toward the black hole.</p>
-            <p>Observe how gravity affects motion and trajectories.</p>
+            <h3>Black Hole Simulation</h3>
+            <p>This simulation demonstrates gravitational effects around a Schwarzschild black hole.</p>
+            <p>Click and drag to rotate the view. Use mouse wheel to zoom.</p>
         </div>
         <div id="controls">
-            <button id="launchBtn">Launch Object</button>
-            <button id="resetBtn">Reset Simulation</button>
-            <div class="slider-container">
-                <label for="gravitySlider">Gravity Strength: </label>
-                <input type="range" id="gravitySlider" min="0.5" max="2" step="0.1" value="1">
+            <button id="launch-btn">Launch Object</button>
+            <button id="reset-btn">Reset Simulation</button>
+            <div>
+                <label for="speed-slider">Launch Speed: </label>
+                <input type="range" id="speed-slider" min="0.1" max="2" step="0.1" value="1">
+                <span id="speed-value">1.0</span>
             </div>
+        </div>
+        <div id="launch-info">
+            <p>Objects launched: <span id="launch-count">0</span></p>
+            <p>Objects captured: <span id="capture-count">0</span></p>
         </div>
     </div>
 
-    <!-- Import Three.js library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.min.js"></script>
-
+    
     <script>
         // Main simulation code
-        let scene, camera, renderer, controls;
-        let blackHole, eventHorizon, accretionDisk;
-        let celestialBodies = [];
-        let launchedObjects = [];
-        let clock = new THREE.Clock();
-        let gravityStrength = 1;
-
-        // Initialize the scene
-        function init() {
-            // Create scene
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x000010);
-
-            // Create camera
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.z = 50;
-
-            // Create renderer
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Three.js scene
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x000011);
             document.getElementById('container').appendChild(renderer.domElement);
 
             // Add orbit controls
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             controls.dampingFactor = 0.05;
 
-            // Add lighting
+            // Set camera position
+            camera.position.set(0, 20, 30);
+            controls.update();
+
+            // Add ambient light
             const ambientLight = new THREE.AmbientLight(0x333333);
             scene.add(ambientLight);
 
+            // Add directional light
             const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-            directionalLight.position.set(5, 5, 5);
+            directionalLight.position.set(5, 10, 7);
             scene.add(directionalLight);
 
             // Create black hole
-            createBlackHole();
-
-            // Create celestial bodies
-            createCelestialBodies();
-
-            // Add stars background
-            createStarfield();
-
-            // Event listeners
-            window.addEventListener('resize', onWindowResize);
-            document.getElementById('launchBtn').addEventListener('click', launchObject);
-            document.getElementById('resetBtn').addEventListener('click', resetSimulation);
-            document.getElementById('gravitySlider').addEventListener('input', function(e) {
-                gravityStrength = parseFloat(e.target.value);
+            const blackHoleGeometry = new THREE.SphereGeometry(2, 32, 32);
+            const blackHoleMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x000000,
+                transparent: true,
+                opacity: 0.9
             });
+            const blackHole = new THREE.Mesh(blackHoleGeometry, blackHoleMaterial);
+            scene.add(blackHole);
 
-            // Start animation loop
-            animate();
-        }
+            // Add gravitational lensing effect (simplified)
+            const lensingGeometry = new THREE.RingGeometry(2.2, 3, 64);
+            const lensingMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0x4444ff, 
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.3
+            });
+            const lensing = new THREE.Mesh(lensingGeometry, lensingMaterial);
+            lensing.rotation.x = Math.PI / 2;
+            scene.add(lensing);
 
-        function createBlackHole() {
-            // Event horizon (the black part)
-            const horizonGeometry = new THREE.SphereGeometry(5, 32, 32);
-            const horizonMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 });
-            eventHorizon = new THREE.Mesh(horizonGeometry, horizonMaterial);
-            scene.add(eventHorizon);
-
-            // Accretion disk
-            const diskGeometry = new THREE.RingGeometry(6, 15, 64);
-            const diskMaterial = new THREE.MeshBasicMaterial({ 
-                color: 0x5511ff, 
+            // Create accretion disk
+            const accretionDiskGeometry = new THREE.RingGeometry(3, 8, 64);
+            const accretionDiskMaterial = new THREE.MeshBasicMaterial({ 
+                color: 0xff4400, 
                 side: THREE.DoubleSide,
                 transparent: true,
                 opacity: 0.7
             });
-            accretionDisk = new THREE.Mesh(diskGeometry, diskMaterial);
+            const accretionDisk = new THREE.Mesh(accretionDiskGeometry, accretionDiskMaterial);
             accretionDisk.rotation.x = Math.PI / 2;
             scene.add(accretionDisk);
 
-            // Gravitational lensing effect (glow)
-            const lensGeometry = new THREE.SphereGeometry(8, 32, 32);
-            const lensMaterial = new THREE.MeshBasicMaterial({
-                color: 0x220066,
-                transparent: true,
-                opacity: 0.3,
-                side: THREE.BackSide
-            });
-            const lensingEffect = new THREE.Mesh(lensGeometry, lensMaterial);
-            scene.add(lensingEffect);
-
-            // Add gravitational pull area visualization
-            const gravityGeometry = new THREE.SphereGeometry(20, 32, 32);
-            const gravityMaterial = new THREE.MeshBasicMaterial({
-                color: 0x110033,
-                wireframe: true,
-                transparent: true,
-                opacity: 0.2
-            });
-            const gravityField = new THREE.Mesh(gravityGeometry, gravityMaterial);
-            scene.add(gravityField);
-        }
-
-        function createCelestialBodies() {
-            // Create several celestial bodies with different properties
-            const bodyCount = 6;
-            const colors = [0xff4444, 0x44ff44, 0x4444ff, 0xffff44, 0xff44ff, 0x44ffff];
-            
-            for (let i = 0; i < bodyCount; i++) {
-                const radius = 0.5 + Math.random() * 1;
-                const geometry = new THREE.SphereGeometry(radius, 16, 16);
-                const material = new THREE.MeshPhongMaterial({ color: colors[i] });
-                const body = new THREE.Mesh(geometry, material);
-                
-                // Position in a ring around the black hole
-                const angle = (i / bodyCount) * Math.PI * 2;
-                const distance = 15 + Math.random() * 20;
-                body.position.x = Math.cos(angle) * distance;
-                body.position.z = Math.sin(angle) * distance;
-                
-                // Add initial velocity (tangential to orbit)
-                const speed = Math.sqrt(gravityStrength * 10 / distance) * (Math.random() * 0.5 + 0.75);
-                body.velocity = new THREE.Vector3(
-                    -Math.sin(angle) * speed,
-                    0,
-                    Math.cos(angle) * speed
-                );
-                
-                body.mass = radius * 2;
-                
-                scene.add(body);
-                celestialBodies.push(body);
-            }
-        }
-
-        function createStarfield() {
+            // Add stars in the background
             const starGeometry = new THREE.BufferGeometry();
-            const starCount = 5000;
-            const positions = new Float32Array(starCount * 3);
+            const starCount = 1000;
+            const starPositions = new Float32Array(starCount * 3);
             
             for (let i = 0; i < starCount * 3; i++) {
-                positions[i] = (Math.random() - 0.5) * 1000;
+                starPositions[i] = (Math.random() - 0.5) * 200;
             }
             
-            starGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            
+            starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
             const starMaterial = new THREE.PointsMaterial({
                 color: 0xffffff,
                 size: 0.5,
                 transparent: true
             });
-            
             const stars = new THREE.Points(starGeometry, starMaterial);
             scene.add(stars);
-        }
 
-        function launchObject() {
-            const geometry = new THREE.SphereGeometry(0.3, 16, 16);
-            const material = new THREE.MeshPhongMaterial({ color: 0xffffff });
-            const object = new THREE.Mesh(geometry, material);
+            // Celestial bodies array
+            const celestialBodies = [];
+            const launchedObjects = [];
             
-            // Position slightly in front of the camera
-            const cameraDirection = new THREE.Vector3();
-            camera.getWorldDirection(cameraDirection);
-            object.position.copy(camera.position).add(cameraDirection.multiplyScalar(5));
-            
-            // Set initial velocity toward the black hole
-            const blackHolePosition = new THREE.Vector3(0, 0, 0);
-            const direction = blackHolePosition.sub(object.position).normalize();
-            object.velocity = direction.multiplyScalar(10);
-            
-            object.mass = 0.1;
-            object.userData.isLaunched = true;
-            
-            scene.add(object);
-            launchedObjects.push(object);
-        }
-
-        function updatePhysics(deltaTime) {
-            // Update celestial bodies
-            celestialBodies.forEach(body => {
-                if (!body.velocity) return;
+            // Create initial celestial bodies
+            function createCelestialBody(radius, color, distance, speed) {
+                const geometry = new THREE.SphereGeometry(radius, 16, 16);
+                const material = new THREE.MeshPhongMaterial({ color });
+                const body = new THREE.Mesh(geometry, material);
                 
-                // Calculate gravitational force from black hole
-                const blackHolePos = new THREE.Vector3(0, 0, 0);
-                const direction = blackHolePos.sub(body.position);
-                const distanceSq = direction.lengthSq();
-                const distance = Math.sqrt(distanceSq);
+                // Set initial position
+                const angle = Math.random() * Math.PI * 2;
+                body.position.x = Math.cos(angle) * distance;
+                body.position.z = Math.sin(angle) * distance;
                 
-                // Avoid division by zero and extreme forces
-                if (distance < 6) {
-                    // Object has fallen into the black hole
-                    scene.remove(body);
-                    celestialBodies = celestialBodies.filter(b => b !== body);
-                    return;
-                }
+                // Set velocity for orbit
+                body.velocity = new THREE.Vector3(
+                    Math.sin(angle) * speed,
+                    0,
+                    -Math.cos(angle) * speed
+                );
                 
-                const forceMagnitude = gravityStrength * 10 * body.mass / distanceSq;
-                const acceleration = direction.normalize().multiplyScalar(forceMagnitude / body.mass);
+                body.userData = {
+                    distance: distance,
+                    speed: speed,
+                    captured: false
+                };
                 
-                // Update velocity
-                body.velocity.add(acceleration.multiplyScalar(deltaTime));
-                
-                // Update position
-                body.position.add(body.velocity.clone().multiplyScalar(deltaTime));
-            });
-            
-            // Update launched objects
-            launchedObjects.forEach((object, index) => {
-                // Calculate gravitational force from black hole
-                const blackHolePos = new THREE.Vector3(0, 0, 0);
-                const direction = blackHolePos.sub(object.position);
-                const distanceSq = direction.lengthSq();
-                const distance = Math.sqrt(distanceSq);
-                
-                // Check if object has fallen into the black hole
-                if (distance < 6) {
-                    scene.remove(object);
-                    launchedObjects.splice(index, 1);
-                    return;
-                }
-                
-                const forceMagnitude = gravityStrength * 10 * object.mass / distanceSq;
-                const acceleration = direction.normalize().multiplyScalar(forceMagnitude / object.mass);
-                
-                // Update velocity
-                object.velocity.add(acceleration.multiplyScalar(deltaTime));
-                
-                // Update position
-                object.position.add(object.velocity.clone().multiplyScalar(deltaTime));
-                
-                // Visual effect as object approaches black hole
-                if (distance < 15) {
-                    const scale = 1 + (15 - distance) / 15;
-                    object.scale.set(scale, scale, scale);
-                }
-            });
-            
-            // Rotate accretion disk
-            if (accretionDisk) {
-                accretionDisk.rotation.z += deltaTime * 0.5;
+                scene.add(body);
+                celestialBodies.push(body);
+                return body;
             }
-        }
 
-        function resetSimulation() {
-            // Remove all celestial bodies
-            celestialBodies.forEach(body => {
-                scene.remove(body);
+            // Create initial orbiting bodies
+            createCelestialBody(0.5, 0x4488ff, 10, 0.8);
+            createCelestialBody(0.7, 0x44ff88, 15, 0.6);
+            createCelestialBody(0.6, 0xff8844, 20, 0.5);
+            createCelestialBody(0.4, 0x8844ff, 25, 0.4);
+
+            // Launch an object toward the black hole
+            function launchObject() {
+                const launchSpeed = parseFloat(document.getElementById('speed-slider').value);
+                
+                const geometry = new THREE.SphereGeometry(0.3, 16, 16);
+                const material = new THREE.MeshPhongMaterial({ color: 0xffff00 });
+                const object = new THREE.Mesh(geometry, material);
+                
+                // Start from a position away from the black hole
+                object.position.set(0, 0, -30);
+                
+                // Set velocity toward the black hole with some randomness
+                const randomOffset = (Math.random() - 0.5) * 0.5;
+                object.velocity = new THREE.Vector3(
+                    randomOffset,
+                    0,
+                    launchSpeed
+                );
+                
+                object.userData = {
+                    type: 'launched',
+                    captured: false
+                };
+                
+                scene.add(object);
+                launchedObjects.push(object);
+                
+                // Update launch count
+                const launchCount = document.getElementById('launch-count');
+                launchCount.textContent = parseInt(launchCount.textContent) + 1;
+            }
+
+            // Reset simulation
+            function resetSimulation() {
+                // Remove launched objects
+                launchedObjects.forEach(obj => {
+                    scene.remove(obj);
+                });
+                launchedObjects.length = 0;
+                
+                // Reset celestial bodies
+                celestialBodies.forEach(body => {
+                    const angle = Math.random() * Math.PI * 2;
+                    body.position.x = Math.cos(angle) * body.userData.distance;
+                    body.position.z = Math.sin(angle) * body.userData.distance;
+                    
+                    body.velocity.set(
+                        Math.sin(angle) * body.userData.speed,
+                        0,
+                        -Math.cos(angle) * body.userData.speed
+                    );
+                    
+                    body.userData.captured = false;
+                });
+                
+                // Reset counters
+                document.getElementById('launch-count').textContent = '0';
+                document.getElementById('capture-count').textContent = '0';
+            }
+
+            // Update speed display
+            document.getElementById('speed-slider').addEventListener('input', function() {
+                document.getElementById('speed-value').textContent = this.value;
             });
-            celestialBodies = [];
-            
-            // Remove all launched objects
-            launchedObjects.forEach(object => {
-                scene.remove(object);
+
+            // Set up event listeners
+            document.getElementById('launch-btn').addEventListener('click', launchObject);
+            document.getElementById('reset-btn').addEventListener('click', resetSimulation);
+
+            // Animation and physics update
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Update controls
+                controls.update();
+                
+                // Rotate accretion disk
+                accretionDisk.rotation.z += 0.01;
+                
+                // Update celestial bodies
+                celestialBodies.forEach(body => {
+                    if (body.userData.captured) return;
+                    
+                    // Calculate direction to black hole
+                    const direction = new THREE.Vector3()
+                        .subVectors(blackHole.position, body.position)
+                        .normalize();
+                    
+                    // Calculate distance to black hole
+                    const distance = body.position.distanceTo(blackHole.position);
+                    
+                    // Apply gravitational force (inverse square law)
+                    const gravityStrength = 10; // Gravitational constant for our simulation
+                    const force = gravityStrength / (distance * distance);
+                    
+                    // Update velocity
+                    body.velocity.add(direction.multiplyScalar(force * 0.1));
+                    
+                    // Update position
+                    body.position.add(body.velocity);
+                    
+                    // Check if captured by black hole
+                    if (distance < 3) {
+                        body.userData.captured = true;
+                        body.material.color.set(0x222222);
+                    }
+                });
+                
+                // Update launched objects
+                let captureCount = 0;
+                launchedObjects.forEach((object, index) => {
+                    if (object.userData.captured) {
+                        captureCount++;
+                        return;
+                    }
+                    
+                    // Calculate direction to black hole
+                    const direction = new THREE.Vector3()
+                        .subVectors(blackHole.position, object.position)
+                        .normalize();
+                    
+                    // Calculate distance to black hole
+                    const distance = object.position.distanceTo(blackHole.position);
+                    
+                    // Apply gravitational force
+                    const gravityStrength = 10;
+                    const force = gravityStrength / (distance * distance);
+                    
+                    // Update velocity
+                    object.velocity.add(direction.multiplyScalar(force * 0.1));
+                    
+                    // Update position
+                    object.position.add(object.velocity);
+                    
+                    // Check if captured by black hole
+                    if (distance < 3) {
+                        object.userData.captured = true;
+                        object.material.color.set(0x222222);
+                        captureCount++;
+                    }
+                    
+                    // Remove if too far
+                    if (distance > 100) {
+                        scene.remove(object);
+                        launchedObjects.splice(index, 1);
+                    }
+                });
+                
+                // Update capture count
+                document.getElementById('capture-count').textContent = captureCount;
+                
+                // Render the scene
+                renderer.render(scene, camera);
+            }
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
             });
-            launchedObjects = [];
-            
-            // Recreate celestial bodies
-            createCelestialBodies();
-            
-            // Reset gravity strength
-            gravityStrength = 1;
-            document.getElementById('gravitySlider').value = 1;
-        }
 
-        function animate() {
-            requestAnimationFrame(animate);
-            
-            const deltaTime = Math.min(clock.getDelta(), 0.1); // Cap delta time to prevent large jumps
-            
-            updatePhysics(deltaTime);
-            
-            controls.update();
-            renderer.render(scene, camera);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
-        // Start the simulation
-        init();
+            // Start animation
+            animate();
+        });
     </script>
 </body>
 </html>
