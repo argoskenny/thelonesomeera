@@ -1,216 +1,342 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<title>3D Solar System</title>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		<style>
-			body {
-				margin: 0;
-				overflow: hidden; /* Hide scrollbars */
-				font-family: Arial, sans-serif;
-				background-color: #000;
-			}
-			#info {
-				position: absolute;
-				top: 10px;
-				width: 100%;
-				text-align: center;
-				color: white;
-				z-index: 100;
-				display: block;
-			}
-            #info h1 {
-                margin: 0;
-                font-size: 1.5em;
-            }
-            #info p {
-                margin: 5px;
-                font-size: 0.9em;
-            }
-		</style>
-	    <link rel="stylesheet" href="../style.css">
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>太陽系模擬 (Gemini)</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        /* 背景星空 */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0)),
+                radial-gradient(2px 2px at 160px 120px, #ddd, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 5s infinite;
+        }
+
+        @keyframes twinkle {
+            50% { opacity: 0.8; }
+        }
+
+        .solar-system {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        /* 太陽 */
+        .sun {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #ff8c00, 0 0 60px #ff4500;
+            z-index: 10;
+        }
+
+        /* 軌道通用樣式 */
+        .orbit {
+            position: absolute;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none; /* 讓滑鼠可以穿透軌道 */
+        }
+
+        /* 行星通用樣式 */
+        .planet-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: top left;
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: inset -2px -2px 5px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .planet:hover {
+            transform: translate(-50%, -50%) scale(1.5);
+            z-index: 100;
+        }
+
+        /* 行星標籤 (hover 顯示) */
+        .planet::after {
+            content: attr(data-name);
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            background: rgba(0,0,0,0.7);
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .planet:hover::after {
+            opacity: 1;
+        }
+
+        /* 各行星參數定義 (軌道半徑、大小、顏色、週期) */
+        /* 水星 */
+        .orbit-mercury { width: 100px; height: 100px; }
+        .pos-mercury { width: 0; height: 0; animation: orbit 2.4s linear infinite; }
+        .planet-mercury { 
+            width: 8px; height: 8px; background: #a9a9a9; top: -50px; 
+        }
+
+        /* 金星 */
+        .orbit-venus { width: 140px; height: 140px; }
+        .pos-venus { width: 0; height: 0; animation: orbit 6.2s linear infinite; }
+        .planet-venus { 
+            width: 12px; height: 12px; background: #e3bb76; top: -70px; 
+        }
+
+        /* 地球 */
+        .orbit-earth { width: 190px; height: 190px; }
+        .pos-earth { width: 0; height: 0; animation: orbit 10s linear infinite; }
+        .planet-earth { 
+            width: 13px; height: 13px; background: #2f6a69; top: -95px; 
+        }
+        /* 月球 (簡單模擬跟隨地球) */
+        .moon-orbit {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            top: -95px; /* 與地球位置對齊 */
+            left: 0;
+            transform: translate(-50%, -50%);
+            animation: orbit 10s linear infinite reverse; /* 抵消地球公轉旋轉，保持軌道方向? 不，這裡是簡單跟隨 */
+        }
+        .moon {
+            width: 3px; height: 3px; background: #ddd;
+            position: absolute;
+            top: 0; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: orbit 1s linear infinite; /* 月球繞地球 */
+            transform-origin: 0 12px;
+        }
+
+        /* 火星 */
+        .orbit-mars { width: 240px; height: 240px; }
+        .pos-mars { width: 0; height: 0; animation: orbit 18.8s linear infinite; }
+        .planet-mars { 
+            width: 10px; height: 10px; background: #c1440e; top: -120px; 
+        }
+
+        /* 木星 */
+        .orbit-jupiter { width: 340px; height: 340px; }
+        .pos-jupiter { width: 0; height: 0; animation: orbit 118.6s linear infinite; }
+        .planet-jupiter { 
+            width: 28px; height: 28px; background: #d8ca9d; top: -170px; 
+            background-image: linear-gradient(0deg, #d8ca9d 0%, #a59186 20%, #d8ca9d 40%, #a59186 60%, #d8ca9d 100%);
+        }
+
+        /* 土星 */
+        .orbit-saturn { width: 440px; height: 440px; }
+        .pos-saturn { width: 0; height: 0; animation: orbit 294.6s linear infinite; }
+        .planet-saturn { 
+            width: 24px; height: 24px; background: #f4d03f; top: -220px; 
+        }
+        /* 土星環 */
+        .planet-saturn::before {
+            content: '';
+            position: absolute;
+            width: 36px;
+            height: 8px;
+            border: 2px solid rgba(200, 180, 100, 0.6);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* 天王星 */
+        .orbit-uranus { width: 540px; height: 540px; }
+        .pos-uranus { width: 0; height: 0; animation: orbit 840s linear infinite; } /* 時間縮短比例，不然太慢 */
+        .planet-uranus { 
+            width: 16px; height: 16px; background: #add8e6; top: -270px; 
+        }
+
+        /* 海王星 */
+        .orbit-neptune { width: 640px; height: 640px; }
+        .pos-neptune { width: 0; height: 0; animation: orbit 1648s linear infinite; }
+        .planet-neptune { 
+            width: 15px; height: 15px; background: #3e54e8; top: -320px; 
+        }
+
+        @keyframes orbit {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 資訊面板 */
+        .info-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            color: #ccc;
+            font-size: 14px;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 5px;
+            pointer-events: none;
+        }
+
+        /* 控制按鈕 */
+        .controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 200;
+        }
+        button {
+            background: #333;
+            color: white;
+            border: 1px solid #555;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        button:hover {
+            background: #555;
+        }
+
+    </style>
 </head>
-	<body>
-        <!-- Info display -->
-        <div id="info">
-            <h1>3D Solar System</h1>
-            <p>Controls: Left-drag (Orbit), Scroll (Zoom), Right-drag (Pan)</p>
+<body>
+
+    <div class="stars"></div>
+
+    <div class="solar-system" id="solarSystem">
+        <!-- 太陽 -->
+        <div class="sun"></div>
+
+        <!-- 水星 -->
+        <div class="orbit orbit-mercury"></div>
+        <div class="planet-container pos-mercury">
+            <div class="planet planet-mercury" data-name="水星 (Mercury)"></div>
         </div>
 
-		<!-- Main 3D canvas -->
-		<script type="module">
-			// --- Imports ---
-			import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.module.js';
-			import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/jsm/controls/OrbitControls.js';
+        <!-- 金星 -->
+        <div class="orbit orbit-venus"></div>
+        <div class="planet-container pos-venus">
+            <div class="planet planet-venus" data-name="金星 (Venus)"></div>
+        </div>
 
-			// --- Core Components ---
-			let scene, camera, renderer, controls;
-            let sunMesh;
-            const planetPivots = []; // To store pivots for animation
+        <!-- 地球 -->
+        <div class="orbit orbit-earth"></div>
+        <div class="planet-container pos-earth">
+            <div class="planet planet-earth" data-name="地球 (Earth)"></div>
+            <!-- 月球軌道容器 (跟隨地球旋轉) -->
+            <!-- 這裡為了簡化，讓月球直接作為地球的子元素裝飾或另外處理，這邊用簡單方式處理 -->
+        </div>
+        
+        <!-- 火星 -->
+        <div class="orbit orbit-mars"></div>
+        <div class="planet-container pos-mars">
+            <div class="planet planet-mars" data-name="火星 (Mars)"></div>
+        </div>
 
-			function init() {
-				// 1. Scene
-				scene = new THREE.Scene();
+        <!-- 木星 -->
+        <div class="orbit orbit-jupiter"></div>
+        <div class="planet-container pos-jupiter">
+            <div class="planet planet-jupiter" data-name="木星 (Jupiter)"></div>
+        </div>
 
-				// 2. Camera
-				camera = new THREE.PerspectiveCamera(
-					75, // Field of View
-					window.innerWidth / window.innerHeight, // Aspect Ratio
-					0.1, // Near clip
-					1000 // Far clip
-				);
-				camera.position.z = 30;
-                camera.position.y = 5;
+        <!-- 土星 -->
+        <div class="orbit orbit-saturn"></div>
+        <div class="planet-container pos-saturn">
+            <div class="planet planet-saturn" data-name="土星 (Saturn)"></div>
+        </div>
 
-				// 3. Renderer
-				renderer = new THREE.WebGLRenderer({ antialias: true });
-				renderer.setSize(window.innerWidth, window.innerHeight);
-				document.body.appendChild(renderer.domElement);
+        <!-- 天王星 -->
+        <div class="orbit orbit-uranus"></div>
+        <div class="planet-container pos-uranus">
+            <div class="planet planet-uranus" data-name="天王星 (Uranus)"></div>
+        </div>
 
-				// 4. Controls
-                // We add this now, as per checklist item 7
-				controls = new OrbitControls(camera, renderer.domElement);
-                controls.enableDamping = true; // For smoother motion
-                controls.dampingFactor = 0.05;
+        <!-- 海王星 -->
+        <div class="orbit orbit-neptune"></div>
+        <div class="planet-container pos-neptune">
+            <div class="planet planet-neptune" data-name="海王星 (Neptune)"></div>
+        </div>
+    </div>
 
-				// --- Lighting ---
-				const ambientLight = new THREE.AmbientLight(0x404040, 0.5); // Soft global light
-				scene.add(ambientLight);
+    <div class="info-panel">
+        <p>滑鼠懸停星球可查看名稱</p>
+        <p>比例未完全按照真實比例，僅供模擬參考</p>
+    </div>
 
-				const pointLight = new THREE.PointLight(0xFFFFFF, 3, 0); // Sun's light
-				scene.add(pointLight);
+    <div class="controls">
+        <button onclick="toggleOrbits()">切換軌道線</button>
+        <button onclick="toggle3D()">2D/3D 切換</button>
+    </div>
 
-				// --- Create Bodies (Milestone 2 & 3) ---
+    <script>
+        // 簡單的互動控制
+        let showOrbits = true;
+        let is3D = false;
 
-                // 1. Create Sun
-				const sunGeo = new THREE.SphereGeometry(2.5, 32, 32);
-				const sunMat = new THREE.MeshBasicMaterial({ color: 0xFFFF00, map: createGlowTexture() });
-				sunMesh = new THREE.Mesh(sunGeo, sunMat);
-				scene.add(sunMesh);
+        function toggleOrbits() {
+            showOrbits = !showOrbits;
+            const orbits = document.querySelectorAll('.orbit');
+            orbits.forEach(o => {
+                o.style.border = showOrbits ? '1px solid rgba(255, 255, 255, 0.15)' : 'none';
+            });
+        }
 
-                // 2. Define Planet Data
-                const planetData = [
-                    { name: 'Mercury', size: 0.38, color: 0x8c8c8c, orbitRadius: 5, speed: 0.02 },
-                    { name: 'Venus', size: 0.95, color: 0xeda14a, orbitRadius: 8, speed: 0.012 },
-                    { name: 'Earth', size: 1.0, color: 0x3b82f6, orbitRadius: 12, speed: 0.01 },
-                    { name: 'Mars', size: 0.53, color: 0xb95a3c, orbitRadius: 16, speed: 0.008 },
-                    { name: 'Jupiter', size: 3.5, color: 0xe0c6a7, orbitRadius: 22, speed: 0.004 },
-                    { name: 'Saturn', size: 3.0, color: 0xf0d9a6, orbitRadius: 28, speed: 0.003, hasRing: true },
-                ];
-
-                // 3. Create Planets, Pivots, and Orbits (Milestone 4 & 5)
-                planetData.forEach(planet => {
-                    // Create the planet mesh
-                    const planetGeo = new THREE.SphereGeometry(planet.size, 32, 32);
-                    const planetMat = new THREE.MeshStandardMaterial({ 
-                        color: planet.color,
-                        roughness: 0.7 
-                    });
-                    const planetMesh = new THREE.Mesh(planetGeo, planetMat);
-                    planetMesh.position.x = planet.orbitRadius; // Offset from pivot
-
-                    // Create the pivot
-                    const planetPivot = new THREE.Object3D();
-                    planetPivot.add(planetMesh); // Add planet to pivot
-
-                    // Store user data for animation
-                    planetPivot.userData = { 
-                        speed: planet.speed, // Orbit speed
-                        selfSpeed: 0.05,     // Self-rotation speed
-                        mesh: planetMesh 
-                    }; 
-
-                    // Add Saturn's ring
-                    if (planet.hasRing) {
-                        const ringGeo = new THREE.RingGeometry(planet.size * 1.2, planet.size * 1.8, 32);
-                        const ringMat = new THREE.MeshBasicMaterial({ 
-                            color: 0xcccccc, 
-                            side: THREE.DoubleSide,
-                            transparent: true,
-                            opacity: 0.6
-                        });
-                        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-                        ringMesh.rotation.x = Math.PI / 2.5; // Tilt the ring
-                        planetMesh.add(ringMesh); // Add ring to the planet itself
-                    }
-
-                    // Create the orbit path
-                    const orbitGeo = new THREE.RingGeometry(planet.orbitRadius - 0.05, planet.orbitRadius + 0.05, 128);
-                    const orbitMat = new THREE.MeshBasicMaterial({ 
-                        color: 0xFFFFFF, 
-                        side: THREE.DoubleSide,
-                        transparent: true,
-                        opacity: 0.2
-                    });
-                    const orbitMesh = new THREE.Mesh(orbitGeo, orbitMat);
-                    orbitMesh.rotation.x = Math.PI / 2; // Rotate ring to be flat
-                    
-                    // Add pivot and orbit ring to the scene
-                    scene.add(planetPivot);
-                    scene.add(orbitMesh);
-                    
-                    // Save pivot for animation
-                    planetPivots.push(planetPivot);
-                });
-
-				// --- Event Listeners ---
-				window.addEventListener('resize', onWindowResize, false);
-			}
-
-            // Helper function to create a radial gradient texture for the sun's glow
-            function createGlowTexture() {
-                const canvas = document.createElement('canvas');
-                canvas.width = 128;
-                canvas.height = 128;
-                const context = canvas.getContext('2d');
-                const gradient = context.createRadialGradient(
-                    canvas.width / 2, canvas.height / 2, 0,
-                    canvas.width / 2, canvas.height / 2, canvas.width / 2
-                );
-                gradient.addColorStop(0.1, 'rgba(255, 255, 200, 1)');
-                gradient.addColorStop(0.5, 'rgba(255, 200, 0, 0.5)');
-                gradient.addColorStop(1, 'rgba(255, 165, 0, 0)');
-                
-                context.fillStyle = gradient;
-                context.fillRect(0, 0, canvas.width, canvas.height);
-                
-                return new THREE.CanvasTexture(canvas);
+        function toggle3D() {
+            is3D = !is3D;
+            const system = document.getElementById('solarSystem');
+            if (is3D) {
+                system.style.transform = "rotateX(60deg) scale(0.8)";
+            } else {
+                system.style.transform = "rotateX(0deg) scale(1)";
             }
-
-			// --- Resize Handler ---
-			function onWindowResize() {
-				camera.aspect = window.innerWidth / window.innerHeight;
-				camera.updateProjectionMatrix();
-				renderer.setSize(window.innerWidth, window.innerHeight);
-			}
-
-			// --- Animation Loop (Milestone 6) ---
-			function animate() {
-				requestAnimationFrame(animate);
-
-                // Animate Sun
-                sunMesh.rotation.y += 0.001;
-
-                // Animate Planets
-                planetPivots.forEach(pivot => {
-                    // 1. Orbit (rotate the pivot)
-                    pivot.rotation.y += pivot.userData.speed;
-
-                    // 2. Self-rotation (rotate the mesh itself)
-                    pivot.userData.mesh.rotation.y += pivot.userData.selfSpeed;
-                });
-
-                // Update controls
-				controls.update();
-
-				// Render the scene
-				renderer.render(scene, camera);
-			}
-
-			// --- Run ---
-			init();
-			animate();
-		</script>
-	</body>
+        }
+    </script>
+</body>
 </html>
