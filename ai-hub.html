@@ -410,6 +410,7 @@
         <a href="#earthmoonsystem" class="nav-item" :class="{ active: activeTab === 'earthmoonsystem' }" @click="handleNavClick('earthmoonsystem')">Earth-Moon System Test</a>
         <a href="#blackhole" class="nav-item" :class="{ active: activeTab === 'blackhole' }" @click="handleNavClick('blackhole')">Black Hole Test</a>
         <a href="#cybermessager" class="nav-item" :class="{ active: activeTab === 'cybermessager' }" @click="handleNavClick('cybermessager')">Cyber Messager Test</a>
+        <a href="#callofduty" class="nav-item" :class="{ active: activeTab === 'callofduty' }" @click="handleNavClick('callofduty')">Call Of Duty Game Test</a>
       </nav>
     </aside>
 
@@ -539,6 +540,31 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             </div>
           </div>
         </div>
+
+        <!-- Call Of Duty Game Test 區塊 -->
+        <div v-else-if="activeTab === 'callofduty'">
+          <h1 class="test-title">Call Of Duty Game Test</h1>
+          <p class="test-subtitle">FPS MVP Prompt Testing</p>
+
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt(callOfDutyPrompt, $event)">複製提示詞</button>
+            </div>
+            <div class="prompt-text">{{ callOfDutyPrompt }}</div>
+          </div>
+
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in callofdutyPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   </div>
@@ -555,7 +581,7 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
           mobileMenuOpen: false,
           // 行動版偵測
           isMobileView: window.innerWidth <= 768,
-          // 目前啟用的頁籤：'signuptest' | 'solarsystem' | 'earthmoonsystem' | 'blackhole' | 'cybermessager'
+          // 目前啟用的頁籤：'signuptest' | 'solarsystem' | 'earthmoonsystem' | 'blackhole' | 'cybermessager' | 'callofduty'
           activeTab: 'signuptest',
 
           // signuptest 卡片資料
@@ -605,14 +631,113 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
             { title: 'Cyber Messager - Gemini', description: '賽博朋克通訊應用（Gemini）', tags: ['LLM', 'Gemini', 'UI/UX'], link: 'cybermessager/gemini.html' },
             { title: 'Cyber Messager - Gemini 3', description: '賽博朋克通訊應用（Gemini 3）', tags: ['LLM', 'Gemini', 'UI/UX'], link: 'cybermessager/gemini3.html' },
             { title: 'Cyber Messager - Grok', description: '賽博朋克通訊應用（Grok）- 空檔案', tags: ['LLM', 'Grok', 'UI/UX'], link: 'cybermessager/grok.html' }
-          ]
+          ],
+
+          // callofduty 卡片資料
+          callofdutyPages: [
+            { title: 'GPT-5.3-Codex', description: 'FPS MVP 測試頁（GPT-5.3-Codex）', tags: ['LLM', 'GPT-5.3-Codex', 'FPS'], link: 'callofduty/codex53.html' },
+            { title: 'Claude Opus 4.6', description: 'FPS MVP 測試頁（Claude Opus 4.6）', tags: ['LLM', 'Claude Opus 4.6', 'FPS'], link: 'callofduty/opus46.html' },
+            { title: 'Gemini 3', description: 'FPS MVP 測試頁（Gemini 3）', tags: ['LLM', 'Gemini 3', 'FPS'], link: 'callofduty/gemini3.html' }
+          ],
+
+          // callofduty 提示詞
+          callOfDutyPrompt: [
+            "You are a senior web game engineer. Build a **playable First-Person Shooter (FPS) MVP** using **Three.js**, inspired by the *feel* of modern military FPS games, but **do not use any copyrighted names, characters, maps, or assets**. Use only **original/simple** visuals (solid colors, primitives) and minimal placeholder audio.",
+            "",
+            "## Core Constraint",
+            "",
+            "* **Deliver everything in ONE single HTML file** (including all JavaScript and CSS inside the same file).",
+            "* No external assets (no textures/models/sounds). If you need audio, generate simple tones via WebAudio.",
+            "* You may load Three.js via CDN import (module) or include it inline if you prefer, but the final deliverable must still be **a single HTML file**.",
+            "",
+            "## MVP Goals (Must Be Playable)",
+            "",
+            "### 1) First-person controls",
+            "",
+            "* Pointer Lock mouse look (yaw/pitch with pitch clamp)",
+            "* WASD movement, Shift sprint, Space jump",
+            "* Gravity + ground detection",
+            "* Basic collision (player capsule/box vs level boxes/AABBs; no heavy physics engine)",
+            "* Sprint FOV kick (slight FOV increase while sprinting)",
+            "",
+            "### 2) Weapon + shooting",
+            "",
+            "* Left-click shoots (semi-auto is fine; optional full-auto)",
+            "* Hitscan using Raycaster",
+            "* Recoil (small camera kick + weapon sway/bob)",
+            "* Minimal muzzle flash (sprite/particle) + hit spark + simple bullet hole mark (can be simplified)",
+            "* Ammo system: magazine + reserve ammo, R to reload (reload time, simple tween-based “animation”)",
+            "* HUD: crosshair, ammo, health",
+            "",
+            "### 3) Enemy AI (minimum fun)",
+            "",
+            "* Spawn 5–10 enemies (capsules/boxes)",
+            "* Simple finite state machine: Patrol → Chase → Attack → Dead",
+            "* Vision/range detection",
+            "* Enemies can shoot back (hitscan or simple projectiles)",
+            "* Damage + death feedback (color flash, shrink/fall, etc.)",
+            "",
+            "### 4) Level + interaction",
+            "",
+            "* Small training arena built from primitives: floor, walls, cover boxes, ramps/platforms",
+            "* Collision & bounds (no walking through walls; no falling out of the world)",
+            "* Optional: pickups (health/ammo)",
+            "",
+            "### 5) Systems & quality",
+            "",
+            "* Target 60 FPS: keep it lightweight (limit shadows, simple geometry, reuse objects)",
+            "* Centralized tunables (player speed, recoil, AI vision, etc.)",
+            "* Restart/reset flow (if player dies or falls out of bounds, press a key to reset)",
+            "",
+            "## Architecture Requirement (within one HTML)",
+            "",
+            "Even though it’s a single HTML file, structure the code clearly using sections/classes:",
+            "",
+            "* Config (tunable constants)",
+            "* Core (renderer, scene, main loop, timing)",
+            "* World (level builder, collision shapes)",
+            "* Player (controller, camera, movement, collision)",
+            "* Weapons (ammo, recoil, fire logic, FX)",
+            "* AI (enemy entity + FSM)",
+            "* UI (HUD update)",
+            "  Keep functions small and readable; avoid a monolithic 1000-line function.",
+            "",
+            "## Deliverables",
+            "",
+            "1. A single runnable HTML file (copy/paste into `index.html` and open).",
+            "2. At the top of the HTML, include a short README comment:",
+            "",
+            "   * How to run",
+            "   * Key bindings",
+            "   * Feature checklist",
+            "3. Implement in phases in your output (but still culminating in one final HTML):",
+            "",
+            "   * Phase 1: scene + pointer lock + movement",
+            "   * Phase 2: gravity + jump + collision",
+            "   * Phase 3: weapon + shooting + HUD",
+            "   * Phase 4: enemy AI + damage/death",
+            "   * Phase 5: polish (sprint FOV, recoil feel, FX, reset)",
+            "",
+            "## Acceptance Criteria (Must Pass All)",
+            "",
+            "* Mouse locks and look works; WASD moves; Shift sprints; Space jumps",
+            "* Left click shoots and damages enemies; enemies chase and attack back",
+            "* HUD shows crosshair/ammo/health; R reload works",
+            "* Player cannot pass through walls/boxes; falling out triggers reset or respawn",
+            "",
+            "## Output Format",
+            "",
+            "* Output ONLY the final **single HTML** in one code block.",
+            "* No TODOs that prevent running.",
+            "* Ensure it runs in a modern browser without additional build steps."
+          ].join('\n')
         }
       },
       methods: {
         // 根據 URL hash 取得初始頁籤
         getInitialTab() {
           const hash = window.location.hash.slice(1);
-          const validTabs = ['signuptest', 'solarsystem', 'earthmoonsystem', 'blackhole', 'cybermessager'];
+          const validTabs = ['signuptest', 'solarsystem', 'earthmoonsystem', 'blackhole', 'cybermessager', 'callofduty'];
           return validTabs.includes(hash) ? hash : 'signuptest';
         },
         // 切換頁籤並更新 URL hash
@@ -732,5 +857,3 @@ Before starting, provide a concise checklist (3–7 items) outlining the main su
   </script>
 </body>
 </html>
-
-
