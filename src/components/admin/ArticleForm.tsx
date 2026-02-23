@@ -181,12 +181,12 @@ export default function ArticleForm({
             <label className="mb-1.5 block text-sm font-medium text-indigo-700">
               補充上下文（選填）
             </label>
-            <input
-              type="text"
+            <textarea
               value={aiContext}
               onChange={(e) => setAiContext(e.target.value)}
-              className={inputClass}
-              placeholder="例：面向初學者、包含實作範例"
+              rows={3}
+              className={inputClass + " resize-none"}
+              placeholder="例：面向初學者、包含實作範例、需要附上程式碼範例..."
               disabled={aiLoading}
             />
           </div>

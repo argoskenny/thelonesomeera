@@ -50,16 +50,21 @@ export async function POST(request: NextRequest) {
   }
   article.slug = finalSlug;
 
-  // Step 2：產生圖片提示詞 → 呼叫圖片 API → 下載儲存
+  // Step 2：圖片 API 有設定時才執行，未設定則跳過
   let coverImage = "";
   let imageError = "";
-  try {
-    const prompt = buildImagePrompt(article);
-    const { image_url } = await generateImage({ prompt });
-    coverImage = await downloadAndSaveImage(image_url, article.slug);
-  } catch (err) {
-    imageError =
-      err instanceof Error ? err.message : "封面圖片生成失敗";
+  const hasImageApi =
+    process.env.AI_IMAGE_API_KEY && process.env.AI_IMAGE_API_URL;
+
+  if (hasImageApi) {
+    try {
+      const prompt = buildImagePrompt(article);
+      const { image_url } = await generateImage({ prompt });
+      coverImage = await downloadAndSaveImage(image_url, article.slug);
+    } catch (err) {
+      imageError =
+        err instanceof Error ? err.message : "封面圖片生成失敗";
+    }
   }
 
   return NextResponse.json({
