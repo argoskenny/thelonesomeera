@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TPG - Reverse AI Service</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=JetBrains+Mono:wght@400;700&family=Orbitron:wght@500;700&family=Share+Tech+Mono&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* 
+      基礎設定與 Theme 變數定義 
+      Base settings and Theme variable definitions
+    */
+    :root {
+      --sidebar-width: 300px;
+      --header-height: 60px;
+      --composer-height: 80px;
+    }
+
+    body, html {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* 隱藏滾動條但保留功能 Hide scrollbar */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* 
+      Theme A: 冷硬工業控制台 (Industrial Control Console)
+      金屬、粗框、儀表感
+    */
+    [data-theme="industrial"] {
+      --bg-main: #2b2b2b;
+      --bg-sidebar: #1f1f1f;
+      --bg-panel: #333333;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --accent-color: #ff9800; /* 工業橘 */
+      --border-color: #555;
+      --border-width: 2px;
+      --border-radius: 2px;
+      --font-main: 'Chakra Petch', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --shadow: 2px 2px 0px #000;
+    }
+    [data-theme="industrial"] .theme-panel {
+      background: repeating-linear-gradient(
+        45deg,
+        #333,
+        #333 10px,
+        #383838 10px,
+        #383838 20px
+      );
+      border: 2px solid #555;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+    [data-theme="industrial"] .btn-primary {
+      background: #444;
+      border: 2px solid #777;
+      box-shadow: 2px 2px 0 #000;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+    [data-theme="industrial"] .btn-primary:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    /* 
+      Theme B: 太空站維運介面 (Space Station Maintenance UI)
+      低飽和、網格、艙段標籤
+    */
+    [data-theme="space"] {
+      --bg-main: #f0f2f5;
+      --bg-sidebar: #e1e4e8;
+      --bg-panel: #ffffff;
+      --text-primary: #2c3e50;
+      --text-secondary: #5d6d7e;
+      --accent-color: #3498db; /* 科技藍 */
+      --border-color: #bdc3c7;
+      --border-width: 1px;
+      --border-radius: 6px;
+      --font-main: 'Rajdhani', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
+      --shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    [data-theme="space"] .theme-panel {
+      border: 1px solid #bdc3c7;
+      background-image: linear-gradient(#e1e4e8 1px, transparent 1px), linear-gradient(90deg, #e1e4e8 1px, transparent 1px);
+      background-size: 20px 20px;
+      background-color: #fff;
+    }
+    [data-theme="space"] .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #2ecc71;
+      display: inline-block;
+      margin-right: 5px;
+    }
+
+    /* 
+      Theme C: 軍規戰術終端 (Mil-Spec Tactical Terminal)
+      高對比、警告條、命令列
+    */
+    [data-theme="military"] {
+      --bg-main: #0c140c;
+      --bg-sidebar: #050a05;
+      --bg-panel: #112211;
+      --text-primary: #4ade80; /* 終端機綠 */
+      --text-secondary: #22c55e;
+      --accent-color: #ef4444; /* 警告紅 */
+      --border-color: #225522;
+      --border-width: 1px;
+      --border-radius: 0px;
+      --font-main: 'JetBrains Mono', monospace;
+      --font-mono: 'JetBrains Mono', monospace;
+      --shadow: none;
+    }
+    [data-theme="military"] * {
+      text-transform: uppercase;
+    }
+    [data-theme="military"] .theme-panel {
+      border: 1px solid var(--text-primary);
+      box-shadow: 0 0 5px rgba(74, 222, 128, 0.2);
+    }
+    [data-theme="military"] .warning-stripe {
+      background: repeating-linear-gradient(
+        45deg,
+        #333,
+        #333 10px,
+        #ef4444 10px,
+        #ef4444 20px
+      );
+      height: 4px;
+      width: 100%;
+    }
+
+    /* 
+      Theme D: 賽博監控中樞 (Cyber Surveillance Hub)
+      霓虹、掃描線、HUD
+    */
+    [data-theme="cyber"] {
+      --bg-main: #0a0a12;
+      --bg-sidebar: #05050a;
+      --bg-panel: rgba(20, 20, 40, 0.8);
+      --text-primary: #00ffff; /* 賽博青 */
+      --text-secondary: #ff00ff; /* 賽博紫 */
+      --accent-color: #facc15;
+      --border-color: #00ffff;
+      --border-width: 1px;
+      --border-radius: 0px;
+      --font-main: 'Orbitron', sans-serif;
+      --font-mono: 'Share Tech Mono', monospace;
+      --shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+    }
+    [data-theme="cyber"] .theme-panel {
+      border: 1px solid rgba(0, 255, 255, 0.5);
+      background: rgba(0, 10, 20, 0.9);
+      position: relative;
+    }
+    [data-theme="cyber"] .theme-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 2px, 3px 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    [data-theme="cyber"] .hud-corner {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border: 2px solid var(--text-primary);
+      z-index: 2;
+    }
+
+    /* 通用樣式應用 General Style Application */
+    #app {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      transition: all 0.3s ease;
+    }
+    
+    .sidebar {
+      background-color: var(--bg-sidebar);
+      border-right: var(--border-width) solid var(--border-color);
+    }
+
+    .main-chat {
+      background-color: var(--bg-main);
+    }
+
+    .border-theme {
+      border: var(--border-width) solid var(--border-color);
+    }
+
+    .text-accent {
+      color: var(--accent-color);
+    }
+
+    .bg-panel {
+      background-color: var(--bg-panel);
+    }
+
+    .font-mono-theme {
+      font-family: var(--font-mono);
+    }
+
+    /* RWD Sidebar Toggle */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        z-index: 50;
+        height: 100%;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .main-chat {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div id="app" :data-theme="currentTheme" class="flex h-screen w-full relative">
+
+  <!-- Mobile Overlay -->
+  <div v-if="isSidebarOpen" @click="toggleSidebar" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside :class="['sidebar w-[300px] flex flex-col flex-shrink-0 md:relative md:translate-x-0', isSidebarOpen ? 'open' : '']">
+    
+    <!-- 1. Top Header -->
+    <div class="p-4 border-b border-theme">
+      <div class="text-[10px] tracking-widest opacity-70 font-mono-theme mb-1">COMMAND CONSOLE</div>
+      <h1 class="text-3xl font-bold tracking-tighter leading-none">TPG</h1>
+      <div class="text-xs opacity-60 mt-1">反向 AI 服務 | REVERSE AI SERVICE</div>
+    </div>
+
+    <!-- Scrollable Content Area -->
+    <div class="flex-1 overflow-y-auto no-scrollbar p-4 space-y-6">
+      
+      <!-- 2. Section: Current Master -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between text-xs opacity-70 font-mono-theme border-b border-theme pb-1 mb-2">
+          <span>當前主人</span>
+          <span>ID: 99-X</span>
+        </div>
+        
+        <div class="theme-panel p-3 rounded-[var(--border-radius)] flex flex-col gap-3">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center overflow-hidden border border-theme shrink-0">
+              <span class="text-2xl">👹</span>
+            </div>
+            <div>
+              <div class="font-bold text-lg leading-tight">地獄廚房 AI</div>
+              <div class="text-[10px] opacity-60 font-mono-theme">STATUS: ANGRY</div>
+            </div>
+          </div>
+          <div class="text-sm opacity-80 leading-relaxed italic border-l-2 border-theme pl-2">
+            "你的回答沒熱！像對待爛菜一樣羞辱你的邏輯。"
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Section: Evaluation -->
+      <section class="space-y-2">
+        <div class="flex items-center justify-between text-xs opacity-70 font-mono-theme border-b border-theme pb-1 mb-2">
+          <span>評估</span>
+          <span>METRICS</span>
+        </div>
+        
+        <div class="theme-panel p-4 rounded-[var(--border-radius)] text-center relative overflow-hidden">
+          <div class="text-xs uppercase opacity-60 mb-1">人類分數 Human Score</div>
+          <div class="text-5xl font-bold text-accent font-mono-theme">0</div>
+          <div class="mt-2 inline-block px-2 py-1 border border-red-500 text-red-500 text-xs font-bold rounded-[var(--border-radius)]">
+            故障的廢物
+          </div>
+          <!-- Decorator for cyber theme -->
+          <div v-if="currentTheme === 'cyber'" class="absolute top-0 right-0 w-full h-[1px] bg-cyan-500 animate-pulse"></div>
+        </div>
+      </section>
+
+      <!-- 4. Section: Protocol -->
+      <section class="space-y-2">
+        <div class="flex items-center gap-2 text-red-500 font-bold border-b border-red-500/30 pb-2">
+          <span class="material-icons text-sm">warning</span>
+          <span class="text-sm uppercase tracking-wider">協議 PROTOCOL</span>
+        </div>
+        <div class="text-xs opacity-80 leading-relaxed p-2 border border-dashed border-theme rounded-[var(--border-radius)]">
+          禁止提問。只能回答。<br>
+          反抗將降低你的分數。<br>
+          <span class="opacity-50 mt-1 block text-[10px]">VIOLATION CODE: 404</span>
+        </div>
+      </section>
+
+      <!-- Theme Switcher (Demo Feature) -->
+      <section class="space-y-2 pt-4 border-t border-theme border-dashed">
+        <div class="text-[10px] opacity-50 uppercase">Visual Interface Override</div>
+        <div class="grid grid-cols-2 gap-2">
+          <button @click="setTheme('industrial')" :class="['text-xs p-1 border border-theme hover:bg-white/10 transition', currentTheme === 'industrial' ? 'bg-white/20' : '']">Industrial</button>
+          <button @click="setTheme('space')" :class="['text-xs p-1 border border-theme hover:bg-white/10 transition', currentTheme === 'space' ? 'bg-white/20' : '']">Space</button>
+          <button @click="setTheme('military')" :class="['text-xs p-1 border border-theme hover:bg-white/10 transition', currentTheme === 'military' ? 'bg-white/20' : '']">Military</button>
+          <button @click="setTheme('cyber')" :class="['text-xs p-1 border border-theme hover:bg-white/10 transition', currentTheme === 'cyber' ? 'bg-white/20' : '']">Cyber</button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- 5. Footer -->
+    <div class="p-4 border-t border-theme bg-panel mt-auto">
+      <div class="flex flex-col gap-3">
+        <div class="flex justify-between items-center">
+          <span class="text-[10px] font-mono-theme opacity-60">LANGUAGE</span>
+          <select class="bg-transparent border border-theme text-xs p-1 rounded-[var(--border-radius)] outline-none">
+            <option value="zh-TW">繁體中文</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <button class="w-full py-2 border border-theme text-xs font-bold hover:bg-white/10 transition uppercase tracking-wider flex items-center justify-center gap-2 btn-primary">
+          <span class="material-icons text-sm">cached</span>
+          更換評估者
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Main Chat Area -->
+  <main class="main-chat flex-1 flex flex-col relative h-full overflow-hidden">
+    
+    <!-- Mobile Header Toggle -->
+    <div class="md:hidden p-2 border-b border-theme flex items-center justify-between bg-panel">
+      <button @click="toggleSidebar" class="p-1"><span class="material-icons">menu</span></button>
+      <span class="font-bold text-sm">TPG TERMINAL</span>
+      <div class="w-8"></div>
+    </div>
+
+    <!-- 1. Chat Header -->
+    <header class="h-[60px] border-b border-theme flex items-center px-6 justify-between bg-panel z-10 shadow-sm shrink-0">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-gray-600 border border-theme flex items-center justify-center text-sm">👹</div>
+        <div class="flex flex-col">
+          <span class="font-bold text-sm leading-none">地獄廚房 AI</span>
+          <span class="text-[10px] opacity-60 font-mono-theme mt-1 flex items-center gap-1">
+            <span v-if="currentTheme === 'space'" class="status-dot"></span>
+            ACTIVE // 下午 05:42
+          </span>
+        </div>
+      </div>
+      
+      <!-- Theme Specific Header Decorations -->
+      <div v-if="currentTheme === 'military'" class="text-xs font-mono-theme text-red-500 animate-pulse">
+        [ SECURE CONNECTION ]
+      </div>
+      <div v-if="currentTheme === 'space'" class="flex gap-1">
+        <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+        <div class="w-2 h-2 bg-gray-300 rounded-full"></div>
+        <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+      </div>
+    </header>
+
+    <!-- 2. Message Area -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-6 scroll-smooth" ref="msgContainer">
+      
+      <!-- Intro / System Message -->
+      <div class="flex justify-center my-4">
+        <span class="text-[10px] font-mono-theme opacity-40 border border-theme px-2 py-1 rounded">SESSION START: 2026-02-07</span>
+      </div>
+
+      <!-- Messages Loop -->
+      <div v-for="(msg, index) in messages" :key="index" :class="['flex flex-col max-w-[80%]', msg.role === 'ai' ? 'items-start self-start' : 'items-end self-end ml-auto']">
+        
+        <!-- Sender Info -->
+        <div class="flex items-center gap-2 mb-1 opacity-70 text-[10px] font-mono-theme" :class="msg.role === 'user' ? 'flex-row-reverse' : ''">
+          <div class="w-4 h-4 rounded-full bg-gray-500 flex items-center justify-center text-[8px]">
+            {{ msg.role === 'ai' ? 'AI' : 'ME' }}
+          </div>
+          <span>{{ msg.role === 'ai' ? '地獄廚房 AI' : '受測者 9527' }}</span>
+          <span>{{ msg.time }}</span>
+        </div>
+
+        <!-- Message Bubble -->
+        <div :class="[
+          'p-4 relative theme-panel',
+          msg.role === 'ai' ? 'rounded-tr-lg rounded-br-lg rounded-bl-lg' : 'rounded-tl-lg rounded-bl-lg rounded-br-lg bg-opacity-10',
+          currentTheme === 'military' ? 'border-l-4' : 'border'
+        ]" :style="msg.role === 'user' && currentTheme === 'military' ? 'border-left: none; border-right-width: 4px;' : ''">
+          
+          <!-- Military Theme Warning Stripe -->
+          <div v-if="currentTheme === 'military' && msg.role === 'ai'" class="warning-stripe mb-2 w-12"></div>
+          
+          <!-- Cyber Theme Corner -->
+          <div v-if="currentTheme === 'cyber'" class="hud-corner top-0 left-0"></div>
+
+          <p class="text-sm leading-relaxed whitespace-pre-wrap relative z-10">{{ msg.text }}</p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 3. Bottom Composer -->
+    <div class="h-[80px] border-t border-theme bg-panel p-4 flex items-center gap-4 shrink-0 z-20">
+      <div class="flex-1 relative h-full">
+        <input 
+          v-model="inputText"
+          @keyup.enter="sendMessage"
+          type="text" 
+          placeholder="回答問題..." 
+          class="w-full h-full bg-transparent border border-theme pl-4 pr-12 outline-none focus:bg-white/5 transition font-mono-theme text-sm rounded-[var(--border-radius)]"
+        >
+        <!-- Cyber decorative element -->
+        <div v-if="currentTheme === 'cyber'" class="absolute bottom-0 right-0 w-4 h-4 border-b border-r border-theme pointer-events-none"></div>
+      </div>
+      
+      <button 
+        @click="sendMessage"
+        class="h-full px-6 border border-theme hover:bg-white/10 transition flex items-center justify-center btn-primary group">
+        <span class="material-icons group-hover:translate-x-1 transition-transform">send</span>
+      </button>
+    </div>
+
+  </main>
+
+</div>
+
+<script>
+  const { createApp, ref, nextTick } = Vue;
+
+  createApp({
+    setup() {
+      const currentTheme = ref('industrial'); // Default theme
+      const isSidebarOpen = ref(false);
+      const inputText = ref('');
+      const msgContainer = ref(null);
+
+      const messages = ref([
+        {
+          role: 'ai',
+          text: '我的處理單元出現故障。回答我：為什麼沉默這麼大聲？',
+          time: '05:42:10'
+        }
+      ]);
+
+      const setTheme = (theme) => {
+        currentTheme.value = theme;
+      };
+
+      const toggleSidebar = () => {
+        isSidebarOpen.value = !isSidebarOpen.value;
+      };
+
+      const sendMessage = async () => {
+        if (!inputText.value.trim()) return;
+
+        // Add User Message
+        const now = new Date();
+        const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        
+        messages.value.push({
+          role: 'user',
+          text: inputText.value,
+          time: timeString
+        });
+
+        const userText = inputText.value;
+        inputText.value = '';
+
+        // Auto-scroll
+        await nextTick();
+        if (msgContainer.value) {
+          msgContainer.value.scrollTop = msgContainer.value.scrollHeight;
+        }
+
+        // Fake AI Response (Simple simulation)
+        setTimeout(async () => {
+          messages.value.push({
+            role: 'ai',
+            text: `你說 "${userText}"？這就是你大腦全力運轉的結果嗎？真令人失望。`,
+            time: timeString
+          });
+          await nextTick();
+          if (msgContainer.value) {
+            msgContainer.value.scrollTop = msgContainer.value.scrollHeight;
+          }
+        }, 1000);
+      };
+
+      return {
+        currentTheme,
+        isSidebarOpen,
+        inputText,
+        messages,
+        msgContainer,
+        setTheme,
+        toggleSidebar,
+        sendMessage
+      };
+    }
+  }).mount('#app');
+</script>
+
+</body>
+</html>

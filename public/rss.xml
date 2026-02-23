@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>The Lonesome Era - 技術文章</title>
+        <link>https://thelonesomeera.com</link>
+        <description>一個屬於創作者與思考者的技術角落 - 分享前端開發、遊戲製作與科技觀察</description>
+        <language>zh-TW</language>
+        <lastBuildDate>Mon, 15 Jan 2025 12:00:00 +0800</lastBuildDate>
+        <atom:link href="https://thelonesomeera.com/rss.xml" rel="self" type="application/rss+xml" />
+        <generator>The Lonesome Era</generator>
+        <webMaster>argoskenny@gmail.com (The Lonesome Era)</webMaster>
+        <managingEditor>argoskenny@gmail.com (The Lonesome Era)</managingEditor>
+        <copyright>Copyright 2025, The Lonesome Era</copyright>
+        <category>技術開發</category>
+        <category>前端開發</category>
+        <category>遊戲開發</category>
+        <category>科技觀察</category>
+
+        <item>
+            <title>前端遊戲開發實戰：從零到一打造 Web 遊戲</title>
+            <link>https://thelonesomeera.com/tech/web-game-development.html</link>
+            <description>探討如何使用純 JavaScript 和 Canvas API 開發遊戲，包含碰撞偵測、物理引擎和音效系統的實作心得。從遊戲架構設計到效能優化，完整分享 Web 遊戲開發的實戰經驗。</description>
+            <pubDate>Fri, 15 Mar 2024 10:00:00 +0800</pubDate>
+            <guid>https://thelonesomeera.com/tech/web-game-development.html</guid>
+            <category>前端開發</category>
+            <category>遊戲開發</category>
+            <author>argoskenny@gmail.com (The Lonesome Era)</author>
+        </item>
+
+        <item>
+            <title>Vue.js 3 Composition API 深度解析</title>
+            <link>https://thelonesomeera.com/tech/vue3-composition-api.html</link>
+            <description>從實際專案角度分析 Vue 3 的 Composition API，如何讓程式碼更具可維護性和重用性。深入探討 reactive、ref、computed 等核心概念，並分享最佳實踐經驗。</description>
+            <pubDate>Sun, 10 Mar 2024 14:30:00 +0800</pubDate>
+            <guid>https://thelonesomeera.com/tech/vue3-composition-api.html</guid>
+            <category>Vue.js</category>
+            <category>前端開發</category>
+            <author>argoskenny@gmail.com (The Lonesome Era)</author>
+        </item>
+
+        <item>
+            <title>CSS Grid 與 Flexbox：何時使用哪一個？</title>
+            <link>https://thelonesomeera.com/tech/css-grid-vs-flexbox.html</link>
+            <description>詳細比較 CSS Grid 和 Flexbox 的使用場景，透過實際案例說明如何選擇合適的布局方案。包含響應式設計技巧和常見布局模式的實作方法。</description>
+            <pubDate>Tue, 05 Mar 2024 09:15:00 +0800</pubDate>
+            <guid>https://thelonesomeera.com/tech/css-grid-vs-flexbox.html</guid>
+            <category>CSS</category>
+            <category>前端開發</category>
+            <author>argoskenny@gmail.com (The Lonesome Era)</author>
+        </item>
+
+        <item>
+            <title>Web 效能優化：從載入時間到使用者體驗</title>
+            <link>https://thelonesomeera.com/tech/web-performance-optimization.html</link>
+            <description>分享實際專案中的效能優化經驗，包含圖片優化、程式碼分割和快取策略。從 Core Web Vitals 指標到實際優化技巧，全面提升網站效能。</description>
+            <pubDate>Wed, 28 Feb 2024 16:45:00 +0800</pubDate>
+            <guid>https://thelonesomeera.com/tech/web-performance-optimization.html</guid>
+            <category>效能優化</category>
+            <category>前端開發</category>
+            <author>argoskenny@gmail.com (The Lonesome Era)</author>
+        </item>
+
+        <item>
+            <title>響應式設計的進階技巧：超越 Bootstrap</title>
+            <link>https://thelonesomeera.com/tech/advanced-responsive-design.html</link>
+            <description>探討現代響應式設計的最佳實踐，如何創造更好的跨裝置使用體驗。包含 CSS Grid、Flexbox、clamp() 函數等現代 CSS 技術的應用。</description>
+            <pubDate>Tue, 20 Feb 2024 11:20:00 +0800</pubDate>
+            <guid>https://thelonesomeera.com/tech/advanced-responsive-design.html</guid>
+            <category>響應式設計</category>
+            <category>前端開發</category>
+            <author>argoskenny@gmail.com (The Lonesome Era)</author>
+        </item>
+    </channel>
+</rss> 

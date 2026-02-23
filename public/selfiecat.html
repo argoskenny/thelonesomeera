@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selfie Cat - AI-Powered Cat Selfie App | Make Your Cat a Superstar</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7672088727567232"
+     crossorigin="anonymous"></script>
+    <meta name="description"
+        content="Turn playtime into priceless memories with Selfie Cat! The AI-powered app that captures adorable selfies of your cat as they play with fun, interactive toys on screen.">
+    <meta name="keywords" content="cat selfie app, pet photography, cat photos, cat games, pet app, cat entertainment">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://selfiecat.app/">
+    <meta property="og:title" content="Selfie Cat - AI-Powered Cat Selfie App">
+    <meta property="og:description"
+        content="Turn playtime into priceless memories! Capture adorable selfies of your cat automatically as they play with interactive toys.">
+    <meta property="og:image" content="https://selfiecat.app/app_preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://selfiecat.app/">
+    <meta property="twitter:title" content="Selfie Cat - AI-Powered Cat Selfie App">
+    <meta property="twitter:description"
+        content="Turn playtime into priceless memories! Capture adorable selfies of your cat automatically as they play with interactive toys.">
+    <meta property="twitter:image" content="https://selfiecat.app/app_preview.png">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://selfiecat.app/">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "MobileApplication",
+      "name": "Selfie Cat",
+      "applicationCategory": "Photography App",
+      "operatingSystem": "iOS",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "AI-powered app that captures adorable selfies of your cat as they play with interactive on-screen toys.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "1000"
+      }
+    }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .navbar {
+            padding: 1rem 2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+        }
+
+        .navbar-nav {
+            align-items: center;
+        }
+
+        .navbar-nav .nav-link {
+            color: #333;
+            font-weight: 500;
+            margin: 0 10px;
+        }
+
+        .download-btn {
+            background-color: #00A19D;
+            color: white;
+            border-radius: 30px;
+            padding: 8px 20px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .download-btn:hover {
+            background-color: #008F8C;
+            color: white;
+        }
+
+        .hero-section {
+            background-color: #00A19D;
+            color: white;
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .app-preview-img {
+            max-width: 100%;
+            border-radius: 20px;
+        }
+
+        .how-to-img {
+            height: 100%;
+            width: auto;
+            border-radius: 20px;
+            object-fit: contain;
+        }
+
+        .how-to-container {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .equal-height-row {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .equal-height-row>[class*='col-'] {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-store-badge {
+            height: 50px;
+            margin-top: 1rem;
+        }
+
+        .features-section {
+            padding: 5rem 0;
+            background-color: #FFF8E5;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border: 1px solid #e0e0e0;
+        }
+
+        .feature-card h3 {
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .step-block {
+            padding: 0.5rem 0;
+        }
+
+        .step-block h3 {
+            font-size: 1.25rem;
+            color: #00A19D;
+            margin-bottom: 0.5rem;
+        }
+
+        .step-block p {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            padding: 5rem 0;
+            text-align: center;
+            background-color: #00A19D;
+            color: white;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight-text {
+            font-family: 'Permanent Marker', cursive;
+            color: #FFF8E5;
+            display: inline-block;
+            margin-left: 15px;
+            transform: rotate(-5deg);
+            text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: rotate(-5deg) translateY(0);
+            }
+
+            50% {
+                transform: rotate(-5deg) translateY(-10px);
+            }
+        }
+
+        .footer {
+            padding: 2rem 0;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .footer-links a {
+            color: #333;
+            margin: 0 10px;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* Decorative elements */
+        .bg-dot {
+            position: absolute;
+            width: 200px;
+            opacity: 0.2;
+        }
+
+        .bg-dot-1 {
+            top: 0;
+            left: 0;
+        }
+
+        .bg-dot-2 {
+            top: 0;
+            right: 0;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-section {
+                padding: 4rem 0;
+            }
+
+            .app-preview-container {
+                margin-top: 3rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .col-md-4 {
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="title_logo.png" alt="Selfie Cat">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#how-it-works">How It Works</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
+                            data-bs-toggle="dropdown">
+                            🌐 Language
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('ar')">العربية</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('da')">Dansk</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('de')">Deutsch</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('es')">Español</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('fr')">Français</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('id')">Bahasa Indonesia</a>
+                            </li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('it')">Italiano</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('ja')">日本語</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('ko')">한국어</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('th')">ไทย</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('vi')">Tiếng Việt</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh')">繁體中文</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('zh-CN')">简体中文</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="download-btn" href="https://apps.apple.com/us/app/selfie-cat/id1071984720">Free
+                            Download</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 hero-content">
+                    <h1 class="hero-title">Snap Purr-fect Selfies with Your Cat! 🐱📸</h1>
+                    <p class="hero-subtitle">Turn playtime into priceless memories! Selfie Cat captures adorable selfies
+                        of your furry friend as they interact with fun, on-screen toys. Ready to make your cat a
+                        superstar?</p>
+                    <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720">
+                        <img src="appstore_badge.svg" alt="Download on App Store" class="app-store-badge">
+                    </a>
+                </div>
+                <div class="col-lg-6 app-preview-container text-center">
+                    <img src="app_preview.png" alt="Selfie Cat App Preview" class="app-preview-img">
+                </div>
+            </div>
+        </div>
+        <img src="scbg_dot1.png" alt="Decorative Element" class="bg-dot bg-dot-1">
+        <img src="scbg_dot2.png" alt="Decorative Element" class="bg-dot bg-dot-2">
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="section-title">Amazing Features</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>🎾 Playtime Fun</h3>
+                        <p>Laser pointers, bouncing balls, colorful fireworks, and swimming fish!
+                            Selfie Cat keeps your feline entertained with exciting digital toys designed to grab their
+                            attention.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>📸 Auto-Snap Magic</h3>
+                        <p>Your cat taps, we snap!
+                            Selfie Cat automatically takes a photo every time your cat touches the screen—no extra
+                            effort needed!</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <h3>🌟 Share the Cuteness</h3>
+                        <p>Show off your kitty's best moments!
+                            Easily save and share your cat's hilarious and heartwarming selfies with friends on social
+                            media.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="features-section bg-white" id="how-it-works">
+        <div class="container">
+            <h2 class="section-title">How Selfie Cat Works</h2>
+            <div class="row equal-height-row align-items-stretch">
+                <div class="col-lg-6">
+                    <div class="feature-card">
+                        <div class="step-block mb-4">
+                            <h3>1️⃣ Pick a Toy</h3>
+                            <p class="mb-0">Choose from four fun-filled toys: Laser Pointer, Balls, Fireworks, or
+                                Fishes.</p>
+                        </div>
+
+                        <div class="step-block mb-4">
+                            <h3>2️⃣ Let Your Cat Play</h3>
+                            <p class="mb-0">Place your device in front of your cat and watch them interact with the
+                                screen.</p>
+                        </div>
+
+                        <div class="step-block mb-4">
+                            <h3>3️⃣ Snap & Save</h3>
+                            <p class="mb-0">Every tap triggers a selfie—capture their cutest reactions effortlessly!</p>
+                        </div>
+
+                        <div class="step-block">
+                            <h3>4️⃣ Share the Fun</h3>
+                            <p class="mb-0">Spread the joy by posting your cat's best snapshots online!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 text-center">
+                    <img src="how_to.png" alt="How Selfie Cat Works" class="how-to-img">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2 class="cta-title">Try Selfie Cat Today <span class="highlight-text">FOR FREE!!</span></h2>
+            <p class="mb-4">Take perfect selfies every time</p>
+            <a href="https://apps.apple.com/us/app/selfie-cat/id1071984720">
+                <img src="appstore_badge.svg" alt="Download on App Store" class="app-store-badge">
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-links mb-3">
+                <a href="https://www.privacypolicies.com/live/68fce540-fa44-4de3-926f-314b56e70c3d">Privacy Policy</a> |
+                <a
+                    href="https://docs.google.com/forms/d/e/1FAIpQLSdPD9G6UDUUZj2o-GIi1f8Jt0JKzfCoWsoYETwDDPhH7Uv-2g/viewform">Contact
+                    Support</a>
+            </div>
+            <p>Copyright © 2025 Selfie Cat. Made with ❤️</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <!-- Internationalization Script -->
+    <script>
+        const translations = {
+            en: {
+                features: "Features",
+                howItWorks: "How It Works",
+                heroTitle: "Snap Purr-fect Selfies with Your Cat! 🐱📸",
+                heroSubtitle: "Turn playtime into priceless memories! Selfie Cat captures adorable selfies of your furry friend as they interact with fun, on-screen toys. Ready to make your cat a superstar?",
+                amazingFeatures: "Amazing Features",
+                playtimeFun: "Playtime Fun",
+                autoSnapMagic: "Auto-Snap Magic",
+                shareCuteness: "Share the Cuteness",
+                howSelfieWorks: "How Selfie Cat Works",
+                step1: "Pick a Toy",
+                step2: "Let Your Cat Play",
+                step3: "Snap & Save",
+                step4: "Share the Fun",
+                tryToday: "Try Selfie Cat Today",
+                forFree: "FOR FREE!!",
+                playtimeFunDesc: "Laser pointers, bouncing balls, colorful fireworks, and swimming fish! Selfie Cat keeps your feline entertained with exciting digital toys designed to grab their attention.",
+                autoSnapMagicDesc: "Your cat taps, we snap! Selfie Cat automatically takes a photo every time your cat touches the screen—no extra effort needed!",
+                shareCutenessDesc: "Show off your kitty's best moments! Easily save and share your cat's hilarious and heartwarming selfies with friends on social media.",
+                step1Desc: "Choose from four fun-filled toys: Laser Pointer, Balls, Fireworks, or Fishes.",
+                step2Desc: "Place your device in front of your cat and watch them interact with the screen.",
+                step3Desc: "Every tap triggers a selfie—capture their cutest reactions effortlessly!",
+                step4Desc: "Spread the joy by posting your cat's best snapshots online!"
+            },
+            ar: {
+                features: "المميزات",
+                howItWorks: "كيف يعمل",
+                heroTitle: "التقط صور سيلفي مثالية مع قطتك! 🐱📸",
+                heroSubtitle: "حول وقت اللعب إلى ذكريات ثمينة! يلتقط Selfie Cat صوراً ذاتية رائعة لصديقك الفروي أثناء تفاعله مع الألعاب الممتعة على الشاشة. هل أنت مستعد لجعل قطتك نجمة؟",
+                amazingFeatures: "مميزات رائعة",
+                playtimeFun: "متعة وقت اللعب",
+                autoSnapMagic: "التقاط تلقائي سحري",
+                shareCuteness: "شارك اللحظات الجميلة",
+                howSelfieWorks: "كيف يعمل Selfie Cat",
+                step1: "اختر لعبة",
+                step2: "دع قطتك تلعب",
+                step3: "التقط واحفظ",
+                step4: "شارك المرح",
+                tryToday: "جرب Selfie Cat اليوم",
+                forFree: "مجاناً!!",
+                playtimeFunDesc: "مؤشرات الليزر، والكرات المتحركة، والألعاب النارية الملونة، والأسماك السابحة! يحافظ Selfie Cat على تسلية قطتك بألعاب رقمية مثيرة مصممة لجذب انتباههم.",
+                autoSnapMagicDesc: "قطتك تلمس، نحن نلتقط! يلتقط Selfie Cat صورة تلقائياً في كل مرة تلمس فيها قطتك الشاشة - لا حاجة لمجهود إضافي!",
+                shareCutenessDesc: "اعرض أفضل لحظات قطتك! احفظ وشارك صور قطتك المضحكة والمؤثرة مع الأصدقاء على وسائل التواصل الاجتماعي بسهولة.",
+                step1Desc: "اختر من بين أربع ألعاب ممتعة: مؤشر الليزر، الكرات، الألعاب النارية، أو الأسماك.",
+                step2Desc: "ضع جهازك أمام قطتك وشاهدها تتفاعل مع الشاشة.",
+                step3Desc: "كل لمسة تلتقط صورة ذاتية - التقط أجمل ردود أفعالهم بسهولة!",
+                step4Desc: "انشر البهجة من خلال نشر أفضل لقطات قطتك على الإنترنت!"
+            },
+            da: {
+                features: "Funktioner",
+                howItWorks: "Sådan virker det",
+                heroTitle: "Tag purr-fekte selfies med din kat! 🐱📸",
+                heroSubtitle: "Forvandl legetid til dyrebare minder! Selfie Cat tager søde selfies af din pelsede ven, mens de leger med sjove skærmlegetøj. Er du klar til at gøre din kat til en superstjerne?",
+                amazingFeatures: "Fantastiske funktioner",
+                playtimeFun: "Sjov legetid",
+                autoSnapMagic: "Auto-snap magi",
+                shareCuteness: "Del sødheden",
+                howSelfieWorks: "Sådan fungerer Selfie Cat",
+                step1: "Vælg et legetøj",
+                step2: "Lad din kat lege",
+                step3: "Tag billeder og gem",
+                step4: "Del sjoven",
+                tryToday: "Prøv Selfie Cat i dag",
+                forFree: "GRATIS!!",
+                playtimeFunDesc: "Laserpegere, hoppende bolde, farverigt fyrværkeri og svømmende fisk! Selfie Cat holder din kat underholdt med spændende digitalt legetøj designet til at fange deres opmærksomhed.",
+                autoSnapMagicDesc: "Din kat rører, vi tager billedet! Selfie Cat tager automatisk et foto hver gang din kat rører skærmen - ingen ekstra indsats nødvendig!",
+                shareCutenessDesc: "Vis din kats bedste øjeblikke frem! Gem og del nemt din kats sjove og hjertevarmende selfies med venner på sociale medier.",
+                step1Desc: "Vælg mellem fire sjove legetøj: Laserpeger, Bolde, Fyrværkeri eller Fisk.",
+                step2Desc: "Placer din enhed foran din kat og se dem interagere med skærmen.",
+                step3Desc: "Hvert tryk udløser en selfie—fang deres sødeste reaktioner uden besvær!",
+                step4Desc: "Del glæden ved at dele din kats bedste øjeblikke online!"
+            },
+            fr: {
+                features: "Fonctionnalités",
+                howItWorks: "Comment ça marche",
+                heroTitle: "Prenez des selfies parfaits avec votre chat ! 🐱📸",
+                heroSubtitle: "Transformez le temps de jeu en souvenirs précieux ! Selfie Cat capture d'adorables selfies de votre ami à fourrure pendant qu'il joue avec des jouets interactifs à l'écran. Prêt à faire de votre chat une superstar ?",
+                amazingFeatures: "Fonctionnalités incroyables",
+                playtimeFun: "Plaisir du jeu",
+                autoSnapMagic: "Magie de la capture automatique",
+                shareCuteness: "Partagez la mignonnerie",
+                howSelfieWorks: "Comment fonctionne Selfie Cat",
+                step1: "Choisissez un jouet",
+                step2: "Laissez votre chat jouer",
+                step3: "Prenez et sauvegardez",
+                step4: "Partagez le plaisir",
+                tryToday: "Essayez Selfie Cat aujourd'hui",
+                forFree: "GRATUIT !!",
+                playtimeFunDesc: "Pointeurs laser, balles rebondissantes, feux d'artifice colorés et poissons nageants ! Selfie Cat divertit votre félin avec des jouets numériques passionnants conçus pour capter leur attention.",
+                autoSnapMagicDesc: "Votre chat touche, nous capturons ! Selfie Cat prend automatiquement une photo chaque fois que votre chat touche l'écran - aucun effort supplémentaire nécessaire !",
+                shareCutenessDesc: "Montrez les meilleurs moments de votre chat ! Sauvegardez et partagez facilement les selfies hilarants et touchants de votre chat avec vos amis sur les réseaux sociaux.",
+                step1Desc: "Choisissez parmi quatre jouets amusants : Pointeur Laser, Balles, Feux d'artifice ou Poissons.",
+                step2Desc: "Placez votre appareil devant votre chat et regardez-le interagir avec l'écran.",
+                step3Desc: "Chaque toucher déclenche un selfie—capturez leurs plus mignonnes réactions sans effort !",
+                step4Desc: "Partagez la joie en publiant les meilleurs clichés de votre chat en línea !"
+            },
+            de: {
+                features: "Funktionen",
+                howItWorks: "So funktioniert's",
+                heroTitle: "Mache purr-fekte Selfies mit deiner Katze! 🐱📸",
+                heroSubtitle: "Verwandle Spielzeit in kostbare Erinnerungen! Selfie Cat macht niedliche Selfies von deinem pelzigen Freund, während er mit lustigen Bildschirmspielzeugen interagiert. Bereit, deine Katze zum Superstar zu machen?",
+                amazingFeatures: "Tolle Funktionen",
+                playtimeFun: "Spielspaß",
+                autoSnapMagic: "Auto-Snap Magie",
+                shareCuteness: "Teile die Niedlichkeit",
+                howSelfieWorks: "So funktioniert Selfie Cat",
+                step1: "Wähle ein Spielzeug",
+                step2: "Lass deine Katze spielen",
+                step3: "Fotografiere und speichere",
+                step4: "Teile den Spaß",
+                tryToday: "Probiere Selfie Cat heute aus",
+                forFree: "KOSTENLOS!!",
+                step1Desc: "Wähle aus vier lustigen Spielzeugen: Laserpointer, Bälle, Feuerwerk oder Fische.",
+                step2Desc: "Platziere dein Gerät vor deiner Katze und beobachte, wie sie mit dem Bildschirm interagiert.",
+                step3Desc: "Jede Berührung löst ein Selfie aus—fange ihre süßesten Reaktionen mühelos ein!",
+                step4Desc: "Teile die Freude, indem du die besten Schnappschüsse deiner Katze online postest!"
+            },
+            id: {
+                features: "Fitur",
+                howItWorks: "Cara Kerja",
+                heroTitle: "Ambil Selfie Sempurna dengan Kucingmu! 🐱📸",
+                heroSubtitle: "Ubah waktu bermain menjadi kenangan berharga! Selfie Cat mengambil foto selfie lucu dari teman berbulumu saat mereka berinteraksi dengan mainan menyenangkan di layar. Siap membuat kucingmu menjadi bintang?",
+                amazingFeatures: "Fitur Menakjubkan",
+                playtimeFun: "Kesenangan Bermain",
+                autoSnapMagic: "Sihir Foto Otomatis",
+                shareCuteness: "Bagikan Keimutan",
+                howSelfieWorks: "Cara Kerja Selfie Cat",
+                step1: "Pilih Mainan",
+                step2: "Biarkan Kucingmu Bermain",
+                step3: "Ambil & Simpan",
+                step4: "Bagikan Keseruan",
+                tryToday: "Coba Selfie Cat Hari Ini",
+                forFree: "GRATIS!!",
+                step1Desc: "Pilih dari empat mainan seru: Pointer Laser, Bola, Kembang Api, atau Ikan.",
+                step2Desc: "Letakkan perangkat Anda di depan kucing dan lihat mereka berinteraksi dengan layar.",
+                step3Desc: "Setiap sentuhan memicu selfie—tangkap reaksi termanis mereka dengan mudah!",
+                step4Desc: "Sebarkan kegembiraan dengan memposting foto-foto terbaik kucing Anda secara online!"
+            },
+            it: {
+                features: "Funzionalità",
+                howItWorks: "Come funziona",
+                heroTitle: "Scatta selfie purr-fetti con il tuo gatto! 🐱📸",
+                heroSubtitle: "Trasforma il momento del gioco in ricordi preziosi! Selfie Cat cattura adorabili selfie del tuo amico peloso mentre interagisce con divertenti giocattoli sullo schermo. Pronto a rendere il tuo gatto una superstar?",
+                amazingFeatures: "Funzionalità incredibili",
+                playtimeFun: "Divertimento nel gioco",
+                autoSnapMagic: "Magia dello scatto automatico",
+                shareCuteness: "Condividi la tenerezza",
+                howSelfieWorks: "Come funziona Selfie Cat",
+                step1: "Scegli un giocattolo",
+                step2: "Lascia giocare il tuo gatto",
+                step3: "Scatta e salva",
+                step4: "Condividi il divertimento",
+                tryToday: "Prova Selfie Cat oggi",
+                forFree: "GRATIS!!",
+                step1Desc: "Scegli tra quattro giocattoli divertenti: Puntatore Laser, Palline, Fuochi d'Artificio o Pesci.",
+                step2Desc: "Posiziona il tuo dispositivo davanti al tuo gatto e osservalo interagire con lo schermo.",
+                step3Desc: "Ogni tocco attiva un selfie—cattura le loro reazioni più dolci senza sforzo!",
+                step4Desc: "Condividi la gioia pubblicando online gli scatti migliori del tuo gatto!"
+            },
+            ko: {
+                features: "기능",
+                howItWorks: "사용 방법",
+                heroTitle: "고양이와 함께 완벽한 셀카를 찍어보세요! 🐱📸",
+                heroSubtitle: "놀이 시간을 소중한 추억으로 만들어보세요! Selfie Cat은 귀여운 친구가 화면의 재미있는 장난감과 놀 때 자동으로 셀카를 찍습니다. 당신의 고양이를 스타로 만들 준비가 되셨나요?",
+                amazingFeatures: "놀라운 기능",
+                playtimeFun: "즐거운 놀이 시간",
+                autoSnapMagic: "자동 촬영 매직",
+                shareCuteness: "귀여움 공유하기",
+                howSelfieWorks: "Selfie Cat 사용법",
+                step1: "장난감 선택하기",
+                step2: "고양이가 놀게 하기",
+                step3: "촬영하고 저장하기",
+                step4: "즐거움 공유하기",
+                tryToday: "지금 Selfie Cat을 사용해보세요",
+                forFree: "무료!!",
+                step1Desc: "네 가지 재미있는 장난감 중 선택하세요: 레이저 포인터, 공, 불꽃놀이, 또는 물고기.",
+                step2Desc: "기기를 고양이 앞에 놓고 화면과 상호작용하는 모습을 지켜보세요.",
+                step3Desc: "터치할 때마다 셀카를 찍어—가장 귀여운 반응을 쉽게 포착하세요!",
+                step4Desc: "고양이의 최고의 순간을 온라인에 공유하여 즐거움을 나누세요!"
+            },
+            'zh-CN': {
+                features: "功能特色",
+                howItWorks: "使用方法",
+                heroTitle: "与你的猫咪自拍！🐱📸",
+                heroSubtitle: "将游戏时光变成珍贵回忆！Selfie Cat 在您的猫咪与有趣的屏幕玩具互动时，自动捕捉可爱的自拍照。准备让您的猫咪成为明星了吗？",
+                amazingFeatures: "精彩功能",
+                playtimeFun: "趣味游戏",
+                autoSnapMagic: "自动拍摄",
+                shareCuteness: "分享可爱",
+                howSelfieWorks: "如何使用 Selfie Cat",
+                step1: "选择玩具",
+                step2: "让猫咪玩耍",
+                step3: "拍摄并保存",
+                step4: "分享乐趣",
+                tryToday: "立即试用 Selfie Cat",
+                forFree: "免费！！",
+                playtimeFunDesc: "激光笔、弹跳球、缤纷烟火和游泳的鱼！Selfie Cat 通过专门设计的数字玩具吸引猫咪注意力，让它们开心玩耍。",
+                autoSnapMagicDesc: "猫咪触碰屏幕，我们就拍照！Selfie Cat 会在每次猫咪触碰屏幕时自动拍照—完全不需要额外操作！",
+                shareCutenessDesc: "展示猫咪最棒的时刻！轻松保存并在社交媒体上与朋友分享猫咪有趣又暖心的自拍照。",
+                step1Desc: "从四种有趣的玩具中选择：激光笔、弹跳球、烟火或游鱼。",
+                step2Desc: "将设备放在猫咪面前，观察它们与屏幕互动。",
+                step3Desc: "每次触碰都会自动拍照—轻松捕捉最可爱的反应！",
+                step4Desc: "在网络上分享猫咪最棒的照片，传播欢乐！"
+            },
+            zh: {
+                features: "功能特色",
+                howItWorks: "使用方式",
+                heroTitle: "與你的貓咪自拍！🐱📸",
+                heroSubtitle: "將遊戲時光變成珍貴回憶！Selfie Cat 在您的貓咪與有趣的螢幕玩具互動時，自動捕捉可愛的自拍照。準備讓您的貓咪成為明星了嗎？",
+                amazingFeatures: "精彩功能",
+                playtimeFun: "趣味遊戲",
+                autoSnapMagic: "自動拍攝",
+                shareCuteness: "分享可愛",
+                howSelfieWorks: "如何使用 Selfie Cat",
+                step1: "選擇玩具",
+                step2: "讓貓咪玩耍",
+                step3: "拍攝並儲存",
+                step4: "分享樂趣",
+                tryToday: "立即試用 Selfie Cat",
+                forFree: "免費！！",
+                playtimeFunDesc: "雷射筆、彈跳球、繽紛煙火和游泳的魚！Selfie Cat 透過專門設計的數位玩具吸引貓咪注意力，讓牠們開心玩耍。",
+                autoSnapMagicDesc: "貓咪碰觸螢幕，我們就拍照！Selfie Cat 會在每次貓咪碰觸螢幕時自動拍照—完全不需要額外操作！",
+                shareCutenessDesc: "展示貓咪最棒的時刻！輕鬆儲存並在社群媒體上與朋友分享貓咪有趣又暖心的自拍照。",
+                step1Desc: "從四種有趣的玩具中選擇：雷射筆、彈跳球、煙火或游魚。",
+                step2Desc: "將設備放在貓咪面前，觀察牠們與螢幕互動。",
+                step3Desc: "每次觸碰都會自動拍照—輕鬆捕捉最可愛的反應！",
+                step4Desc: "在網路上分享貓咪最棒的照片，傳播歡樂！"
+            },
+            es: {
+                features: "Características",
+                howItWorks: "Cómo funciona",
+                heroTitle: "¡Toma selfies purr-fectos con tu gato! 🐱📸",
+                heroSubtitle: "¡Convierte el tiempo de juego en recuerdos invaluables! Selfie Cat captura adorables selfies de tu amigo peludo mientras interactúa con divertidos juguetes en pantalla. ¿Listo para hacer de tu gato una superestrella?",
+                amazingFeatures: "Características increíbles",
+                playtimeFun: "Diversión en el juego",
+                autoSnapMagic: "Magia de captura automática",
+                shareCuteness: "Comparte la ternura",
+                howSelfieWorks: "Cómo funciona Selfie Cat",
+                step1: "Elige un juguete",
+                step2: "Deja que tu gato juegue",
+                step3: "Captura y guarda",
+                step4: "Comparte la diversión",
+                tryToday: "Prueba Selfie Cat hoy",
+                forFree: "¡¡GRATIS!!",
+                playtimeFunDesc: "¡Punteros láser, pelotas que rebotan, feux d'artifice colorés y peces nadando! Selfie Cat mantiene a tu felino entretenido con juguetes digitales emocionantes diseñados para captar su atención.",
+                autoSnapMagicDesc: "¡Tu gato toca, nosotros capturamos! Selfie Cat toma automáticamente una foto cada vez que tu gato toca la pantalla, ¡sin esfuerzo adicional!",
+                shareCutenessDesc: "¡Muestra los mejores momentos de tu gatito! Guarda y comparte fácilmente los selfies divertidos y conmovedores de tu gato con amigos en redes sociales.",
+                step1Desc: "Elige entre cuatro divertidos juguetes: Puntero Láser, Pelotas, Fuegos Artificiales o Peces.",
+                step2Desc: "Coloca tu dispositivo frente a tu gato y observa cómo interactúa con la pantalla.",
+                step3Desc: "¡Cada toque activa un selfie—captura sus reacciones más adorables sin esfuerzo!",
+                step4Desc: "¡Comparte la alegría publicando las mejores fotos de tu gato en línea!"
+            },
+            th: {
+                features: "คุณสมบัติ",
+                howItWorks: "วิธีการทำงาน",
+                heroTitle: "ถ่ายเซลฟี่สุดเพอร์เฟคกับแมวของคุณ! 🐱📸",
+                heroSubtitle: "เปลี่ยนเวลาเล่นให้เป็นความทรงจำอันล้ำค่า! Selfie Cat จับภาพเซลฟี่น่ารักๆ ของเพื่อนขนฟูของคุณขณะที่พวกเขาเล่นกับของเล่นบนหน้าจอ พร้อมที่จะทำให้แมวของคุณเป็นซูเปอร์สตาร์หรือยัง?",
+                amazingFeatures: "คุณสมบัติที่น่าทึ่ง",
+                playtimeFun: "ความสนุกในการเล่น",
+                autoSnapMagic: "เวทมนตร์ถ่ายภาพอัตโนมัติ",
+                shareCuteness: "แบ่งปันความน่ารัก",
+                howSelfieWorks: "วิธีการทำงานของ Selfie Cat",
+                step1: "เลือกของเล่น",
+                step2: "ให้แมวของคุณเล่น",
+                step3: "ถ่ายและบันทึก",
+                step4: "แบ่งปันความสุข",
+                tryToday: "ลอง Selfie Cat วันนี้",
+                forFree: "ฟรี!!",
+                playtimeFunDesc: "เลเซอร์พอยเตอร์ ลูกบอลกระเด้ง ดอกไม้ไฟสีสันสดใส และปลาว่ายน้ำ! Selfie Cat ทำให้แมวของคุณเพลิดเพลินด้วยของเล่นดิจิทัลที่น่าตื่นเต้นที่ออกแบบมาเพื่อดึงดูดความสนใจของพวกเขา",
+                autoSnapMagicDesc: "แมวของคุณแตะ เราถ่าย! Selfie Cat ถ่ายภาพโดยอัตโนมัติทุกครั้งที่แมวของคุณแตะหน้าจอ—ไม่ต้องใช้ความพยายามเพิ่มเติม!",
+                shareCutenessDesc: "อวดช่วงเวลาที่ดีที่สุดของแมวของคุณ! บันทึกและแชร์เซลฟี่ที่น่าขำและอบอุ่นของแมวของคุณกับเพื่อนๆ บนโซเชียลมีเดียได้อย่างง่ายดาย",
+                step1Desc: "เลือกจากของเล่นสนุกๆ 4 แบบ: เลเซอร์พอยเตอร์, ลูกบอล, ดอกไม้ไฟ หรือปลา",
+                step2Desc: "วางอุปกรณ์ของคุณไว้ตรงหน้าแมวและดูพวกเขาโต้ตอบกับหน้าจอ",
+                step3Desc: "ทุกการแตะจะถ่ายภาพ—จับภาพการตอบสนองที่น่ารักที่สุดของพวกเขาได้อย่างง่ายดาย!",
+                step4Desc: "แบ่งปันความสุขด้วยการโพสต์ภาพถ่ายที่ดีที่สุดของแมวของคุณออนไลน์!"
+            },
+            vi: {
+                features: "Tính năng",
+                howItWorks: "Cách hoạt động",
+                heroTitle: "Chụp ảnh tự sướng hoàn hảo với mèo của bạn! 🐱📸",
+                heroSubtitle: "Biến giờ chơi thành kỷ niệm quý giá! Selfie Cat tự động chụp những bức ảnh tự sướng đáng yêu của người bạn lông xù khi họ tương tác với đồ chơi thú vị trên màn hình. Sẵn sàng biến mèo của bạn thành ngôi sao chưa?",
+                amazingFeatures: "Tính năng tuyệt vời",
+                playtimeFun: "Niềm vui giờ chơi",
+                autoSnapMagic: "Phép màu chụp tự động",
+                shareCuteness: "Chia sẻ sự đáng yêu",
+                howSelfieWorks: "Cách Selfie Cat hoạt động",
+                step1: "Chọn đồ chơi",
+                step2: "Để mèo chơi",
+                step3: "Chụp & Lưu",
+                step4: "Chia sẻ niềm vui",
+                tryToday: "Thử Selfie Cat ngay hôm nay",
+                forFree: "MIỄN PHÍ!!",
+                playtimeFunDesc: "Đèn laser, bóng nảy, pháo hoa đầy màu sắc và cá bơi! Selfie Cat giữ cho mèo của bạn giải trí với những món đồ chơi kỹ thuật số thú vị được thiết kế để thu hút sự chú ý của chúng.",
+                autoSnapMagicDesc: "Mèo của bạn chạm, chúng tôi chụp! Selfie Cat tự động chụp ảnh mỗi khi mèo của bạn chạm vào màn hình—không cần thêm nỗ lực nào!",
+                shareCutenessDesc: "Khoe những khoảnh khắc đẹp nhất của mèo bạn! Dễ dàng lưu và chia sẻ những bức ảnh tự sướng vui nhộn và ấm áp của mèo với bạn bè trên mạng xã hội.",
+                step1Desc: "Chọn từ bốn đồ chơi thú vị: Đèn Laser, Bóng, Pháo Hoa, hoặc Cá.",
+                step2Desc: "Đặt thiết bị trước mặt mèo và xem chúng tương tác với màn hình.",
+                step3Desc: "Mỗi lần chạm sẽ chụp một ảnh tự sướng—bắt trọn những phản ứng đáng yêu nhất của chúng một cách dễ dàng!",
+                step4Desc: "Lan tỏa niềm vui bằng cách đăng những bức ảnh đẹp nhất của mèo lên mạng!"
+            },
+            ja: {
+                features: "機能",
+                howItWorks: "使い方",
+                heroTitle: "愛猫と自撮りしよう！🐱📸",
+                heroSubtitle: "遊び時間を素敵な思い出に！Selfie Catは、猫ちゃんが画面上の楽しいおもちゃで遊んでいる時に、自動的にかわいい自撮り写真を撮影します。あなたの猫をスターにしませんか？",
+                amazingFeatures: "素晴らしい機能",
+                playtimeFun: "楽しい遊び時間",
+                autoSnapMagic: "自動撮影",
+                shareCuteness: "かわいさをシェア",
+                howSelfieWorks: "Selfie Catの使い方",
+                step1: "おもちゃを選ぶ",
+                step2: "猫に遊ばせる",
+                step3: "撮影して保存",
+                step4: "楽しさをシェア",
+                tryToday: "今すぐSelfie Catを試す",
+                forFree: "無料！！",
+                playtimeFunDesc: "レーザーポインター、跳ねるボール、カラフルな花火、泳ぐ魚！Selfie Catは、猫の注目を集めるように設計された楽しいデジタルおもちゃで愛猫を楽しませます。",
+                autoSnapMagicDesc: "猫が触れると、自動で撮影！Selfie Catは猫が画面に触れるたびに自動的に写真を撮影します—余分な手間は必要ありません！",
+                shareCutenessDesc: "愛猫のベストショットを披露しましょう！面白くて心温まる猫の自撮り写真をSNSで友達と簡単に共有できます。",
+                step1Desc: "4つの楽しいおもちゃから選択：レーザーポインター、ボール、花火、または魚。",
+                step2Desc: "デバイスを猫の前に置いて、画面との対話を楽しみましょう。",
+                step3Desc: "タッチするたびに自撮り—かわいい反応を簡単にキャプチャ！",
+                step4Desc: "猫の最高の瞬間をオンラインで共有して、喜びを広めましょう！"
+            }
+        };
+
+        function changeLanguage(lang) {
+            // Store the selected language in localStorage
+            localStorage.setItem('preferredLanguage', lang);
+
+            // Update text content
+            document.querySelector('a[href="#features"]').textContent = translations[lang].features;
+            document.querySelector('a[href="#how-it-works"]').textContent = translations[lang].howItWorks;
+            document.querySelector('.hero-title').textContent = translations[lang].heroTitle;
+            document.querySelector('.hero-subtitle').textContent = translations[lang].heroSubtitle;
+            document.querySelector('.section-title').textContent = translations[lang].amazingFeatures;
+
+            // Update feature cards
+            const featureCards = document.querySelectorAll('.feature-card h3');
+            featureCards[0].textContent = `🎾 ${translations[lang].playtimeFun}`;
+            featureCards[1].textContent = `📸 ${translations[lang].autoSnapMagic}`;
+            featureCards[2].textContent = `🌟 ${translations[lang].shareCuteness}`;
+
+            // Update feature cards content
+            const featureCardsContent = document.querySelectorAll('.feature-card');
+            const featureTexts = [
+                translations[lang].playtimeFunDesc,
+                translations[lang].autoSnapMagicDesc,
+                translations[lang].shareCutenessDesc
+            ];
+
+            featureCardsContent.forEach((card, index) => {
+                card.querySelector('p').textContent = featureTexts[index];
+            });
+
+            // Update How It Works section
+            document.querySelector('#how-it-works .section-title').textContent = translations[lang].howSelfieWorks;
+
+            // Update steps
+            const steps = document.querySelectorAll('.step-block');
+            steps.forEach((step, index) => {
+                const stepNumber = index + 1;
+                step.querySelector('h3').textContent = `${['1️⃣', '2️⃣', '3️⃣', '4️⃣'][index]} ${translations[lang]['step' + stepNumber]}`;
+                step.querySelector('p').textContent = translations[lang]['step' + stepNumber + 'Desc'];
+            });
+
+            // Update CTA section
+            document.querySelector('.cta-title').innerHTML = `${translations[lang].tryToday} <span class="highlight-text">${translations[lang].forFree}</span>`;
+        }
+
+        // Set initial language based on stored preference or browser language
+        document.addEventListener('DOMContentLoaded', () => {
+            const storedLang = localStorage.getItem('preferredLanguage');
+            const browserLang = navigator.language.split('-')[0];
+            const initialLang = storedLang || (translations[browserLang] ? browserLang : 'en');
+            changeLanguage(initialLang);
+        });
+    </script>
+</body>
+
+</html>

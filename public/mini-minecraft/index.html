@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Three.js</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+        }
+        
+        #ui {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        #ui h2 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        #ui p {
+            margin: 5px 0;
+            line-height: 1.6;
+        }
+        
+        #crosshair {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            pointer-events: none;
+            z-index: 99;
+        }
+        
+        #crosshair::before,
+        #crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        #crosshair::before {
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+        }
+        
+        #crosshair::after {
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            height: 2px;
+        }
+        
+        #selected-block {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+    </style>
+  <script type="module" crossorigin src="/mini-minecraft/assets/index-DvfX64tW.js"></script>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <div id="crosshair"></div>
+    <div id="ui">
+        <h2>控制說明</h2>
+        <p><strong>WASD</strong> - 移動</p>
+        <p><strong>滑鼠</strong> - 視角</p>
+        <p><strong>空格</strong> - 跳躍</p>
+        <p><strong>滑鼠左鍵</strong> - 破壞方塊</p>
+        <p><strong>滑鼠右鍵</strong> - 放置方塊</p>
+        <p><strong>1-9</strong> - 選擇方塊類型</p>
+        <p><strong>ESC</strong> - 解鎖滑鼠</p>
+    </div>
+    <div id="selected-block">
+        選中方塊: <span id="block-type">草地</span>
+    </div>
+</body>
+</html>
+

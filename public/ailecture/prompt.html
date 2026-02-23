@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>資源中心</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7672088727567232"
+     crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+
+        .header {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .section-title {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        .content-card {
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #f1f8ff;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+        }
+
+        .link-card {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .link-card a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .prompt-example {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .copy-btn {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-left: 10px;
+        }
+
+        .copy-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+
+        .toast {
+            background-color: #198754;
+            color: white;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .nav-tabs .nav-link.active {
+            font-weight: bold;
+            background-color: #f1f8ff;
+        }
+
+        @media (max-width: 768px) {
+            .copy-btn {
+                top: 5px;
+                right: 5px;
+                padding: 3px 6px;
+                font-size: 0.8rem;
+            }
+
+            pre {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header text-center">
+            <h1>AI 資源中心</h1>
+            <p class="lead">課程資料與提示範例</p>
+        </div>
+
+        <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="ppt-tab" data-bs-toggle="tab" data-bs-target="#ppt" type="button"
+                    role="tab" aria-controls="ppt" aria-selected="true">PPT</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="gpt-basic-tab" data-bs-toggle="tab" data-bs-target="#gpt-basic"
+                    type="button" role="tab" aria-controls="gpt-basic" aria-selected="false">GPT基本應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="knowledge-tab" data-bs-toggle="tab" data-bs-target="#knowledge"
+                    type="button" role="tab" aria-controls="knowledge" aria-selected="false">企業知識庫應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="video-tab" data-bs-toggle="tab" data-bs-target="#video" type="button"
+                    role="tab" aria-controls="video" aria-selected="false">影片生成應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="music-tab" data-bs-toggle="tab" data-bs-target="#music" type="button"
+                    role="tab" aria-controls="music" aria-selected="false">音樂生成應用</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="agent-tab" data-bs-toggle="tab" data-bs-target="#agent" type="button"
+                    role="tab" aria-controls="agent" aria-selected="false">AI agent</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+            <!-- PPT Section -->
+            <div class="tab-pane fade show active" id="ppt" role="tabpanel" aria-labelledby="ppt-tab">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card">
+                            <div class="card-body link-card">
+                                <div>
+                                    <h4>AI 簡報資料</h4>
+                                    <p class="text-muted mb-0">Gamma 簡報線上檢視</p>
+                                </div>
+                                <a href="https://gamma.app/docs/AI--rsp0z50i1afsy65" target="_blank"
+                                    class="btn btn-primary text-white">
+                                    <i class="fas fa-external-link-alt me-2"></i>開啟簡報
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GPT Basic Section -->
+            <div class="tab-pane fade" id="gpt-basic" role="tabpanel" aria-labelledby="gpt-basic-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+                <!-- Move all existing prompt examples here -->
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>商業合作邀請</span>
+                                <button class="copy-btn" data-content="example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="example1">Subject: Partnership Opportunity in High-Quality Casting Solutions
+Dear Mr. James Richardson,
+I hope this email finds you well. I am reaching out to introduce CastTech Industries, a leading provider of precision casting solutions with a strong reputation for quality and reliability.
+With years of experience in the traditional casting industry, we specialize in investment casting, sand casting, and die casting, catering to a wide range of industries, including automotive, aerospace, and industrial machinery.
+We would love the opportunity to explore potential collaboration and discuss how our expertise can support your manufacturing needs. Please let us know a convenient time for a meeting or a call at your earliest convenience.
+Looking forward to your response.
+Best regards,
+Michael Harrison
+Business Development Manager
+CastTech Industries
+📞 +1 (312) 555-7890
+📧 michael.harrison@casttech.com
+🌐 www.casttech.com</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>展會邀請</span>
+                                <button class="copy-btn" data-content="example2">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="example2">Subject: Exclusive Invitation: Meet Us at Metal Expo 2025
+Dear Ms. Linda Collins,
+We are pleased to invite you to visit our booth at Metal Expo 2025, taking place at Chicago Convention Center from March 10–12, 2025. As a leading manufacturer in the traditional casting industry, we will be showcasing our latest innovations in high-precision metal casting and advanced alloy solutions.
+This will be a great opportunity to discuss your business needs and explore how our high-quality casting solutions can benefit your production processes. Our team of experts will be available to provide insights and answer any questions you may have.
+Please let us know if you would like to schedule a dedicated meeting during the event. We look forward to welcoming you at Booth #C21.
+Best regards,
+Daniel Thompson
+Sales Director
+Elite Castings Inc.
+📞 +1 (917) 555-2025
+📧 daniel.thompson@elitecastings.com
+🌐 www.elitecastings.com</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>鱗片石墨材料回覆信件提示</span>
+                                <button class="copy-btn" data-content="example5">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="example5">請撰寫一封回覆信，解釋 鱗片石墨 金鉛-385 的材質成分、抗拉強度，以及表面處理方式，並強調公司品質檢測流程。
+以下為產品參考資料：
+產品名稱
+鱗片石墨 金鉛-385
+產品說明
+鱗片石墨-385
+含碳量:85%以上
+特性
+單一產品
+化學成分
+FC固定碳量 88.38%
+ASH 灰 9.68%
+VOLATILE揮發分 1.94%
+MOISTURE水分 0.29%
+-325 MESH粒度 89.8%
+尺寸
+300目
+包裝方式
+20kg/袋
+用途
+1、耐火材料
+鱗片石墨廣泛用於治金工業的高級耐火材料與塗料。如鎂碳磚、坩堝等。軍事工業火工材料安定劑、冶煉工業脫硫增速劑、輕工業的鉛筆芯、電氣工業的碳刷、電池工業的電極、化肥工業的催化劑等。鱗片石墨經過深入加工，又可以生產出石墨乳，用於潤滑劑、脫模劑、拉絲劑、導電塗料等。還可以生產膨脹石墨，用於柔性石墨製品原料，如柔性石墨密封件及柔性石墨復材料製品等。
+2、塗料
+     鱗片石墨作為塗料的功能填料主要用於防腐塗料、防火塗料和導電塗料。
+作為防腐材料，它和炭黑、滑石粉及油料等製成的防鏽底漆，具有良好的耐化學品和溶劑腐蝕性能。
+ 
+用作防火填料的是可膨脹石墨，它是以天然石墨鱗片為原料，經化學或電化學處理而得到的一種石墨層間化合物。可膨脹石墨在受熱條件下，體積急劇膨脹(最高可達300倍)窒息了火焰，同時生成膨脹物，達到隔絕火焰，延遲或中斷火焰蔓延的作用，且本身不燃，柔軟性好，表面能高，炭化層強度好。但是膨脹體的體積和用量要選擇適宜。試驗表明，150um的顆粒、30%的膨脹倍數、5%的用量最為合適。
+鱗片石墨可直接作為碳類導電填料亦可製成復合導電填料用於導電塗料。但由於石墨鱗片的添加量較大，會使塗料的性能變脆而使其應用受到一定限制。因此，採取措施進一步提高石墨的導電性，有效降低石墨鱗片的添加量。
+備註說明
+性狀:外觀黑色,金屬光澤
+沸點:無
+密度:1.8g/ml
+溶解度:不溶於水
+粘度:固形狀</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>新聞稿</span>
+                                <button class="copy-btn" data-content="other-example9">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="other-example9">撰寫一份關於我們新型耐高溫鑄件的新聞稿，強調其工藝改進、材料優勢和市場應用。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>產品介紹</span>
+                                <button class="copy-btn" data-content="other-example16">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="other-example16">請撰寫一份產品介紹，介紹我們的【球墨鑄鐵閥體】，適用於【管道流體控制】，材質為【QT450-10】。請說明其高強度、耐腐蝕特性，以及精密加工帶來的密封性能優勢。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>市場營銷型介紹</span>
+                                <button class="copy-btn" data-content="other-example18">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="other-example18">請撰寫一份市場推廣文案，介紹我們的【高強度鋁合金鑄件】，強調其【輕量化設計】、【高精度加工】、【耐腐蝕性】，並適用於【汽車與航太產業】。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>產品應用案例</span>
+                                <button class="copy-btn" data-content="other-example19">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="other-example19">請撰寫一篇案例分享，描述我們的【耐高溫鑄鋼零件】如何在【發電廠渦輪機組】中發揮作用，提高耐熱壽命並減少維護成本。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Knowledge Base Section -->
+            <div class="tab-pane fade" id="knowledge" role="tabpanel" aria-labelledby="knowledge-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>研磨材料查詢</span>
+                                <button class="copy-btn" data-content="knowledge-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example1">有賣研磨材料嗎？</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>手提100研磨片產品說明</span>
+                                <button class="copy-btn" data-content="knowledge-example2">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example2">手提100研磨片可以詳細介紹說明一下嗎？</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>石川除渣劑產品說明</span>
+                                <button class="copy-btn" data-content="knowledge-example3">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example3">請詳細介紹說明一下 石川除渣劑 4號</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 4 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>鑄造材料產品列表</span>
+                                <button class="copy-btn" data-content="knowledge-example4">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="knowledge-example4">鑄造材料類型的產品有哪些？</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Generation Section -->
+            <div class="tab-pane fade" id="video" role="tabpanel" aria-labelledby="video-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>工業場景</span>
+                                <button class="copy-btn" data-content="video-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="video-example1">✅ 中文優化版：
+
+一座未來感十足的高度自動化智慧工廠，內部充滿機械臂、自動化輸送帶、AI 控制中心與閃爍的數據面板，機器人有條不紊地進行組裝作業，整個空間明亮整潔、充滿科幻科技氛圍。
+
+⸻
+
+✅ 英文優化版（如果是輸入給 AI 模型，建議用英文）：
+
+A highly automated futuristic smart factory, filled with robotic arms, automated conveyor belts, and an AI-controlled operations center. Digital dashboards display real-time data as 
+robots efficiently assemble products. The environment is clean, brightly lit, and exudes a sleek, high-tech, sci-fi atmosphere.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>自然風景</span>
+                                <button class="copy-btn" data-content="video-example2">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="video-example2">✅ 中文優化版：
+
+在夕陽餘暉的照耀下，一個被青翠山巒環繞的綠意盎然山谷，溫暖的金橘色陽光灑在草地與樹林上，空氣清新，遠處的山嵐輕柔飄渺，整個環境寧靜祥和、如詩如畫。
+
+⸻
+
+✅ 英文優化版（給 AI 模型用）：
+
+A lush green valley surrounded by gentle mountains, bathed in the warm golden-orange glow of the setting sun. The soft light reflects off the trees and grass, while distant mist gently floats between the hills. The atmosphere is serene, peaceful, and picturesque, evoking a sense of harmony with nature.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 3 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>城市景觀</span>
+                                <button class="copy-btn" data-content="video-example3">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre
+                                    id="video-example3">✅ 中文優化版：
+
+一個沐浴在陽光下的歐洲海港小鎮，色彩繽紛的石造房屋沿著蜿蜒的海岸排列，紅瓦屋頂在藍天映襯下格外鮮明，港口停泊著小型漁船與遊艇，海風輕拂，街道上人們悠閒地散步，整個小鎮洋溢著溫暖、寧靜的地中海風情。
+
+⸻
+
+✅ 英文優化版（給 AI 模型用）：
+
+A charming European seaside town bathed in sunlight. Colorful stone houses with red-tiled roofs line the winding coastline, glowing under a clear blue sky. Small fishing boats and yachts rest in the peaceful harbor, while gentle sea breezes sway the palm trees. Locals stroll along cobblestone streets, creating a warm and relaxed Mediterranean atmosphere.</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Music Generation Section -->
+            <div class="tab-pane fade" id="music" role="tabpanel" aria-labelledby="music-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>古典音樂</span>
+                                <button class="copy-btn" data-content="music-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="music-example1">19世紀浪漫主義風格的宏大古典交響樂，強烈的弦樂與銅管交織，展現宮廷盛宴般的華麗氛圍。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 2 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>搖滾音樂</span>
+                                <button class="copy-btn" data-content="music-example2">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="music-example2">節奏強烈、鼓點有力的現代搖滾樂，電吉他主導，帶有強烈能量與衝擊感，適合運動影片或動作場景。</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Agent Section -->
+            <div class="tab-pane fade" id="agent" role="tabpanel" aria-labelledby="agent-tab">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> 點擊右上角的複製按鈕可快速複製範例提示詞
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Example 1 -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card content-card prompt-example">
+                            <div class="card-header">
+                                <span>產品網站開發</span>
+                                <button class="copy-btn" data-content="agent-example1">
+                                    <i class="fas fa-copy"></i> 複製
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <pre id="agent-example1">
+產品名稱
+鱗片石墨 金鉛-285
+產品說明
+鱗片石墨-285
+含碳量: 90%以上
+特性
+單一產品
+化學成分
+FC固定碳量 91.26%
+ASH 灰 7.94%
+VOLATILE揮發分 1.25%
+MOISTURE水分 0.31%
+-200 MESH粒度 85.1%
+尺寸
+200目
+包裝方式
+25kg/袋 外加噸包。
+用途
+1、耐火材料
+鱗片石墨廣泛用於治金工業的高級耐火材料與塗料。如鎂碳磚、坩堝等。軍事工業火工材料安定劑、冶煉工業脫硫增速劑、輕工業的鉛筆芯、電氣工業的碳刷、電池工業的電極、化肥工業的催化劑等。鱗片石墨經過深入加工，又可以生產出石墨乳，用於潤滑劑、脫模劑、拉絲劑、導電塗料等。還可以生產膨脹石墨，用於柔性石墨製品原料，如柔性石墨密封件及柔性石墨復材料製品等。
+2、塗料
+     鱗片石墨作為塗料的功能填料主要用於防腐塗料、防火塗料和導電塗料。
+作為防腐材料，它和炭黑、滑石粉及油料等製成的防鏽底漆，具有良好的耐化學品和溶劑腐蝕性能。
+ 
+用作防火填料的是可膨脹石墨，它是以天然石墨鱗片為原料，經化學或電化學處理而得到的一種石墨層間化合物。可膨脹石墨在受熱條件下，體積急劇膨脹(最高可達300倍)窒息了火焰，同時生成膨脹物，達到隔絕火焰，延遲或中斷火焰蔓延的作用，且本身不燃，柔軟性好，表面能高，炭化層強度好。但是膨脹體的體積和用量要選擇適宜。試驗表明，150um的顆粒、30%的膨脹倍數、5%的用量最為合適。
+鱗片石墨可直接作為碳類導電填料亦可製成復合導電填料用於導電塗料。但由於石墨鱗片的添加量較大，會使塗料的性能變脆而使其應用受到一定限制。因此，採取措施進一步提高石墨的導電性，有效降低石墨鱗片的添加量。
+備註說明
+性狀:外觀黑色,金屬光澤
+沸點:無
+密度:1.8g/ml
+溶解度:不溶於水
+粘度:固形狀
+存放於通風乾燥處，防潮。
+
+製作說明：
+請使用html css javascript 製作一個
+一頁式的產品介紹網站</pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast for Copy Notification -->
+    <div class="toast-container">
+        <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas fa-check-circle me-2"></i> 已複製到剪貼簿！
+                </div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Copy to clipboard functionality
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function () {
+                    const contentId = this.getAttribute('data-content');
+                    const content = document.getElementById(contentId).textContent.trim();
+
+                    // Create temporary textarea
+                    const textarea = document.createElement('textarea');
+                    textarea.value = content;
+                    document.body.appendChild(textarea);
+
+                    // Select and copy the text
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        // Show toast notification
+                        const toastEl = document.querySelector('.toast');
+                        const toast = new bootstrap.Toast(toastEl, {
+                            delay: 2000
+                        });
+                        toast.show();
+                    } catch (err) {
+                        console.error('無法複製文字: ', err);
+                        alert('複製失敗，請手動選取文字進行複製。');
+                    }
+
+                    // Remove the temporary textarea
+                    document.body.removeChild(textarea);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

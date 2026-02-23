@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@layer base {
+  body {
+    @apply bg-background text-text-main font-sans antialiased;
+  }
+
+  ::selection {
+    @apply bg-primary/30 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-700 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-600;
+  }
+}
+
+@layer components {
+  /* 程式碼區塊容器：模擬編輯器視窗 */
+  .code-window {
+    @apply bg-[#1a1b26] rounded-lg border border-slate-700/50 overflow-hidden;
+  }
+
+  .code-window-header {
+    @apply flex items-center gap-2 px-4 py-3 bg-[#16161e] border-b border-slate-700/50;
+  }
+
+  .code-window-dot {
+    @apply w-3 h-3 rounded-full;
+  }
+
+  /* 發光卡片效果 */
+  .glow-card {
+    @apply relative bg-card border border-slate-700/50 rounded-xl p-6
+           transition-all duration-300 cursor-pointer;
+  }
+
+  .glow-card:hover {
+    @apply border-primary/50;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.1);
+  }
+
+  /* 漸層文字 */
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary via-syntax-purple to-syntax-green;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

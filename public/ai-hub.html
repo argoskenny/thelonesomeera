@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="description" content="AI Demo Hub - 整合 signuptest、solarsystem、earthmoonsystem 的示範頁面">
+  <title>AI Demo Hub | The Lonesome Era</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/favicon.ico">
+  <style>
+    /* 簡約側邊欄佈局樣式 */
+    body { margin: 0; padding: 0; }
+    .main-content { padding-top: 0 !important; }
+    
+    /* 側邊欄樣式 */
+    .sidebar { 
+      position: fixed; 
+      left: 0; 
+      top: 0; 
+      width: 280px; 
+      height: 100vh; 
+      background: rgba(26, 26, 46, 0.98); 
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255,255,255,0.1);
+      overflow-y: auto;
+      z-index: 1000;
+    }
+    
+    .sidebar-header {
+      padding: 2rem 1.5rem 1rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .sidebar-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .sidebar-subtitle {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    
+    .sidebar-nav {
+      padding: 1rem 0;
+    }
+    
+    .nav-item {
+      display: block;
+      padding: 0.75rem 1.5rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+    
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--text-primary);
+    }
+    
+    .nav-item.active {
+      background: rgba(100, 255, 218, 0.1);
+      color: var(--accent-color);
+      border-left-color: var(--accent-color);
+    }
+    
+    /* 主內容區域 */
+    .content-area {
+      margin-left: 280px;
+      min-height: 100vh;
+      background: var(--primary-dark);
+    }
+    
+    .content-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    
+    /* 測試標題 */
+    .test-title {
+      font-size: 2.5rem;
+      font-weight: 300;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .test-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    /* 提示詞區塊 */
+    .prompt-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    
+    .prompt-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    
+    .copy-btn {
+      background: var(--accent-color);
+      color: var(--primary-dark);
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      /* 觸控優化 */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* 桌面版 hover 效果 */
+    @media (hover: hover) and (pointer: fine) {
+      .copy-btn:hover {
+        background: #4dd0d0;
+        transform: translateY(-1px);
+      }
+    }
+    
+    /* 手機版觸控反饋 */
+    @media (hover: none) and (pointer: coarse) {
+      .copy-btn:active {
+        transform: scale(0.95);
+        transition: transform 0.1s ease;
+      }
+    }
+    
+    .copy-btn.copied {
+      background: #4caf50;
+    }
+    
+    .prompt-text {
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 0.9rem;
+      background: rgba(0,0,0,0.2);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    /* AI 卡片網格 */
+    .ai-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .ai-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: var(--transition);
+      cursor: pointer;
+      /* 觸控優化 */
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* 桌面版 hover 效果 */
+    @media (hover: hover) and (pointer: fine) {
+      .ai-card:hover {
+        transform: translateY(-2px);
+        border-color: var(--accent-color);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      }
+    }
+    
+    /* 手機版觸控反饋 */
+    @media (hover: none) and (pointer: coarse) {
+      .ai-card:active {
+        transform: scale(0.98);
+        transition: transform 0.1s ease;
+      }
+    }
+    
+    .ai-card h3 {
+      font-size: 1.125rem;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    
+    .ai-card p {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    
+    .ai-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .ai-tag {
+      background: rgba(100, 255, 218, 0.1);
+      color: var(--accent-color);
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .ai-link {
+      color: var(--accent-color);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: var(--transition);
+    }
+    
+    .ai-link:hover {
+      color: var(--text-primary);
+    }
+    
+    /* 手機選單按鈕 */
+    .mobile-menu-btn {
+      display: none;
+      position: fixed;
+      top: 1rem;
+      left: 1rem;
+      z-index: 1001;
+      background: var(--accent-color);
+      color: var(--primary-dark);
+      border: none;
+      padding: 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.25rem;
+      transition: var(--transition);
+    }
+    
+    .mobile-menu-btn:hover {
+      background: #4dd0d0;
+      transform: translateY(-1px);
+    }
+    
+    /* 遮罩層 */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .sidebar-overlay.active {
+      opacity: 1;
+    }
+    
+    /* 響應式設計 */
+    @media (max-width: 768px) {
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 280px;
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .sidebar-overlay {
+        display: block;
+      }
+      
+      .content-area {
+        margin-left: 0;
+        padding-top: 4rem;
+      }
+      
+      .content-container {
+        padding: 1.5rem 1rem;
+      }
+      
+      .test-title {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+      
+      .test-subtitle {
+        font-size: 0.875rem;
+        margin-bottom: 2rem;
+      }
+      
+      .ai-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .ai-card {
+        padding: 1rem;
+      }
+      
+      .ai-card h3 {
+        font-size: 1rem;
+      }
+      
+      .ai-card p {
+        font-size: 0.8rem;
+      }
+      
+      .prompt-section {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+      
+      .prompt-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .prompt-text {
+        font-size: 0.8rem;
+        padding: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+      
+      .copy-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.8rem;
+      }
+    }
+    
+    /* 平板尺寸 */
+    @media (min-width: 769px) and (max-width: 1024px) {
+      .sidebar {
+        width: 240px;
+      }
+      
+      .content-area {
+        margin-left: 240px;
+      }
+      
+      .content-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      .test-title {
+        font-size: 2.25rem;
+      }
+      
+      .ai-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
+      }
+    }
+  </style>
+</head>
+<body>
+    <div id="aiHubApp">
+    <!-- 手機選單按鈕 -->
+    <button class="mobile-menu-btn" @click="toggleMobileMenu" v-if="isMobileView">
+      ☰
+    </button>
+    
+    <!-- 遮罩層 -->
+    <div class="sidebar-overlay" :class="{ active: mobileMenuOpen }" @click="closeMobileMenu"></div>
+    
+    <!-- 側邊欄 -->
+    <aside class="sidebar" :class="{ open: mobileMenuOpen }">
+      <div class="sidebar-header">
+        <div class="sidebar-title">AI Demo Hub</div>
+        <div class="sidebar-subtitle">AI 模型測試平台</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#signuptest" class="nav-item" :class="{ active: activeTab === 'signuptest' }" @click="handleNavClick('signuptest')">SignUp Test</a>
+        <a href="#solarsystem" class="nav-item" :class="{ active: activeTab === 'solarsystem' }" @click="handleNavClick('solarsystem')">Solar System Test</a>
+        <a href="#earthmoonsystem" class="nav-item" :class="{ active: activeTab === 'earthmoonsystem' }" @click="handleNavClick('earthmoonsystem')">Earth-Moon System Test</a>
+        <a href="#blackhole" class="nav-item" :class="{ active: activeTab === 'blackhole' }" @click="handleNavClick('blackhole')">Black Hole Test</a>
+        <a href="#cybermessager" class="nav-item" :class="{ active: activeTab === 'cybermessager' }" @click="handleNavClick('cybermessager')">Cyber Messager Test</a>
+        <a href="#callofduty" class="nav-item" :class="{ active: activeTab === 'callofduty' }" @click="handleNavClick('callofduty')">Call Of Duty Game Test</a>
+      </nav>
+    </aside>
+
+    <!-- 主內容區域 -->
+    <main class="content-area">
+      <div class="content-container">
+
+        <!-- SignUp Test 區塊 -->
+        <div v-if="activeTab === 'signuptest'">
+          <h1 class="test-title">SignUp Test</h1>
+          <p class="test-subtitle">LLM Provider Demo Pages</p>
+          
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in signuptestPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solar System Test 區塊 -->
+        <div v-else-if="activeTab === 'solarsystem'">
+          <h1 class="test-title">Solar System Test</h1>
+          <p class="test-subtitle">LLM Themed Demos</p>
+          
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt('請使用 HTML 前端技術，製作一個模擬太陽系的網頁，相關程式請集中在一個 html 檔案內')">複製提示詞</button>
+            </div>
+            <div class="prompt-text">請使用 HTML 前端技術，製作一個模擬太陽系的網頁，相關程式請集中在一個 html 檔案內</div>
+          </div>
+          
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in solarsystemPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Earth-Moon System Test 區塊 -->
+        <div v-else-if="activeTab === 'earthmoonsystem'">
+          <h1 class="test-title">Earth-Moon System Test</h1>
+          <p class="test-subtitle">3D Simulation Demos</p>
+          
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt('製作一個單頁式的HTML，內容是模擬地球與月球運行的系統，要使用前端的3D技術來製作')">複製提示詞</button>
+            </div>
+            <div class="prompt-text">製作一個單頁式的HTML，內容是模擬地球與月球運行的系統，要使用前端的3D技術來製作</div>
+          </div>
+          
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in earthmoonPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Black Hole Test 區塊 -->
+        <div v-else-if="activeTab === 'blackhole'">
+          <h1 class="test-title">Black Hole Test</h1>
+          <p class="test-subtitle">3D Black Hole Simulation Demos</p>
+          
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt('Create a single-page HTML that dynamically demonstrates, in 3D, the most common model of a black hole in outer space. Simulate the motion trajectories of other celestial bodies under its gravitational influence. Add a feature that allows the user to launch an object toward the black hole, showing how the object moves and is affected as it approaches. Simulate gravitational interactions and physical behavior between the black hole and celestial bodies so that users can intuitively observe the dynamic demonstration. Please follow these principles:\n\t•\tBegin with a concise checklist (3–7 bullets) of what you will do; only describe conceptual steps.\n\t•\tAfter each major technical implementation or interaction design step, briefly verify the result and decide whether to self-correct.\n\t•\tIf you need to import external 3D rendering tools (such as three.js), first give a short explanation of their purpose and necessary parameters.\n\t•\tIf there are insurmountable technical limitations, clearly state them and suggest alternative approaches.')">複製提示詞</button>
+            </div>
+            <div class="prompt-text">Create a single-page HTML that dynamically demonstrates, in 3D, the most common model of a black hole in outer space. Simulate the motion trajectories of other celestial bodies under its gravitational influence. Add a feature that allows the user to launch an object toward the black hole, showing how the object moves and is affected as it approaches. Simulate gravitational interactions and physical behavior between the black hole and celestial bodies so that users can intuitively observe the dynamic demonstration. Please follow these principles:
+	•	Begin with a concise checklist (3–7 bullets) of what you will do; only describe conceptual steps.
+	•	After each major technical implementation or interaction design step, briefly verify the result and decide whether to self-correct.
+	•	If you need to import external 3D rendering tools (such as three.js), first give a short explanation of their purpose and necessary parameters.
+	•	If there are insurmountable technical limitations, clearly state them and suggest alternative approaches.</div>
+          </div>
+          
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in blackholePages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cyber Messager Test 區塊 -->
+        <div v-else-if="activeTab === 'cybermessager'">
+          <h1 class="test-title">Cyber Messager Test</h1>
+          <p class="test-subtitle">Cyberpunk Communication App Demos</p>
+          
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt('Use a design style with a strong cyberpunk tech aesthetic to create a front-end single-page HTML website that simulates the interface and functions of a communication app (such as a chat application). Only front-end display and interactions are required, no back-end support.\n\nBefore starting, provide a concise checklist (3–7 items) outlining the main subtasks to be completed, then proceed to actually design and implement the page. After completing each step, perform a self-check of the results; if there are issues, immediately fix them before continuing.')">複製提示詞</button>
+            </div>
+            <div class="prompt-text">Use a design style with a strong cyberpunk tech aesthetic to create a front-end single-page HTML website that simulates the interface and functions of a communication app (such as a chat application). Only front-end display and interactions are required, no back-end support.
+
+Before starting, provide a concise checklist (3–7 items) outlining the main subtasks to be completed, then proceed to actually design and implement the page. After completing each step, perform a self-check of the results; if there are issues, immediately fix them before continuing.</div>
+          </div>
+          
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in cybermessagerPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Call Of Duty Game Test 區塊 -->
+        <div v-else-if="activeTab === 'callofduty'">
+          <h1 class="test-title">Call Of Duty Game Test</h1>
+          <p class="test-subtitle">FPS MVP Prompt Testing</p>
+
+          <div class="prompt-section">
+            <div class="prompt-header">
+              <div class="prompt-title">提示詞</div>
+              <button class="copy-btn" @click="copyPrompt(callOfDutyPrompt, $event)">複製提示詞</button>
+            </div>
+            <div class="prompt-text">{{ callOfDutyPrompt }}</div>
+          </div>
+
+          <div class="ai-grid">
+            <div class="ai-card" v-for="item in callofdutyPages" :key="item.link" @click="handleCardClick(item.link, $event)">
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.description }}</p>
+              <div class="ai-tags">
+                <span v-for="tag in item.tags" :key="tag" class="ai-tag">{{ tag }}</span>
+              </div>
+              <a :href="item.link" class="ai-link" @click.stop="handleCardClick(item.link, $event)">開啟 →</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // 確保載入後可滾動
+    document.body.classList.add('loaded');
+    // Vue 應用（僅本頁用） - 備註以繁體中文
+    const { createApp } = Vue;
+    createApp({
+      data() {
+        return {
+          // 手機選單狀態
+          mobileMenuOpen: false,
+          // 行動版偵測
+          isMobileView: window.innerWidth <= 768,
+          // 目前啟用的頁籤：'signuptest' | 'solarsystem' | 'earthmoonsystem' | 'blackhole' | 'cybermessager' | 'callofduty'
+          activeTab: 'signuptest',
+
+          // signuptest 卡片資料
+          // 說明：圖片用站內共用圖示，若未來有各頁專屬縮圖可替換
+          signuptestPages: [
+            { title: 'Signup Test - ChatGPT', description: '模型互動測試頁（ChatGPT）', image: 'tle_logo.png', tags: ['LLM', 'ChatGPT', 'Signup'], link: 'signuptest/chatgpt.html' },
+            { title: 'Signup Test - Claude', description: '模型互動測試頁（Claude）', image: 'tle_logo.png', tags: ['LLM', 'Claude', 'Signup'], link: 'signuptest/claude.html' },
+            { title: 'Signup Test - Gemini', description: '模型互動測試頁（Gemini）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'Signup'], link: 'signuptest/gemini.html' },
+            { title: 'Signup Test - Grok', description: '模型互動測試頁（Grok）', image: 'tle_logo.png', tags: ['LLM', 'Grok', 'Signup'], link: 'signuptest/grok.html' },
+            { title: 'Signup Test - DeepSeek', description: '模型互動測試頁（DeepSeek）', image: 'tle_logo.png', tags: ['LLM', 'DeepSeek', 'Signup'], link: 'signuptest/deepseek.html' },
+            { title: 'Signup Test - Qwen', description: '模型互動測試頁（Qwen）', image: 'tle_logo.png', tags: ['LLM', 'Qwen', 'Signup'], link: 'signuptest/qwen.html' }
+          ],
+
+          // solarsystem 卡片資料
+          solarsystemPages: [
+            { title: 'Solar System - ChatGPT', description: '太陽系主題互動示範（ChatGPT）', image: 'tle_logo.png', tags: ['LLM', 'ChatGPT', 'SolarSystem'], link: 'solarsystem/chatgpt.html' },
+            { title: 'Solar System - Claude', description: '太陽系主題互動示範（Claude）', image: 'tle_logo.png', tags: ['LLM', 'Claude', 'SolarSystem'], link: 'solarsystem/claude.html' },
+            { title: 'Solar System - Gemini', description: '太陽系主題互動示範（Gemini）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'SolarSystem'], link: 'solarsystem/gemini.html' },
+            { title: 'Solar System - Gemini 3', description: '太陽系主題互動示範（Gemini 3）', image: 'tle_logo.png', tags: ['LLM', 'Gemini', 'SolarSystem'], link: 'solarsystem/gemini3.html' },
+            { title: 'Solar System - Grok', description: '太陽系主題互動示範（Grok）', image: 'tle_logo.png', tags: ['LLM', 'Grok', 'SolarSystem'], link: 'solarsystem/grok.html' },
+            { title: 'Solar System - DeepSeek', description: '太陽系主題互動示範（DeepSeek）', image: 'tle_logo.png', tags: ['LLM', 'DeepSeek', 'SolarSystem'], link: 'solarsystem/deepseek.html' },
+            { title: 'Solar System - Qwen', description: '太陽系主題互動示範（Qwen）', image: 'tle_logo.png', tags: ['LLM', 'Qwen', 'SolarSystem'], link: 'solarsystem/qwen.html' }
+          ],
+
+          // earthmoonsystem 卡片資料
+          earthmoonPages: [
+            { title: 'Earth-Moon System - ChatGPT', description: '地月系統 3D 模擬（ChatGPT）', tags: ['LLM', 'ChatGPT', '3D'], link: 'earthmoonsystem/chatgpt.html' },
+            { title: 'Earth-Moon System - Claude', description: '地月系統 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'earthmoonsystem/claude.html' },
+            { title: 'Earth-Moon System - Gemini', description: '地月系統 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'earthmoonsystem/gemini.html' },
+            { title: 'Earth-Moon System - Gemini 3', description: '地月系統 3D 模擬（Gemini 3）', tags: ['LLM', 'Gemini', '3D'], link: 'earthmoonsystem/gemini3.html' },
+            { title: 'Earth-Moon System - Grok', description: '地月系統 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'earthmoonsystem/grok.html' }
+          ],
+
+          // blackhole 卡片資料
+          blackholePages: [
+            { title: 'Black Hole - ChatGPT', description: '黑洞 3D 模擬（ChatGPT）', tags: ['LLM', 'ChatGPT', '3D'], link: 'blackhole/chatgpt.html' },
+            { title: 'Black Hole - Claude', description: '黑洞 3D 模擬（Claude）', tags: ['LLM', 'Claude', '3D'], link: 'blackhole/claude.html' },
+            { title: 'Black Hole - Gemini', description: '黑洞 3D 模擬（Gemini）', tags: ['LLM', 'Gemini', '3D'], link: 'blackhole/gemini.html' },
+            { title: 'Black Hole - Gemini 3', description: '黑洞 3D 模擬（Gemini 3）', tags: ['LLM', 'Gemini', '3D'], link: 'blackhole/gemini3.html' },
+            { title: 'Black Hole - Grok', description: '黑洞 3D 模擬（Grok）', tags: ['LLM', 'Grok', '3D'], link: 'blackhole/grok.html' }
+          ],
+
+          // cybermessager 卡片資料
+          cybermessagerPages: [
+            { title: 'Cyber Messager - ChatGPT', description: '賽博朋克通訊應用（ChatGPT）', tags: ['LLM', 'ChatGPT', 'UI/UX'], link: 'cybermessager/chatgpt.html' },
+            { title: 'Cyber Messager - Claude', description: '賽博朋克通訊應用（Claude）', tags: ['LLM', 'Claude', 'UI/UX'], link: 'cybermessager/claude.html' },
+            { title: 'Cyber Messager - Gemini', description: '賽博朋克通訊應用（Gemini）', tags: ['LLM', 'Gemini', 'UI/UX'], link: 'cybermessager/gemini.html' },
+            { title: 'Cyber Messager - Gemini 3', description: '賽博朋克通訊應用（Gemini 3）', tags: ['LLM', 'Gemini', 'UI/UX'], link: 'cybermessager/gemini3.html' },
+            { title: 'Cyber Messager - Grok', description: '賽博朋克通訊應用（Grok）- 空檔案', tags: ['LLM', 'Grok', 'UI/UX'], link: 'cybermessager/grok.html' }
+          ],
+
+          // callofduty 卡片資料
+          callofdutyPages: [
+            { title: 'GPT-5.3-Codex', description: 'FPS MVP 測試頁（GPT-5.3-Codex）', tags: ['LLM', 'GPT-5.3-Codex', 'FPS'], link: 'callofduty/codex53.html' },
+            { title: 'Claude Opus 4.6', description: 'FPS MVP 測試頁（Claude Opus 4.6）', tags: ['LLM', 'Claude Opus 4.6', 'FPS'], link: 'callofduty/opus46.html' },
+            { title: 'Gemini 3', description: 'FPS MVP 測試頁（Gemini 3）', tags: ['LLM', 'Gemini 3', 'FPS'], link: 'callofduty/gemini3.html' }
+          ],
+
+          // callofduty 提示詞
+          callOfDutyPrompt: [
+            "You are a senior web game engineer. Build a **playable First-Person Shooter (FPS) MVP** using **Three.js**, inspired by the *feel* of modern military FPS games, but **do not use any copyrighted names, characters, maps, or assets**. Use only **original/simple** visuals (solid colors, primitives) and minimal placeholder audio.",
+            "",
+            "## Core Constraint",
+            "",
+            "* **Deliver everything in ONE single HTML file** (including all JavaScript and CSS inside the same file).",
+            "* No external assets (no textures/models/sounds). If you need audio, generate simple tones via WebAudio.",
+            "* You may load Three.js via CDN import (module) or include it inline if you prefer, but the final deliverable must still be **a single HTML file**.",
+            "",
+            "## MVP Goals (Must Be Playable)",
+            "",
+            "### 1) First-person controls",
+            "",
+            "* Pointer Lock mouse look (yaw/pitch with pitch clamp)",
+            "* WASD movement, Shift sprint, Space jump",
+            "* Gravity + ground detection",
+            "* Basic collision (player capsule/box vs level boxes/AABBs; no heavy physics engine)",
+            "* Sprint FOV kick (slight FOV increase while sprinting)",
+            "",
+            "### 2) Weapon + shooting",
+            "",
+            "* Left-click shoots (semi-auto is fine; optional full-auto)",
+            "* Hitscan using Raycaster",
+            "* Recoil (small camera kick + weapon sway/bob)",
+            "* Minimal muzzle flash (sprite/particle) + hit spark + simple bullet hole mark (can be simplified)",
+            "* Ammo system: magazine + reserve ammo, R to reload (reload time, simple tween-based “animation”)",
+            "* HUD: crosshair, ammo, health",
+            "",
+            "### 3) Enemy AI (minimum fun)",
+            "",
+            "* Spawn 5–10 enemies (capsules/boxes)",
+            "* Simple finite state machine: Patrol → Chase → Attack → Dead",
+            "* Vision/range detection",
+            "* Enemies can shoot back (hitscan or simple projectiles)",
+            "* Damage + death feedback (color flash, shrink/fall, etc.)",
+            "",
+            "### 4) Level + interaction",
+            "",
+            "* Small training arena built from primitives: floor, walls, cover boxes, ramps/platforms",
+            "* Collision & bounds (no walking through walls; no falling out of the world)",
+            "* Optional: pickups (health/ammo)",
+            "",
+            "### 5) Systems & quality",
+            "",
+            "* Target 60 FPS: keep it lightweight (limit shadows, simple geometry, reuse objects)",
+            "* Centralized tunables (player speed, recoil, AI vision, etc.)",
+            "* Restart/reset flow (if player dies or falls out of bounds, press a key to reset)",
+            "",
+            "## Architecture Requirement (within one HTML)",
+            "",
+            "Even though it’s a single HTML file, structure the code clearly using sections/classes:",
+            "",
+            "* Config (tunable constants)",
+            "* Core (renderer, scene, main loop, timing)",
+            "* World (level builder, collision shapes)",
+            "* Player (controller, camera, movement, collision)",
+            "* Weapons (ammo, recoil, fire logic, FX)",
+            "* AI (enemy entity + FSM)",
+            "* UI (HUD update)",
+            "  Keep functions small and readable; avoid a monolithic 1000-line function.",
+            "",
+            "## Deliverables",
+            "",
+            "1. A single runnable HTML file (copy/paste into `index.html` and open).",
+            "2. At the top of the HTML, include a short README comment:",
+            "",
+            "   * How to run",
+            "   * Key bindings",
+            "   * Feature checklist",
+            "3. Implement in phases in your output (but still culminating in one final HTML):",
+            "",
+            "   * Phase 1: scene + pointer lock + movement",
+            "   * Phase 2: gravity + jump + collision",
+            "   * Phase 3: weapon + shooting + HUD",
+            "   * Phase 4: enemy AI + damage/death",
+            "   * Phase 5: polish (sprint FOV, recoil feel, FX, reset)",
+            "",
+            "## Acceptance Criteria (Must Pass All)",
+            "",
+            "* Mouse locks and look works; WASD moves; Shift sprints; Space jumps",
+            "* Left click shoots and damages enemies; enemies chase and attack back",
+            "* HUD shows crosshair/ammo/health; R reload works",
+            "* Player cannot pass through walls/boxes; falling out triggers reset or respawn",
+            "",
+            "## Output Format",
+            "",
+            "* Output ONLY the final **single HTML** in one code block.",
+            "* No TODOs that prevent running.",
+            "* Ensure it runs in a modern browser without additional build steps."
+          ].join('\n')
+        }
+      },
+      methods: {
+        // 根據 URL hash 取得初始頁籤
+        getInitialTab() {
+          const hash = window.location.hash.slice(1);
+          const validTabs = ['signuptest', 'solarsystem', 'earthmoonsystem', 'blackhole', 'cybermessager', 'callofduty'];
+          return validTabs.includes(hash) ? hash : 'signuptest';
+        },
+        // 切換頁籤並更新 URL hash
+        changeTab(tab) {
+          this.activeTab = tab;
+          // 更新 URL hash
+          if (history.pushState) {
+            history.pushState(null, null, `#${tab}`);
+          } else {
+            window.location.hash = tab;
+          }
+        },
+        // 處理導航點擊（手機版會關閉選單）
+        handleNavClick(tab) {
+          this.changeTab(tab);
+          if (this.isMobileView) {
+            this.closeMobileMenu();
+          }
+        },
+        // 切換手機選單
+        toggleMobileMenu() {
+          this.mobileMenuOpen = !this.mobileMenuOpen;
+          // 防止背景滾動
+          document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
+        },
+        // 關閉手機選單
+        closeMobileMenu() {
+          this.mobileMenuOpen = false;
+          document.body.style.overflow = '';
+        },
+        // 處理 hash 變化
+        handleHashChange() {
+          const newTab = this.getInitialTab();
+          if (newTab !== this.activeTab) {
+            this.activeTab = newTab;
+          }
+        },
+        // 複製提示詞到剪貼簿
+        copyPrompt(text) {
+          navigator.clipboard.writeText(text).then(() => {
+            // 找到對應的按鈕並更新狀態
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '已複製！';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.classList.remove('copied');
+            }, 2000);
+          }).catch(err => {
+            console.error('複製失敗:', err);
+            // 降級方案：使用傳統方法
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '已複製！';
+            btn.classList.add('copied');
+            
+            setTimeout(() => {
+              btn.textContent = originalText;
+              btn.classList.remove('copied');
+            }, 2000);
+          });
+        },
+        // 卡片點擊：行動裝置同窗、桌機新分頁
+        handleCardClick(link, event) {
+          if (!link) return;
+          if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          
+          // 防抖機制：防止快速重複點擊
+          if (this._clickTimeout) {
+            clearTimeout(this._clickTimeout);
+          }
+          
+          this._clickTimeout = setTimeout(() => {
+            if (this.isMobileView) {
+              window.location.href = link;
+            } else {
+              window.open(link, '_blank', 'noopener,noreferrer');
+            }
+          }, 150); // 150ms 防抖延遲
+        }
+      },
+      mounted() {
+        // 初始化時根據 hash 設定頁籤
+        this.activeTab = this.getInitialTab();
+        
+        // 響應式狀態
+        const onResize = () => { 
+          this.isMobileView = window.innerWidth <= 768; 
+          // 如果從手機切換到桌面，關閉手機選單
+          if (!this.isMobileView) {
+            this.closeMobileMenu();
+          }
+        };
+        window.addEventListener('resize', onResize);
+        this.$once('hook:beforeUnmount', () => window.removeEventListener('resize', onResize));
+        // 監聽 hash 變化
+        window.addEventListener('hashchange', this.handleHashChange);
+        // 保險：初始化後再標記 loaded，避免任何延遲造成無法滾動
+        document.body.classList.add('loaded');
+      },
+      beforeUnmount() {
+        window.removeEventListener('hashchange', this.handleHashChange);
+      }
+    }).mount('#aiHubApp');
+  </script>
+</body>
+</html>

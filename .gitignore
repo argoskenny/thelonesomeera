@@ -16,6 +16,15 @@ yarn-error.log*
 # 建置輸出目錄
 dist/
 build/
+.next/
+
+# Prisma SQLite
+prisma/dev.db
+prisma/dev.db-journal
+
+# 後台上傳檔案（保留目錄）
+public/uploads/*
+!public/uploads/.gitkeep
 
 # 環境變數檔案
 .env

@@ -1,0 +1,760 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Solar System Simulator</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Space+Grotesk:wght@300;400;600&display=swap");
+
+      :root {
+        --bg-1: #050812;
+        --bg-2: #121c3f;
+        --panel: rgba(10, 16, 35, 0.72);
+        --panel-border: rgba(255, 255, 255, 0.08);
+        --text: #e7ecff;
+        --muted: #9fb0d1;
+        --accent: #f7c46c;
+        --accent-2: #7cc8ff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        color: var(--text);
+        background: var(--bg-1);
+        overflow: hidden;
+      }
+
+      #scene {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .hud {
+        position: absolute;
+        top: 24px;
+        left: 24px;
+        width: min(320px, 90vw);
+        padding: 20px;
+        background: var(--panel);
+        border: 1px solid var(--panel-border);
+        border-radius: 18px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      }
+
+      .title {
+        font-family: "Cinzel", serif;
+        font-size: 22px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        margin: 0 0 8px;
+      }
+
+      .subtitle {
+        font-size: 13px;
+        color: var(--muted);
+        margin: 0 0 16px;
+      }
+
+      .control {
+        margin-bottom: 14px;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-size: 13px;
+        color: var(--muted);
+        gap: 10px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .toggles {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .toggle input {
+        accent-color: var(--accent);
+      }
+
+      .readout {
+        margin-top: 16px;
+        padding: 12px;
+        border-radius: 12px;
+        background: rgba(10, 18, 38, 0.6);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .planet-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .planet-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+        line-height: 1.4;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      button {
+        background: linear-gradient(135deg, rgba(247, 196, 108, 0.25), rgba(124, 200, 255, 0.2));
+        color: var(--text);
+        border: 1px solid rgba(247, 196, 108, 0.45);
+        border-radius: 10px;
+        padding: 8px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      button:hover {
+        border-color: rgba(247, 196, 108, 0.8);
+      }
+
+      .tooltip {
+        position: absolute;
+        pointer-events: none;
+        padding: 8px 10px;
+        background: rgba(9, 13, 28, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        font-size: 12px;
+        color: var(--text);
+        transform: translate(10px, 10px);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        max-width: 200px;
+      }
+
+      .tooltip strong {
+        color: var(--accent-2);
+        font-weight: 600;
+      }
+
+      .footer {
+        position: absolute;
+        right: 24px;
+        bottom: 18px;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      @media (max-width: 640px) {
+        .hud {
+          left: 12px;
+          top: 12px;
+          padding: 16px;
+        }
+
+        .footer {
+          right: 12px;
+          bottom: 12px;
+          font-size: 11px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="scene" aria-label="Solar system animation"></canvas>
+    <div class="hud">
+      <div class="title">Solar System</div>
+      <p class="subtitle">Drag or move your pointer to explore. Click a planet to lock details.</p>
+      <div class="control">
+        <label for="speed">
+          Time Scale
+          <span id="speedValue">1.00x</span>
+        </label>
+        <input id="speed" type="range" min="0.1" max="4" value="1" step="0.01" />
+      </div>
+      <div class="toggles">
+        <label class="toggle"><input id="toggleOrbits" type="checkbox" checked /> Orbits</label>
+        <label class="toggle"><input id="toggleLabels" type="checkbox" checked /> Labels</label>
+        <label class="toggle"><input id="toggleGlow" type="checkbox" checked /> Glow</label>
+        <label class="toggle"><input id="toggleStars" type="checkbox" checked /> Stars</label>
+      </div>
+      <div class="readout">
+        <div class="planet-name" id="planetName">Sun</div>
+        <div class="planet-meta" id="planetMeta">Hover a planet to see details.</div>
+        <div class="actions">
+          <button id="resetBtn" type="button">Reset Focus</button>
+        </div>
+      </div>
+    </div>
+    <div class="tooltip" id="tooltip"></div>
+    <div class="footer">Scale is artistic, motion is relative.</div>
+    <noscript>This page needs JavaScript to animate the solar system.</noscript>
+    <script>
+      (() => {
+        const canvas = document.getElementById("scene");
+        const ctx = canvas.getContext("2d");
+        const speedRange = document.getElementById("speed");
+        const speedValue = document.getElementById("speedValue");
+        const toggleOrbits = document.getElementById("toggleOrbits");
+        const toggleLabels = document.getElementById("toggleLabels");
+        const toggleGlow = document.getElementById("toggleGlow");
+        const toggleStars = document.getElementById("toggleStars");
+        const planetName = document.getElementById("planetName");
+        const planetMeta = document.getElementById("planetMeta");
+        const tooltip = document.getElementById("tooltip");
+        const resetBtn = document.getElementById("resetBtn");
+
+        const palette = {
+          sunCore: "#ffd07a",
+          sunGlow: "rgba(255, 196, 96, 0.4)",
+          orbit: "rgba(120, 140, 190, 0.35)",
+          orbitStrong: "rgba(160, 190, 240, 0.4)"
+        };
+
+        const planetData = [
+          {
+            name: "Mercury",
+            color: "#9d8c7a",
+            colorLight: "#d2c3b4",
+            orbit: 0.39,
+            period: 0.24,
+            size: 2.8,
+            eccentricity: 0.2,
+            tilt: 0.04,
+            description: "Small and fast, closest to the Sun."
+          },
+          {
+            name: "Venus",
+            color: "#c78c4a",
+            colorLight: "#f0c070",
+            orbit: 0.72,
+            period: 0.62,
+            size: 5.2,
+            eccentricity: 0.01,
+            tilt: 0.02,
+            description: "Dense atmosphere with a warm glow."
+          },
+          {
+            name: "Earth",
+            color: "#2c6dd2",
+            colorLight: "#89d4ff",
+            orbit: 1.0,
+            period: 1.0,
+            size: 5.4,
+            eccentricity: 0.02,
+            tilt: 0.03,
+            description: "Our home with oceans and cloud bands."
+          },
+          {
+            name: "Mars",
+            color: "#b04d3c",
+            colorLight: "#e08b6c",
+            orbit: 1.52,
+            period: 1.88,
+            size: 4.2,
+            eccentricity: 0.09,
+            tilt: 0.05,
+            description: "Rust red planet with thin skies."
+          },
+          {
+            name: "Jupiter",
+            color: "#c8a06b",
+            colorLight: "#f4d0a0",
+            orbit: 5.2,
+            period: 11.86,
+            size: 10.8,
+            eccentricity: 0.04,
+            tilt: 0.02,
+            description: "The giant with massive storms."
+          },
+          {
+            name: "Saturn",
+            color: "#c2b08a",
+            colorLight: "#f2e2b8",
+            orbit: 9.54,
+            period: 29.45,
+            size: 9.6,
+            eccentricity: 0.06,
+            tilt: 0.05,
+            ring: true,
+            ringColor: "rgba(220, 200, 160, 0.6)",
+            description: "Iconic rings of icy debris."
+          },
+          {
+            name: "Uranus",
+            color: "#7ac7d8",
+            colorLight: "#b7f0ff",
+            orbit: 19.2,
+            period: 84,
+            size: 7.8,
+            eccentricity: 0.04,
+            tilt: 0.07,
+            ring: true,
+            ringColor: "rgba(160, 210, 220, 0.5)",
+            description: "A tilted ice giant with pale rings."
+          },
+          {
+            name: "Neptune",
+            color: "#3f6bd9",
+            colorLight: "#7bb0ff",
+            orbit: 30.1,
+            period: 164.8,
+            size: 7.6,
+            eccentricity: 0.01,
+            tilt: 0.05,
+            description: "Deep blue winds at the edge."
+          }
+        ];
+
+        const state = {
+          width: 0,
+          height: 0,
+          centerX: 0,
+          centerY: 0,
+          scale: 1,
+          time: 0,
+          lastTime: 0,
+          speed: parseFloat(speedRange.value),
+          showOrbits: toggleOrbits.checked,
+          showLabels: toggleLabels.checked,
+          showGlow: toggleGlow.checked,
+          showStars: toggleStars.checked,
+          stars: [],
+          hovered: null,
+          pinned: null,
+          pointer: { x: 0, y: 0, active: false }
+        };
+
+        const maxOrbit = Math.max(...planetData.map((p) => p.orbit));
+        const orbitScalePower = 0.62;
+
+        function setupCanvas() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2);
+          state.width = window.innerWidth;
+          state.height = window.innerHeight;
+          canvas.width = state.width * dpr;
+          canvas.height = state.height * dpr;
+          canvas.style.width = `${state.width}px`;
+          canvas.style.height = `${state.height}px`;
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          state.centerX = state.width / 2;
+          state.centerY = state.height / 2;
+          const maxOrbitScaled = Math.pow(maxOrbit, orbitScalePower);
+          const minDim = Math.min(state.width, state.height);
+          state.scale = (minDim * 0.42) / maxOrbitScaled;
+          generateStars();
+        }
+
+        function generateStars() {
+          const count = Math.floor((state.width * state.height) / 6000);
+          state.stars = Array.from({ length: Math.min(380, Math.max(180, count)) }, () => ({
+            x: Math.random(),
+            y: Math.random(),
+            size: Math.random() * 1.4 + 0.4,
+            alpha: Math.random() * 0.6 + 0.2,
+            twinkle: Math.random() * 1.6 + 0.2,
+            phase: Math.random() * Math.PI * 2,
+            hue: Math.random() > 0.82 ? 200 + Math.random() * 80 : 0
+          }));
+        }
+
+        function getOrbitRadius(orbit) {
+          return Math.pow(orbit, orbitScalePower) * state.scale;
+        }
+
+        function drawBackground() {
+          ctx.fillStyle = "#050812";
+          ctx.fillRect(0, 0, state.width, state.height);
+
+          const baseGlow = ctx.createRadialGradient(
+            state.centerX,
+            state.centerY,
+            0,
+            state.centerX,
+            state.centerY,
+            Math.max(state.width, state.height) * 0.85
+          );
+          baseGlow.addColorStop(0, "#121c3f");
+          baseGlow.addColorStop(0.4, "#0a1230");
+          baseGlow.addColorStop(1, "#04060f");
+          ctx.fillStyle = baseGlow;
+          ctx.fillRect(0, 0, state.width, state.height);
+
+          if (state.showGlow) {
+            ctx.save();
+            ctx.globalAlpha = 0.35;
+            const nebulaA = ctx.createRadialGradient(
+              state.width * 0.15,
+              state.height * 0.25,
+              0,
+              state.width * 0.15,
+              state.height * 0.25,
+              state.width * 0.55
+            );
+            nebulaA.addColorStop(0, "rgba(110, 150, 255, 0.6)");
+            nebulaA.addColorStop(1, "rgba(10, 12, 30, 0)");
+            ctx.fillStyle = nebulaA;
+            ctx.fillRect(0, 0, state.width, state.height);
+
+            const nebulaB = ctx.createRadialGradient(
+              state.width * 0.85,
+              state.height * 0.7,
+              0,
+              state.width * 0.85,
+              state.height * 0.7,
+              state.width * 0.5
+            );
+            nebulaB.addColorStop(0, "rgba(255, 190, 120, 0.4)");
+            nebulaB.addColorStop(1, "rgba(8, 10, 22, 0)");
+            ctx.fillStyle = nebulaB;
+            ctx.fillRect(0, 0, state.width, state.height);
+            ctx.restore();
+          }
+
+          if (state.showStars) {
+            ctx.save();
+            state.stars.forEach((star) => {
+              const twinkle = Math.sin(state.time * star.twinkle + star.phase) * 0.2;
+              const alpha = Math.min(1, Math.max(0, star.alpha + twinkle));
+              const px = star.x * state.width;
+              const py = star.y * state.height;
+              const size = star.size;
+              ctx.fillStyle = star.hue
+                ? `rgba(${180 + star.hue * 0.2}, ${210 + star.hue * 0.1}, 255, ${alpha})`
+                : `rgba(255, 255, 255, ${alpha})`;
+              ctx.fillRect(px, py, size, size);
+            });
+            ctx.restore();
+          }
+        }
+
+        function drawSun() {
+          const sunRadius = Math.max(18, state.scale * 0.5);
+          if (state.showGlow) {
+            const sunGlow = ctx.createRadialGradient(0, 0, sunRadius * 0.4, 0, 0, sunRadius * 3.2);
+            sunGlow.addColorStop(0, "rgba(255, 214, 140, 0.35)");
+            sunGlow.addColorStop(1, "rgba(255, 214, 140, 0)");
+            ctx.fillStyle = sunGlow;
+            ctx.beginPath();
+            ctx.arc(0, 0, sunRadius * 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          const sunGradient = ctx.createRadialGradient(
+            -sunRadius * 0.4,
+            -sunRadius * 0.3,
+            sunRadius * 0.2,
+            0,
+            0,
+            sunRadius
+          );
+          sunGradient.addColorStop(0, "#fff4d1");
+          sunGradient.addColorStop(0.4, palette.sunCore);
+          sunGradient.addColorStop(1, "#f08c3b");
+          ctx.fillStyle = sunGradient;
+          ctx.beginPath();
+          ctx.arc(0, 0, sunRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        function drawOrbits() {
+          ctx.save();
+          ctx.strokeStyle = palette.orbit;
+          ctx.setLineDash([4, 8]);
+          ctx.lineWidth = 1;
+          planetData.forEach((planet) => {
+            const a = getOrbitRadius(planet.orbit);
+            const b = a * Math.sqrt(1 - planet.eccentricity * planet.eccentricity);
+            ctx.save();
+            ctx.rotate(planet.tilt);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+          });
+          ctx.restore();
+
+          ctx.save();
+          ctx.strokeStyle = palette.orbitStrong;
+          ctx.setLineDash([2, 10]);
+          ctx.beginPath();
+          const beltInner = getOrbitRadius(2.1);
+          const beltOuter = getOrbitRadius(3.3);
+          ctx.ellipse(0, 0, beltInner, beltInner * 0.95, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.ellipse(0, 0, beltOuter, beltOuter * 0.95, 0, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        function computePlanetPosition(planet, t) {
+          const a = getOrbitRadius(planet.orbit);
+          const b = a * Math.sqrt(1 - planet.eccentricity * planet.eccentricity);
+          const angle = t * (1 / planet.period) + planet.phase;
+          const x = a * Math.cos(angle);
+          const y = b * Math.sin(angle);
+          const cosT = Math.cos(planet.tilt);
+          const sinT = Math.sin(planet.tilt);
+          return {
+            x: x * cosT - y * sinT,
+            y: x * sinT + y * cosT
+          };
+        }
+
+        function drawPlanet(planet, pos, radius, highlight) {
+          ctx.save();
+          ctx.translate(pos.x, pos.y);
+
+          if (planet.ring) {
+            ctx.save();
+            ctx.rotate(planet.tilt * 2);
+            ctx.scale(1, 0.4);
+            ctx.beginPath();
+            ctx.ellipse(0, 0, radius * 2.2, radius * 2.2, 0, 0, Math.PI * 2);
+            ctx.ellipse(0, 0, radius * 1.2, radius * 1.2, 0, 0, Math.PI * 2, true);
+            ctx.fillStyle = planet.ringColor || "rgba(200, 200, 200, 0.4)";
+            ctx.globalAlpha = 0.7;
+            ctx.fill("evenodd");
+            ctx.restore();
+          }
+
+          const gradient = ctx.createRadialGradient(-radius * 0.3, -radius * 0.3, radius * 0.2, 0, 0, radius * 1.2);
+          gradient.addColorStop(0, planet.colorLight);
+          gradient.addColorStop(1, planet.color);
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(0, 0, radius, 0, Math.PI * 2);
+          ctx.fill();
+
+          if (highlight) {
+            ctx.strokeStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(0, 0, radius + 4, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          ctx.restore();
+        }
+
+        function drawLabels(planet, pos, radius) {
+          ctx.save();
+          ctx.translate(pos.x, pos.y);
+          ctx.font = '12px "Space Grotesk", sans-serif';
+          ctx.fillStyle = "rgba(230, 235, 255, 0.9)";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "bottom";
+          ctx.fillText(planet.name, 0, -radius - 8);
+          ctx.restore();
+        }
+
+        function updateHover(planetPositions) {
+          if (state.pinned) {
+            const pinnedEntry = planetPositions.find((entry) => entry.planet.name === state.pinned.planet.name);
+            if (pinnedEntry) {
+              state.pinned = pinnedEntry;
+              state.hovered = pinnedEntry;
+            }
+          }
+
+          if (!state.pinned) {
+            if (!state.pointer.active) {
+              state.hovered = null;
+            } else {
+              const pointerX = state.pointer.x - state.centerX;
+              const pointerY = state.pointer.y - state.centerY;
+              let closest = null;
+              let closestDist = Infinity;
+
+              planetPositions.forEach((entry) => {
+                const dx = pointerX - entry.pos.x;
+                const dy = pointerY - entry.pos.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < entry.radius + 12 && dist < closestDist) {
+                  closest = entry;
+                  closestDist = dist;
+                }
+              });
+
+              state.hovered = closest;
+            }
+          }
+
+          if (state.hovered) {
+            let anchorX = state.pointer.x;
+            let anchorY = state.pointer.y;
+            if (state.pinned) {
+              anchorX = state.centerX + state.hovered.pos.x;
+              anchorY = state.centerY + state.hovered.pos.y;
+            }
+            tooltip.style.left = `${anchorX + 10}px`;
+            tooltip.style.top = `${anchorY + 10}px`;
+            tooltip.innerHTML = `<strong>${state.hovered.planet.name}</strong><br/>Orbit: ${state.hovered.planet.orbit} AU`;
+            tooltip.style.opacity = 1;
+          } else {
+            tooltip.style.opacity = 0;
+          }
+        }
+
+        function updateReadout() {
+          const entry = state.hovered;
+          if (!entry) {
+            planetName.textContent = "Sun";
+            planetMeta.textContent = "Hover a planet to see details.";
+            return;
+          }
+          const { planet } = entry;
+          planetName.textContent = planet.name;
+          planetMeta.textContent = `${planet.description} Period: ${planet.period} years. Orbit: ${planet.orbit} AU.`;
+        }
+
+        function drawScene() {
+          drawBackground();
+
+          ctx.save();
+          ctx.translate(state.centerX, state.centerY);
+
+          if (state.showOrbits) {
+            drawOrbits();
+          }
+
+          const planetPositions = planetData.map((planet, index) => {
+            if (planet.phase == null) {
+              planet.phase = index * 0.8;
+            }
+            const pos = computePlanetPosition(planet, state.time * state.speed);
+            const baseScale = Math.min(1.4, Math.max(0.8, state.scale / 34));
+            const radius = planet.size * baseScale;
+            return { planet, pos, radius };
+          });
+
+          drawSun();
+
+          planetPositions.forEach((entry) => {
+            const highlight = state.hovered && state.hovered.planet.name === entry.planet.name;
+            drawPlanet(entry.planet, entry.pos, entry.radius, highlight);
+          });
+
+          if (state.showLabels) {
+            planetPositions.forEach((entry) => {
+              drawLabels(entry.planet, entry.pos, entry.radius);
+            });
+          }
+
+          ctx.restore();
+
+          updateHover(planetPositions);
+          updateReadout();
+        }
+
+        function animate(timestamp) {
+          if (!state.lastTime) {
+            state.lastTime = timestamp;
+          }
+          const delta = (timestamp - state.lastTime) / 1000;
+          state.lastTime = timestamp;
+          state.time += delta;
+          drawScene();
+          requestAnimationFrame(animate);
+        }
+
+        function updateSpeed() {
+          state.speed = parseFloat(speedRange.value);
+          speedValue.textContent = `${state.speed.toFixed(2)}x`;
+        }
+
+        function attachEvents() {
+          window.addEventListener("resize", setupCanvas);
+
+          speedRange.addEventListener("input", updateSpeed);
+
+          toggleOrbits.addEventListener("change", () => {
+            state.showOrbits = toggleOrbits.checked;
+          });
+          toggleLabels.addEventListener("change", () => {
+            state.showLabels = toggleLabels.checked;
+          });
+          toggleGlow.addEventListener("change", () => {
+            state.showGlow = toggleGlow.checked;
+          });
+          toggleStars.addEventListener("change", () => {
+            state.showStars = toggleStars.checked;
+          });
+
+          resetBtn.addEventListener("click", () => {
+            state.pinned = null;
+            state.hovered = null;
+          });
+
+          canvas.addEventListener("pointermove", (event) => {
+            const rect = canvas.getBoundingClientRect();
+            state.pointer.x = event.clientX - rect.left;
+            state.pointer.y = event.clientY - rect.top;
+            state.pointer.active = true;
+          });
+
+          canvas.addEventListener("pointerleave", () => {
+            state.pointer.active = false;
+            if (!state.pinned) {
+              state.hovered = null;
+            }
+          });
+
+          canvas.addEventListener("pointerdown", (event) => {
+            const rect = canvas.getBoundingClientRect();
+            state.pointer.x = event.clientX - rect.left;
+            state.pointer.y = event.clientY - rect.top;
+            state.pointer.active = true;
+            if (state.hovered) {
+              if (state.pinned && state.pinned.planet.name === state.hovered.planet.name) {
+                state.pinned = null;
+              } else {
+                state.pinned = state.hovered;
+              }
+            } else {
+              state.pinned = null;
+            }
+          });
+        }
+
+        setupCanvas();
+        attachEvents();
+        updateSpeed();
+        requestAnimationFrame(animate);
+      })();
+    </script>
+  </body>
+</html>

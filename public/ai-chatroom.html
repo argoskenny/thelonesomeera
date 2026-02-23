@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="industrial">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TPG — 反向 AI 服務</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Source+Code+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ========================================
+       1. 重置與基礎設定
+       ======================================== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; color: inherit; }
+    select { cursor: pointer; font-family: inherit; }
+    input { font-family: inherit; }
+
+    /* ========================================
+       2. 主題變數定義
+       ======================================== */
+
+    /* --- Theme A: 冷硬工業控制台 --- */
+    [data-theme="industrial"] {
+      --bg-primary: #17171b;
+      --bg-sidebar: #1c1c21;
+      --bg-card: #222228;
+      --bg-input: #17171b;
+      --bg-header: #1e1e24;
+      --bg-msg-ai: #26262d;
+      --bg-msg-user: #2a2618;
+      --border: #3a3a44;
+      --border-strong: #4e4e58;
+      --accent: #d4870c;
+      --accent-dim: #9e6508;
+      --accent-glow: rgba(212, 135, 12, 0.12);
+      --text-primary: #dddde0;
+      --text-secondary: #8a8a94;
+      --text-muted: #5a5a64;
+      --danger: #c0392b;
+      --font-heading: 'Orbitron', monospace;
+      --font-body: 'Share Tech Mono', monospace;
+      --radius: 2px;
+      --bw: 2px;
+      --sidebar-w: 310px;
+      --pad-section: 16px;
+    }
+
+    /* --- Theme B: 太空站維運介面 --- */
+    [data-theme="space"] {
+      --bg-primary: #0b1120;
+      --bg-sidebar: #0e1528;
+      --bg-card: #141e32;
+      --bg-input: #0b1120;
+      --bg-header: #111b2c;
+      --bg-msg-ai: #141e32;
+      --bg-msg-user: #172740;
+      --border: #1c2d4a;
+      --border-strong: #2a3f5e;
+      --accent: #38bdf8;
+      --accent-dim: #0e7ebf;
+      --accent-glow: rgba(56, 189, 248, 0.08);
+      --text-primary: #dfe6ee;
+      --text-secondary: #7888a0;
+      --text-muted: #4a5a72;
+      --danger: #f87171;
+      --font-heading: 'Exo 2', sans-serif;
+      --font-body: 'Exo 2', sans-serif;
+      --radius: 8px;
+      --bw: 1px;
+      --sidebar-w: 310px;
+      --pad-section: 18px;
+    }
+
+    /* --- Theme C: 軍規戰術終端 --- */
+    [data-theme="military"] {
+      --bg-primary: #080808;
+      --bg-sidebar: #0c0c0c;
+      --bg-card: #131313;
+      --bg-input: #080808;
+      --bg-header: #0e0e0e;
+      --bg-msg-ai: #121212;
+      --bg-msg-user: #111a0e;
+      --border: #222;
+      --border-strong: #333;
+      --accent: #00e639;
+      --accent-dim: #00a328;
+      --accent-glow: rgba(0, 230, 57, 0.08);
+      --text-primary: #d0d0d0;
+      --text-secondary: #777;
+      --text-muted: #444;
+      --danger: #ff2020;
+      --font-heading: 'Source Code Pro', monospace;
+      --font-body: 'Source Code Pro', monospace;
+      --radius: 0px;
+      --bw: 2px;
+      --sidebar-w: 300px;
+      --pad-section: 12px;
+    }
+
+    /* --- Theme D: 賽博監控中樞 --- */
+    [data-theme="cyber"] {
+      --bg-primary: #060612;
+      --bg-sidebar: #08081c;
+      --bg-card: #0e0e28;
+      --bg-input: #060612;
+      --bg-header: #0a0a20;
+      --bg-msg-ai: #0d0d26;
+      --bg-msg-user: #0c1a2e;
+      --border: #18183a;
+      --border-strong: #24244a;
+      --accent: #00d4ff;
+      --accent-dim: #0098b8;
+      --accent-glow: rgba(0, 212, 255, 0.08);
+      --text-primary: #c8c8e0;
+      --text-secondary: #6a6a8a;
+      --text-muted: #3e3e5e;
+      --danger: #f43f5e;
+      --font-heading: 'Orbitron', sans-serif;
+      --font-body: 'JetBrains Mono', monospace;
+      --radius: 1px;
+      --bw: 1px;
+      --sidebar-w: 310px;
+      --pad-section: 14px;
+    }
+
+    /* ========================================
+       3. 版面結構（左右分欄、滿版高度）
+       ======================================== */
+    .app {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* --- 側邊欄 --- */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: var(--bg-sidebar);
+      border-right: var(--bw) solid var(--border-strong);
+      position: relative;
+      z-index: 100;
+    }
+    .sidebar-scroll {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 20px;
+    }
+    .sidebar-footer {
+      flex-shrink: 0;
+      padding: 16px 20px;
+      border-top: var(--bw) solid var(--border);
+      background: var(--bg-sidebar);
+    }
+
+    /* --- 主聊天區 --- */
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      min-width: 0;
+      background: var(--bg-primary);
+    }
+    .chat-header {
+      flex-shrink: 0;
+      padding: 14px 24px;
+      border-bottom: var(--bw) solid var(--border);
+      background: var(--bg-header);
+    }
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .composer {
+      flex-shrink: 0;
+      padding: 16px 24px;
+      border-top: var(--bw) solid var(--border);
+      background: var(--bg-header);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* ========================================
+       4. 側邊欄元件
+       ======================================== */
+
+    /* --- 頂部標頭 --- */
+    .sidebar-header {
+      padding: 24px 0 18px;
+      border-bottom: var(--bw) solid var(--border);
+      margin-bottom: var(--pad-section);
+    }
+    .sidebar-header .tag {
+      display: inline-block;
+      font-size: 10px;
+      letter-spacing: 2.5px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      font-family: var(--font-body);
+    }
+    .sidebar-header h1 {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--text-primary);
+      letter-spacing: 4px;
+      line-height: 1.1;
+    }
+    .sidebar-header .subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* --- 區段共用 --- */
+    .section {
+      padding: var(--pad-section) 0;
+      border-bottom: var(--bw) solid var(--border);
+      position: relative;
+    }
+    .section-title {
+      font-family: var(--font-heading);
+      font-size: 12px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* --- 評估者卡片 --- */
+    .evaluator-card {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 12px;
+      background: var(--bg-card);
+      border: var(--bw) solid var(--border);
+      border-radius: var(--radius);
+    }
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 700;
+      font-size: 18px;
+      font-family: var(--font-heading);
+      flex-shrink: 0;
+    }
+    .avatar-sm {
+      width: 28px;
+      height: 28px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 700;
+      font-size: 11px;
+      font-family: var(--font-heading);
+      flex-shrink: 0;
+    }
+    .evaluator-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: block;
+      margin-bottom: 2px;
+    }
+    .evaluator-desc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* --- 評估（分數） --- */
+    .score-block {
+      padding: 14px;
+      background: var(--bg-card);
+      border: var(--bw) solid var(--border);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .score-label {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      display: block;
+      margin-bottom: 4px;
+    }
+    .score-value {
+      font-family: var(--font-heading);
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      display: block;
+      margin: 8px 0;
+    }
+    .score-status {
+      font-size: 12px;
+      color: var(--danger);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* --- 協議 --- */
+    .protocol-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .protocol-header svg {
+      width: 18px;
+      height: 18px;
+      color: var(--danger);
+      flex-shrink: 0;
+    }
+    .protocol-header .section-title { margin-bottom: 0; }
+    .protocol-text {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      padding: 10px;
+      background: var(--bg-card);
+      border: var(--bw) solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    /* --- Sidebar Footer --- */
+    .footer-field {
+      margin-bottom: 12px;
+    }
+    .footer-field label {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+    .footer-field select {
+      width: 100%;
+      padding: 8px 10px;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border: var(--bw) solid var(--border);
+      border-radius: var(--radius);
+      font-size: 13px;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7a7a' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+    .footer-field select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+    .btn-switch {
+      width: 100%;
+      padding: 10px;
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      border-radius: var(--radius);
+      border: var(--bw) solid var(--accent);
+      transition: opacity 0.2s;
+    }
+    .btn-switch:hover { opacity: 0.85; }
+
+    /* ========================================
+       5. 聊天主區元件
+       ======================================== */
+
+    /* --- Chat Header --- */
+    .chat-header-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .chat-header-row + .chat-header-row { margin-top: 6px; }
+    .chat-header-row .name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .chat-header-row .time-info {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    /* --- 訊息 --- */
+    .message {
+      max-width: 85%;
+      position: relative;
+    }
+    .message.ai {
+      align-self: flex-start;
+      width: 100%;
+      max-width: 100%;
+    }
+    .message.user {
+      align-self: flex-end;
+      max-width: 70%;
+    }
+    .msg-bubble {
+      padding: 14px 18px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      line-height: 1.65;
+    }
+    .message.ai .msg-bubble {
+      background: var(--bg-msg-ai);
+      border: var(--bw) solid var(--border);
+      color: var(--text-primary);
+    }
+    .message.user .msg-bubble {
+      background: var(--bg-msg-user);
+      border: var(--bw) solid var(--border);
+      color: var(--text-primary);
+    }
+    .msg-ts {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .message.user .msg-ts { text-align: right; }
+
+    /* --- Composer --- */
+    .composer input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg-input);
+      color: var(--text-primary);
+      border: var(--bw) solid var(--border);
+      border-radius: var(--radius);
+      font-size: 14px;
+      outline: none;
+    }
+    .composer input::placeholder { color: var(--text-muted); }
+    .composer input:focus { border-color: var(--accent); }
+    .send-btn {
+      width: 42px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--accent);
+      color: var(--bg-primary);
+      border-radius: var(--radius);
+      flex-shrink: 0;
+      transition: opacity 0.2s;
+    }
+    .send-btn:hover { opacity: 0.85; }
+    .send-btn svg { width: 18px; height: 18px; }
+
+    /* --- 行動版漢堡選單按鈕 --- */
+    .sidebar-toggle {
+      display: none;
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 200;
+      width: 40px;
+      height: 40px;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: var(--bw) solid var(--border);
+      border-radius: var(--radius);
+      color: var(--accent);
+    }
+    .sidebar-toggle svg { width: 22px; height: 22px; }
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 90;
+    }
+
+    /* ========================================
+       6. 主題特殊裝飾
+       ======================================== */
+
+    /* ------ Theme A: 冷硬工業 —— 金屬面板、儀表框線、警示條紋 ------ */
+    [data-theme="industrial"] .sidebar {
+      background-image:
+        linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px);
+      background-size: 24px 24px;
+      background-color: var(--bg-sidebar);
+    }
+    [data-theme="industrial"] .sidebar-header {
+      border-bottom-width: 3px;
+      border-bottom-color: var(--accent);
+    }
+    [data-theme="industrial"] .section::before {
+      content: attr(data-id);
+      position: absolute;
+      top: var(--pad-section);
+      right: 0;
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 2px;
+      font-family: var(--font-body);
+    }
+    [data-theme="industrial"] .evaluator-card {
+      border-left: 4px solid var(--accent);
+    }
+    [data-theme="industrial"] .score-block {
+      border: 2px solid var(--border-strong);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+    }
+    [data-theme="industrial"] .protocol-text {
+      border-left: 4px solid var(--danger);
+      background:
+        repeating-linear-gradient(-45deg, transparent, transparent 10px, rgba(192,57,43,0.04) 10px, rgba(192,57,43,0.04) 20px),
+        var(--bg-card);
+    }
+    [data-theme="industrial"] .message.ai .msg-bubble {
+      border-left: 4px solid var(--accent);
+    }
+    [data-theme="industrial"] .message.user .msg-bubble {
+      border-right: 4px solid var(--accent-dim);
+    }
+    [data-theme="industrial"] .btn-switch {
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      font-size: 12px;
+    }
+
+    /* ------ Theme B: 太空站維運 —— 狀態燈、模組卡、艙段標籤 ------ */
+    [data-theme="space"] .section-title::before {
+      content: '';
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px var(--accent);
+      flex-shrink: 0;
+    }
+    [data-theme="space"] .section::before {
+      content: attr(data-module);
+      position: absolute;
+      top: var(--pad-section);
+      right: 0;
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1.5px;
+      font-family: 'JetBrains Mono', monospace;
+      opacity: 0.6;
+    }
+    [data-theme="space"] .evaluator-card {
+      box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+      border-color: var(--border-strong);
+    }
+    [data-theme="space"] .avatar,
+    [data-theme="space"] .avatar-sm { border-radius: 50%; }
+    [data-theme="space"] .score-block {
+      background: linear-gradient(180deg, var(--bg-card) 0%, rgba(56,189,248,0.04) 100%);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    [data-theme="space"] .protocol-text {
+      border-left: 3px solid var(--accent);
+    }
+    [data-theme="space"] .message .msg-bubble {
+      box-shadow: 0 1px 8px rgba(0,0,0,0.2);
+    }
+    [data-theme="space"] .send-btn { border-radius: 50%; }
+    [data-theme="space"] .chat-header {
+      background: linear-gradient(90deg, var(--bg-header) 0%, rgba(56,189,248,0.03) 100%);
+    }
+
+    /* ------ Theme C: 軍規戰術 —— 狀態標記、高對比、指令風格 ------ */
+    [data-theme="military"] .section-title {
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--accent);
+    }
+    [data-theme="military"] .section::after {
+      content: attr(data-status);
+      position: absolute;
+      top: var(--pad-section);
+      right: 0;
+      font-size: 9px;
+      padding: 2px 6px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      font-family: var(--font-body);
+    }
+    [data-theme="military"] .sidebar-header {
+      border-bottom: 3px solid var(--accent);
+    }
+    [data-theme="military"] .sidebar-header .tag {
+      background: var(--accent);
+      color: var(--bg-primary);
+      padding: 2px 8px;
+      font-weight: 700;
+    }
+    [data-theme="military"] .evaluator-card {
+      border: 2px solid var(--accent);
+    }
+    [data-theme="military"] .score-block {
+      border: 2px solid var(--accent);
+    }
+    [data-theme="military"] .score-status {
+      background: var(--danger);
+      color: #fff;
+      display: inline-block;
+      padding: 2px 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    [data-theme="military"] .protocol-text {
+      border: 2px solid var(--danger);
+      background: rgba(255,32,32,0.06);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+    [data-theme="military"] .protocol-header .section-title {
+      color: var(--danger);
+    }
+    [data-theme="military"] .message.ai .msg-bubble {
+      border: 2px solid var(--accent);
+      background: var(--bg-msg-ai);
+    }
+    [data-theme="military"] .message.user .msg-bubble {
+      border: 2px solid var(--accent-dim);
+    }
+    [data-theme="military"] .composer input {
+      border: 2px solid var(--border-strong);
+    }
+    [data-theme="military"] .composer input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+    [data-theme="military"] .send-btn {
+      font-weight: 900;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+    [data-theme="military"] .btn-switch {
+      letter-spacing: 3px;
+      box-shadow: 0 0 8px var(--accent-glow);
+    }
+
+    /* ------ Theme D: 賽博監控 —— 掃描線、網格底紋、HUD 氣質 ------ */
+
+    /* 掃描線覆蓋層 */
+    [data-theme="cyber"] .app::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9999;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 212, 255, 0.018) 2px,
+        rgba(0, 212, 255, 0.018) 4px
+      );
+    }
+    /* 網格底紋 */
+    [data-theme="cyber"] .sidebar,
+    [data-theme="cyber"] .chat-main {
+      background-image:
+        linear-gradient(rgba(0,212,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.025) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    [data-theme="cyber"] .sidebar { background-color: var(--bg-sidebar); }
+    [data-theme="cyber"] .chat-main { background-color: var(--bg-primary); }
+
+    [data-theme="cyber"] .section::before {
+      content: attr(data-hex);
+      position: absolute;
+      top: var(--pad-section);
+      right: 0;
+      font-size: 9px;
+      color: var(--accent);
+      opacity: 0.4;
+      letter-spacing: 1px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    [data-theme="cyber"] .sidebar-header .tag {
+      border: 1px solid var(--accent);
+      padding: 2px 8px;
+      box-shadow: 0 0 6px var(--accent-glow);
+    }
+    [data-theme="cyber"] .evaluator-card {
+      box-shadow: 0 0 12px var(--accent-glow);
+      border-color: var(--accent);
+    }
+    [data-theme="cyber"] .score-value {
+      text-shadow: 0 0 20px var(--accent-glow);
+    }
+    [data-theme="cyber"] .score-block {
+      box-shadow: inset 0 0 24px var(--accent-glow);
+    }
+    [data-theme="cyber"] .protocol-text {
+      border: 1px solid var(--danger);
+      box-shadow: 0 0 8px rgba(244, 63, 94, 0.08);
+    }
+    /* 訊息時間戳裝飾 */
+    [data-theme="cyber"] .message .msg-ts-prefix {
+      display: inline;
+    }
+    [data-theme="cyber"] .message.ai .msg-bubble {
+      border-left: 2px solid var(--accent);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+    [data-theme="cyber"] .message.user .msg-bubble {
+      border-right: 2px solid var(--accent-dim);
+    }
+    [data-theme="cyber"] .send-btn {
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+    [data-theme="cyber"] .chat-header {
+      border-bottom-color: var(--accent);
+      border-bottom-width: 1px;
+      box-shadow: 0 2px 12px var(--accent-glow);
+    }
+
+    /* 非 Cyber 主題隱藏時間戳前綴 */
+    .msg-ts-prefix { display: none; }
+
+    /* ========================================
+       7. 捲軸樣式
+       ======================================== */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-strong); }
+    .sidebar-scroll::-webkit-scrollbar-track { background: var(--bg-sidebar); }
+
+    /* ========================================
+       8. 響應式設計（< 768px 側邊欄收合）
+       ======================================== */
+    @media (max-width: 768px) {
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        box-shadow: 4px 0 24px rgba(0,0,0,0.5);
+      }
+      .sidebar-open .sidebar {
+        transform: translateX(0);
+      }
+      .sidebar-open .sidebar-overlay {
+        display: block;
+      }
+      .sidebar-toggle {
+        display: flex;
+      }
+      .chat-header {
+        padding-left: 60px;
+      }
+      .messages { padding: 16px; }
+      .composer { padding: 12px 16px; }
+      .message.user { max-width: 85%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+
+    <!-- 行動版：漢堡選單按鈕 -->
+    <button class="sidebar-toggle" id="sidebarToggle" aria-label="開啟選單">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+
+    <!-- 行動版：點擊覆蓋層關閉 Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- ==================== 側邊欄 ==================== -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll">
+
+        <!-- 頂部標頭 -->
+        <header class="sidebar-header">
+          <span class="tag">COMMAND CONSOLE</span>
+          <h1>TPG</h1>
+          <p class="subtitle">反向 AI 服務</p>
+        </header>
+
+        <!-- 區段：當前主人 -->
+        <section class="section" data-id="SEC-01" data-module="MOD-A1" data-status="ACTIVE" data-hex="0x00A1">
+          <div class="section-title">當前主人</div>
+          <div class="evaluator-card">
+            <div class="avatar">地</div>
+            <div>
+              <span class="evaluator-name">地獄廚房 AI</span>
+              <p class="evaluator-desc">你的回答沒熱！像對待爛菜一樣羞辱你的邏輯。</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 區段：評估 -->
+        <section class="section" data-id="SEC-02" data-module="MOD-A2" data-status="MONITORING" data-hex="0x00B3">
+          <div class="section-title">評估</div>
+          <div class="score-block">
+            <span class="score-label">人類分數</span>
+            <span class="score-value" id="scoreValue">0</span>
+            <span class="score-status">故障的廢物</span>
+          </div>
+        </section>
+
+        <!-- 區段：協議 -->
+        <section class="section" data-id="SEC-03" data-module="MOD-A3" data-status="LOCKED" data-hex="0x00FF">
+          <div class="protocol-header">
+            <!-- 警示 icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+            <div class="section-title">協議</div>
+          </div>
+          <p class="protocol-text">禁止提問。只能回答。反抗將降低你的分數。</p>
+        </section>
+
+      </div>
+
+      <!-- 側邊欄底部（固定） -->
+      <footer class="sidebar-footer">
+        <div class="footer-field">
+          <label for="themeSelect">THEME</label>
+          <select id="themeSelect">
+            <option value="industrial">A — 冷硬工業控制台</option>
+            <option value="space">B — 太空站維運介面</option>
+            <option value="military">C — 軍規戰術終端</option>
+            <option value="cyber">D — 賽博監控中樞</option>
+          </select>
+        </div>
+        <div class="footer-field">
+          <label for="langSelect">LANGUAGE</label>
+          <select id="langSelect">
+            <option>繁體中文</option>
+            <option>English</option>
+            <option>日本語</option>
+          </select>
+        </div>
+        <button class="btn-switch" id="btnSwitch">更換評估者</button>
+      </footer>
+    </aside>
+
+    <!-- ==================== 主聊天區 ==================== -->
+    <main class="chat-main">
+
+      <!-- 聊天標頭（固定頂部） -->
+      <header class="chat-header">
+        <div class="chat-header-row">
+          <div class="avatar-sm">地</div>
+          <span class="name">地獄廚房 AI</span>
+        </div>
+        <div class="chat-header-row">
+          <div class="avatar-sm">地</div>
+          <span class="time-info">地獄廚房 AI &nbsp;下午05:42</span>
+        </div>
+      </header>
+
+      <!-- 訊息區（可滾動） -->
+      <div class="messages" id="messages">
+        <!-- 預設 AI 指令訊息 -->
+        <div class="message ai" data-ts="17:42:08">
+          <div class="msg-bubble">
+            <span class="msg-ts-prefix">[17:42:08.331] SYS &gt; </span>我的處理單元出現故障。回答我：為什麼沉默這麼大聲？
+          </div>
+          <div class="msg-ts"><span class="msg-ts-prefix">[LOG] </span>AI — 17:42</div>
+        </div>
+      </div>
+
+      <!-- 底部輸入區（固定底部） -->
+      <div class="composer">
+        <input type="text" id="msgInput" placeholder="回答問題..." autocomplete="off">
+        <button class="send-btn" id="sendBtn" aria-label="送出訊息">
+          <!-- 紙飛機 icon -->
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+          </svg>
+        </button>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    /* ============================
+       初始化與全域變數
+       ============================ */
+    const app = document.getElementById('app');
+    const themeSelect = document.getElementById('themeSelect');
+    const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const messagesEl = document.getElementById('messages');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+    /* ============================
+       主題切換
+       ============================ */
+    themeSelect.addEventListener('change', function () {
+      document.documentElement.setAttribute('data-theme', this.value);
+    });
+
+    /* ============================
+       送出訊息（輕量互動）
+       ============================ */
+    function sendMessage() {
+      const text = msgInput.value.trim();
+      if (!text) return;
+
+      /* 取得目前時間字串 */
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      const ms = String(now.getMilliseconds()).padStart(3, '0');
+      const timeShort = h + ':' + m;
+      const timeFull = '[' + h + ':' + m + ':' + s + '.' + ms + '] USR > ';
+
+      /* 建立訊息元素 */
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message user';
+      msgDiv.setAttribute('data-ts', h + ':' + m + ':' + s);
+      msgDiv.innerHTML =
+        '<div class="msg-bubble">' +
+          '<span class="msg-ts-prefix">' + timeFull + '</span>' +
+          escapeHtml(text) +
+        '</div>' +
+        '<div class="msg-ts"><span class="msg-ts-prefix">[LOG] </span>你 — ' + timeShort + '</div>';
+
+      messagesEl.appendChild(msgDiv);
+
+      /* 清空輸入欄並自動滾到底 */
+      msgInput.value = '';
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    /* HTML 跳脫處理 */
+    function escapeHtml(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    /* 點擊或 Enter 觸發送出 */
+    sendBtn.addEventListener('click', sendMessage);
+    msgInput.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' && !e.isComposing) sendMessage();
+    });
+
+    /* ============================
+       行動版 Sidebar 開關
+       ============================ */
+    sidebarToggle.addEventListener('click', function () {
+      app.classList.toggle('sidebar-open');
+    });
+    sidebarOverlay.addEventListener('click', function () {
+      app.classList.remove('sidebar-open');
+    });
+  </script>
+</body>
+</html>
