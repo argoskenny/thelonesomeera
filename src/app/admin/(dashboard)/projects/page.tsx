@@ -12,57 +12,55 @@ export default async function AdminProjectsPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="font-mono text-2xl font-bold text-text-main">
-            作品管理
-          </h1>
-          <p className="mt-1 font-mono text-sm text-text-muted">
+          <h1 className="text-2xl font-bold text-slate-800">作品管理</h1>
+          <p className="mt-1 text-sm text-slate-500">
             共 {projects.length} 個作品
           </p>
         </div>
         <Link
           href="/admin/projects/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-mono text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
           新增作品
         </Link>
       </div>
 
-      <div className="rounded-xl border border-slate-700/50 overflow-hidden">
+      <div className="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-700/50 bg-card">
-              <th className="px-4 py-3 text-left font-mono text-xs font-semibold text-text-muted">
+            <tr className="border-b border-slate-200 bg-slate-50">
+              <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                 排序
               </th>
-              <th className="px-4 py-3 text-left font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                 作品
               </th>
-              <th className="px-4 py-3 text-left font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                 連結
               </th>
-              <th className="px-4 py-3 text-center font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
                 精選
               </th>
-              <th className="px-4 py-3 text-right font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {projects.map((project) => (
               <tr
                 key={project.id}
-                className="border-b border-slate-800/30 transition-colors hover:bg-card/50"
+                className="transition-colors hover:bg-slate-50"
               >
-                <td className="px-4 py-3 font-mono text-sm text-text-muted">
+                <td className="px-5 py-4 text-sm text-slate-500">
                   #{project.sortOrder}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg bg-slate-800">
+                    <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img
                         src={project.image}
@@ -70,24 +68,24 @@ export default async function AdminProjectsPage() {
                         className="h-full w-full object-cover"
                       />
                     </div>
-                    <span className="font-mono text-sm text-text-main">
+                    <span className="text-sm font-medium text-slate-800">
                       {project.title}
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-text-muted">
+                <td className="px-5 py-4 text-sm text-slate-500">
                   {project.link}
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-5 py-4 text-center">
                   {project.featured && (
-                    <Star className="mx-auto h-4 w-4 fill-syntax-yellow text-syntax-yellow" />
+                    <Star className="mx-auto h-4 w-4 fill-amber-400 text-amber-400" />
                   )}
                 </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-2">
+                <td className="px-5 py-4">
+                  <div className="flex items-center justify-end gap-1">
                     <Link
                       href={`/admin/projects/${project.id}`}
-                      className="rounded-lg p-2 text-text-muted transition-colors hover:bg-slate-800 hover:text-primary"
+                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-blue-600"
                     >
                       <Pencil className="h-4 w-4" />
                     </Link>
@@ -103,7 +101,7 @@ export default async function AdminProjectsPage() {
           </tbody>
         </table>
         {projects.length === 0 && (
-          <div className="p-8 text-center font-mono text-sm text-text-muted">
+          <div className="p-12 text-center text-sm text-slate-400">
             尚無作品，點擊「新增作品」開始建立
           </div>
         )}

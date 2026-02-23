@@ -17,61 +17,57 @@ export default async function AdminDashboard() {
       label: "文章總數",
       value: articleCount,
       icon: FileText,
-      color: "text-primary",
-      bg: "bg-primary/10",
+      color: "text-blue-600",
+      bg: "bg-blue-50",
     },
     {
       label: "已發佈",
       value: publishedCount,
       icon: Eye,
-      color: "text-syntax-green",
-      bg: "bg-syntax-green/10",
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
     },
     {
       label: "草稿",
       value: draftCount,
       icon: EyeOff,
-      color: "text-syntax-orange",
-      bg: "bg-syntax-orange/10",
+      color: "text-amber-600",
+      bg: "bg-amber-50",
     },
     {
       label: "作品總數",
       value: projectCount,
       icon: Folder,
-      color: "text-syntax-purple",
-      bg: "bg-syntax-purple/10",
+      color: "text-violet-600",
+      bg: "bg-violet-50",
     },
   ];
 
   return (
     <div>
       <div className="mb-8">
-        <h1 className="font-mono text-2xl font-bold text-text-main">
-          儀表板
-        </h1>
-        <p className="mt-1 font-mono text-sm text-text-muted">
-          {"// 內容管理總覽"}
-        </p>
+        <h1 className="text-2xl font-bold text-slate-800">儀表板</h1>
+        <p className="mt-1 text-sm text-slate-500">內容管理總覽</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className="rounded-xl border border-slate-700/50 bg-card p-6"
+              className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm"
             >
               <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-slate-500">
+                  {stat.label}
+                </p>
                 <div className={`rounded-lg p-2 ${stat.bg}`}>
                   <Icon className={`h-5 w-5 ${stat.color}`} />
                 </div>
               </div>
-              <p className="mt-4 font-mono text-3xl font-bold text-text-main">
+              <p className="mt-3 text-3xl font-bold text-slate-800">
                 {stat.value}
-              </p>
-              <p className="mt-1 font-mono text-xs text-text-muted">
-                {stat.label}
               </p>
             </div>
           );

@@ -93,149 +93,149 @@ export default function ArticleForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <div className="flex items-center gap-2 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          <AlertCircle className="h-4 w-4 flex-shrink-0" />
-          {error}
-        </div>
-      )}
+    <form onSubmit={handleSubmit}>
+      <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-6 space-y-5">
+        {error && (
+          <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            {error}
+          </div>
+        )}
 
-      {/* 標題與 slug */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            標題
-          </label>
-          <input
-            type="text"
-            value={form.title}
-            onChange={(e) => updateField("title", e.target.value)}
-            onBlur={autoSlug}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-            placeholder="文章標題"
-            required
-          />
-        </div>
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            Slug (URL)
-          </label>
-          <input
-            type="text"
-            value={form.slug}
-            onChange={(e) => updateField("slug", e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-            placeholder="article-url-slug"
-            required
-          />
-        </div>
-      </div>
-
-      {/* 分類與封面 */}
-      <div className="grid gap-4 md:grid-cols-2">
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            分類
-          </label>
-          <input
-            type="text"
-            value={form.category}
-            onChange={(e) => updateField("category", e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-            placeholder="例：前端開發、Vue.js"
-            required
-          />
-        </div>
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            封面圖片
-          </label>
-          <div className="flex gap-2">
+        {/* 標題與 slug */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              標題
+            </label>
             <input
               type="text"
-              value={form.coverImage}
-              onChange={(e) => updateField("coverImage", e.target.value)}
-              className="flex-1 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-              placeholder="/uploads/image.png"
+              value={form.title}
+              onChange={(e) => updateField("title", e.target.value)}
+              onBlur={autoSlug}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="文章標題"
+              required
             />
-            <label className="flex cursor-pointer items-center gap-1 rounded-lg border border-slate-700 px-3 py-2.5 text-text-muted transition-colors hover:border-primary hover:text-primary">
-              <Upload className="h-4 w-4" />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              Slug (URL)
             </label>
+            <input
+              type="text"
+              value={form.slug}
+              onChange={(e) => updateField("slug", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="article-url-slug"
+              required
+            />
+          </div>
+        </div>
+
+        {/* 分類與封面 */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              分類
+            </label>
+            <input
+              type="text"
+              value={form.category}
+              onChange={(e) => updateField("category", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="例：前端開發、Vue.js"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              封面圖片
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={form.coverImage}
+                onChange={(e) => updateField("coverImage", e.target.value)}
+                className="flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                placeholder="/uploads/image.png"
+              />
+              <label className="flex cursor-pointer items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-500 transition-colors hover:border-blue-500 hover:text-blue-600">
+                <Upload className="h-4 w-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* 摘要 */}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            摘要
+          </label>
+          <textarea
+            value={form.excerpt}
+            onChange={(e) => updateField("excerpt", e.target.value)}
+            rows={2}
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"
+            placeholder="文章摘要..."
+            required
+          />
+        </div>
+
+        {/* Markdown 編輯器 */}
+        <div>
+          <div className="mb-1.5 flex items-center justify-between">
+            <label className="text-sm font-medium text-slate-700">
+              內容（Markdown）
+            </label>
+            <button
+              type="button"
+              onClick={() => setPreview(!preview)}
+              className="flex items-center gap-1 text-sm text-slate-500 transition-colors hover:text-blue-600"
+            >
+              <Eye className="h-3.5 w-3.5" />
+              {preview ? "編輯" : "預覽"}
+            </button>
+          </div>
+          <div className={preview ? "grid gap-4 md:grid-cols-2" : ""}>
+            <textarea
+              value={form.content}
+              onChange={(e) => updateField("content", e.target.value)}
+              rows={20}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-y font-mono"
+              placeholder="以 Markdown 撰寫文章內容..."
+              required
+            />
+            {preview && (
+              <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 overflow-y-auto max-h-[520px] prose prose-sm prose-slate max-w-none">
+                <MarkdownContent content={form.content} />
+              </div>
+            )}
           </div>
         </div>
       </div>
 
-      {/* 摘要 */}
-      <div>
-        <label className="mb-1.5 block font-mono text-xs text-text-muted">
-          摘要
-        </label>
-        <textarea
-          value={form.excerpt}
-          onChange={(e) => updateField("excerpt", e.target.value)}
-          rows={2}
-          className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none resize-none"
-          placeholder="文章摘要..."
-          required
-        />
-      </div>
-
-      {/* Markdown 編輯器（split view） */}
-      <div>
-        <div className="mb-1.5 flex items-center justify-between">
-          <label className="font-mono text-xs text-text-muted">
-            內容（Markdown）
-          </label>
-          <button
-            type="button"
-            onClick={() => setPreview(!preview)}
-            className="flex items-center gap-1 font-mono text-xs text-text-muted transition-colors hover:text-primary"
-          >
-            <Eye className="h-3 w-3" />
-            {preview ? "編輯" : "預覽"}
-          </button>
-        </div>
-        <div className={preview ? "grid gap-4 md:grid-cols-2" : ""}>
-          <textarea
-            value={form.content}
-            onChange={(e) => updateField("content", e.target.value)}
-            rows={20}
-            className={`w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-3 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none resize-y ${
-              preview ? "" : ""
-            }`}
-            placeholder="以 Markdown 撰寫文章內容..."
-            required
-          />
-          {preview && (
-            <div className="rounded-lg border border-slate-700/50 bg-card/50 p-4 overflow-y-auto max-h-[520px]">
-              <MarkdownContent content={form.content} />
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* 發佈與儲存 */}
-      <div className="flex items-center justify-between border-t border-slate-800/50 pt-6">
-        <label className="flex items-center gap-2 cursor-pointer">
+      <div className="mt-6 flex items-center justify-between">
+        <label className="flex items-center gap-2.5 cursor-pointer">
           <input
             type="checkbox"
             checked={form.published}
             onChange={(e) => updateField("published", e.target.checked)}
-            className="rounded border-slate-600 bg-slate-800 text-primary focus:ring-primary"
+            className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
           />
-          <span className="font-mono text-sm text-text-muted">發佈文章</span>
+          <span className="text-sm font-medium text-slate-700">發佈文章</span>
         </label>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 font-mono text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
           {saving ? "儲存中..." : "儲存"}

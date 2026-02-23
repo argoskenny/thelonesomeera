@@ -100,159 +100,161 @@ export default function ProjectForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {error && (
-        <div className="flex items-center gap-2 rounded-lg bg-red-500/10 px-4 py-3 text-sm text-red-400">
-          <AlertCircle className="h-4 w-4 flex-shrink-0" />
-          {error}
-        </div>
-      )}
+    <form onSubmit={handleSubmit}>
+      <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-6 space-y-5">
+        {error && (
+          <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            {error}
+          </div>
+        )}
 
-      {/* 標題與連結 */}
-      <div className="grid gap-4 md:grid-cols-2">
+        {/* 標題與連結 */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              作品名稱
+            </label>
+            <input
+              type="text"
+              value={form.title}
+              onChange={(e) => updateField("title", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="作品名稱"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              連結
+            </label>
+            <input
+              type="text"
+              value={form.link}
+              onChange={(e) => updateField("link", e.target.value)}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="/hellrider/index.html"
+              required
+            />
+          </div>
+        </div>
+
+        {/* 描述 */}
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            作品名稱
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            描述
           </label>
-          <input
-            type="text"
-            value={form.title}
-            onChange={(e) => updateField("title", e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-            placeholder="作品名稱"
+          <textarea
+            value={form.description}
+            onChange={(e) => updateField("description", e.target.value)}
+            rows={3}
+            className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none"
+            placeholder="作品描述..."
             required
           />
         </div>
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            連結
-          </label>
-          <input
-            type="text"
-            value={form.link}
-            onChange={(e) => updateField("link", e.target.value)}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-            placeholder="/hellrider/index.html"
-            required
-          />
+
+        {/* 圖片與排序 */}
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              預覽圖片
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={form.image}
+                onChange={(e) => updateField("image", e.target.value)}
+                className="flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                placeholder="/uploads/image.png"
+                required
+              />
+              <label className="flex cursor-pointer items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-500 transition-colors hover:border-blue-500 hover:text-blue-600">
+                <Upload className="h-4 w-4" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">
+              排序（數字越小越前面）
+            </label>
+            <input
+              type="number"
+              value={form.sortOrder}
+              onChange={(e) => updateField("sortOrder", Number(e.target.value))}
+              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+            />
+          </div>
         </div>
-      </div>
 
-      {/* 描述 */}
-      <div>
-        <label className="mb-1.5 block font-mono text-xs text-text-muted">
-          描述
-        </label>
-        <textarea
-          value={form.description}
-          onChange={(e) => updateField("description", e.target.value)}
-          rows={3}
-          className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none resize-none"
-          placeholder="作品描述..."
-          required
-        />
-      </div>
-
-      {/* 圖片與排序 */}
-      <div className="grid gap-4 md:grid-cols-2">
+        {/* 標籤 */}
         <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            預覽圖片
+          <label className="mb-1.5 block text-sm font-medium text-slate-700">
+            標籤
           </label>
+          <div className="flex flex-wrap gap-2 mb-2">
+            {tags.map((tag) => (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-medium text-blue-700"
+              >
+                {tag}
+                <button
+                  type="button"
+                  onClick={() => removeTag(tag)}
+                  className="hover:text-red-500 transition-colors"
+                >
+                  <X className="h-3 w-3" />
+                </button>
+              </span>
+            ))}
+          </div>
           <div className="flex gap-2">
             <input
               type="text"
-              value={form.image}
-              onChange={(e) => updateField("image", e.target.value)}
-              className="flex-1 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-              placeholder="/uploads/image.png"
-              required
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  addTag();
+                }
+              }}
+              className="flex-1 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="輸入標籤後按 Enter"
             />
-            <label className="flex cursor-pointer items-center gap-1 rounded-lg border border-slate-700 px-3 py-2.5 text-text-muted transition-colors hover:border-primary hover:text-primary">
-              <Upload className="h-4 w-4" />
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-              />
-            </label>
-          </div>
-        </div>
-        <div>
-          <label className="mb-1.5 block font-mono text-xs text-text-muted">
-            排序（數字越小越前面）
-          </label>
-          <input
-            type="number"
-            value={form.sortOrder}
-            onChange={(e) => updateField("sortOrder", Number(e.target.value))}
-            className="w-full rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-          />
-        </div>
-      </div>
-
-      {/* 標籤 */}
-      <div>
-        <label className="mb-1.5 block font-mono text-xs text-text-muted">
-          標籤
-        </label>
-        <div className="flex flex-wrap gap-2 mb-2">
-          {tags.map((tag) => (
-            <span
-              key={tag}
-              className="inline-flex items-center gap-1 rounded-md bg-primary/10 px-2 py-1 font-mono text-xs text-primary"
+            <button
+              type="button"
+              onClick={addTag}
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-slate-500 transition-colors hover:border-blue-500 hover:text-blue-600"
             >
-              {tag}
-              <button
-                type="button"
-                onClick={() => removeTag(tag)}
-                className="hover:text-red-400 transition-colors"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </span>
-          ))}
-        </div>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                addTag();
-              }
-            }}
-            className="flex-1 rounded-lg border border-slate-700 bg-slate-800/50 px-4 py-2.5 font-mono text-sm text-text-main placeholder:text-slate-600 focus:border-primary focus:outline-none"
-            placeholder="輸入標籤後按 Enter"
-          />
-          <button
-            type="button"
-            onClick={addTag}
-            className="rounded-lg border border-slate-700 px-3 py-2.5 text-text-muted transition-colors hover:border-primary hover:text-primary"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
+              <Plus className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
 
       {/* 精選與儲存 */}
-      <div className="flex items-center justify-between border-t border-slate-800/50 pt-6">
-        <label className="flex items-center gap-2 cursor-pointer">
+      <div className="mt-6 flex items-center justify-between">
+        <label className="flex items-center gap-2.5 cursor-pointer">
           <input
             type="checkbox"
             checked={form.featured}
             onChange={(e) => updateField("featured", e.target.checked)}
-            className="rounded border-slate-600 bg-slate-800 text-primary focus:ring-primary"
+            className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
           />
-          <span className="font-mono text-sm text-text-muted">設為精選</span>
+          <span className="text-sm font-medium text-slate-700">設為精選</span>
         </label>
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 font-mono text-sm font-semibold text-white transition-colors hover:bg-primary-hover disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
         >
           <Save className="h-4 w-4" />
           {saving ? "儲存中..." : "儲存"}

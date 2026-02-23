@@ -13,86 +13,83 @@ export default async function AdminArticlesPage() {
 
   return (
     <div>
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="font-mono text-2xl font-bold text-text-main">
-            文章管理
-          </h1>
-          <p className="mt-1 font-mono text-sm text-text-muted">
+          <h1 className="text-2xl font-bold text-slate-800">文章管理</h1>
+          <p className="mt-1 text-sm text-slate-500">
             共 {articles.length} 篇文章
           </p>
         </div>
         <Link
           href="/admin/articles/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 font-mono text-sm font-semibold text-white transition-colors hover:bg-primary-hover"
+          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-blue-700"
         >
           <Plus className="h-4 w-4" />
           新增文章
         </Link>
       </div>
 
-      <div className="rounded-xl border border-slate-700/50 overflow-hidden">
+      <div className="rounded-xl bg-white border border-slate-200 shadow-sm overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-slate-700/50 bg-card">
-              <th className="px-4 py-3 text-left font-mono text-xs font-semibold text-text-muted">
+            <tr className="border-b border-slate-200 bg-slate-50">
+              <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                 標題
               </th>
-              <th className="px-4 py-3 text-left font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                 分類
               </th>
-              <th className="px-4 py-3 text-center font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
                 狀態
               </th>
-              <th className="px-4 py-3 text-left font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                 日期
               </th>
-              <th className="px-4 py-3 text-right font-mono text-xs font-semibold text-text-muted">
+              <th className="px-5 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">
                 操作
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-slate-100">
             {articles.map((article) => (
               <tr
                 key={article.id}
-                className="border-b border-slate-800/30 transition-colors hover:bg-card/50"
+                className="transition-colors hover:bg-slate-50"
               >
-                <td className="px-4 py-3">
-                  <span className="font-mono text-sm text-text-main">
+                <td className="px-5 py-4">
+                  <p className="text-sm font-medium text-slate-800">
                     {article.title}
-                  </span>
-                  <br />
-                  <span className="font-mono text-xs text-text-muted">
+                  </p>
+                  <p className="mt-0.5 text-xs text-slate-400">
                     /{article.slug}
-                  </span>
+                  </p>
                 </td>
-                <td className="px-4 py-3">
-                  <span className="rounded-md bg-slate-800 px-2 py-1 font-mono text-xs text-text-muted">
+                <td className="px-5 py-4">
+                  <span className="inline-block rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600">
                     {article.category}
                   </span>
                 </td>
-                <td className="px-4 py-3 text-center">
+                <td className="px-5 py-4 text-center">
                   {article.published ? (
-                    <span className="inline-flex items-center gap-1 text-syntax-green">
-                      <Eye className="h-3.5 w-3.5" />
-                      <span className="font-mono text-xs">已發佈</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
+                      <Eye className="h-3 w-3" />
+                      已發佈
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-text-muted">
-                      <EyeOff className="h-3.5 w-3.5" />
-                      <span className="font-mono text-xs">草稿</span>
+                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+                      <EyeOff className="h-3 w-3" />
+                      草稿
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-3 font-mono text-xs text-text-muted">
+                <td className="px-5 py-4 text-sm text-slate-500">
                   {formatDate(article.createdAt)}
                 </td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-2">
+                <td className="px-5 py-4">
+                  <div className="flex items-center justify-end gap-1">
                     <Link
                       href={`/admin/articles/${article.id}`}
-                      className="rounded-lg p-2 text-text-muted transition-colors hover:bg-slate-800 hover:text-primary"
+                      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-blue-600"
                     >
                       <Pencil className="h-4 w-4" />
                     </Link>
@@ -108,7 +105,7 @@ export default async function AdminArticlesPage() {
           </tbody>
         </table>
         {articles.length === 0 && (
-          <div className="p-8 text-center font-mono text-sm text-text-muted">
+          <div className="p-12 text-center text-sm text-slate-400">
             尚無文章，點擊「新增文章」開始建立
           </div>
         )}

@@ -34,7 +34,7 @@ export default function DeleteButton({
     <button
       onClick={handleDelete}
       disabled={deleting}
-      className="rounded-lg p-2 text-text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-50 cursor-pointer"
+      className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500 disabled:opacity-50 cursor-pointer"
       title="刪除"
     >
       <Trash2 className="h-4 w-4" />

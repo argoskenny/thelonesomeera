@@ -21,14 +21,12 @@ export default async function EditProjectPage({
     <div>
       <Link
         href="/admin/projects"
-        className="mb-6 inline-flex items-center gap-2 font-mono text-sm text-text-muted transition-colors hover:text-primary"
+        className="mb-4 inline-flex items-center gap-2 text-sm text-slate-500 transition-colors hover:text-blue-600"
       >
         <ArrowLeft className="h-4 w-4" />
         返回作品列表
       </Link>
-      <h1 className="mb-8 font-mono text-2xl font-bold text-text-main">
-        編輯作品
-      </h1>
+      <h1 className="mb-6 text-2xl font-bold text-slate-800">編輯作品</h1>
       <ProjectForm
         initial={{
           id: project.id,

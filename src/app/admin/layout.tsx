@@ -10,5 +10,9 @@ export default function AdminRootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div className="admin-reset bg-slate-50 text-slate-800 font-sans min-h-screen">
+      {children}
+    </div>
+  );
 }

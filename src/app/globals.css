@@ -66,3 +66,27 @@
     text-wrap: balance;
   }
 }
+
+/* 後台管理樣式覆蓋：重設前台深色主題 */
+.admin-reset {
+  color: #1e293b;
+  background-color: #f8fafc;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+.admin-reset ::selection {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #1e293b;
+}
+
+.admin-reset ::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.admin-reset ::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+.admin-reset ::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
