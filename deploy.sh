@@ -113,6 +113,13 @@ build_app() {
 setup_nginx() {
     echo "[5/6] 設定 Nginx..."
 
+    # 讓 Nginx (www-data) 能讀取專案目錄
+    sudo chown -R www-data:www-data "$APP_DIR/public"
+    sudo chown -R www-data:www-data "$APP_DIR/.next/static"
+    sudo chmod -R 755 "$APP_DIR"
+    sudo chmod -R 755 "$APP_DIR/public"
+    sudo chmod -R 755 "$APP_DIR/.next"
+
     if [ -f "$APP_DIR/nginx.conf" ]; then
         sudo cp "$APP_DIR/nginx.conf" /etc/nginx/sites-available/thelonesomeera
         sudo ln -sf /etc/nginx/sites-available/thelonesomeera /etc/nginx/sites-enabled/
