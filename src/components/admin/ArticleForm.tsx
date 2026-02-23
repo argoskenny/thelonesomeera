@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save, Eye, Upload, AlertCircle } from "lucide-react";
+import { Save, Eye, Upload, AlertCircle, Sparkles, Loader2 } from "lucide-react";
 import MarkdownContent from "@/components/ui/MarkdownContent";
 import { slugify } from "@/lib/utils";
 
@@ -38,6 +38,13 @@ export default function ArticleForm({
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
+  // AI 生成相關狀態
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiContext, setAiContext] = useState("");
+  const [aiModel, setAiModel] = useState("deepseek/deepseek-r1-0528:free");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState("");
+
   function updateField(field: keyof ArticleData, value: string | boolean) {
     setForm((prev) => ({ ...prev, [field]: value }));
   }
@@ -59,6 +66,49 @@ export default function ArticleForm({
     if (res.ok) {
       const { url } = await res.json();
       updateField("coverImage", url);
+    }
+  }
+
+  async function handleAIGenerate() {
+    if (!aiTopic.trim()) {
+      setAiError("請輸入文章主題");
+      return;
+    }
+
+    setAiError("");
+    setAiLoading(true);
+
+    try {
+      const res = await fetch("/api/admin/ai/generate-article", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: aiTopic, context: aiContext, model: aiModel }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setAiError(data.error || "AI 生成失敗");
+        return;
+      }
+
+      setForm((prev) => ({
+        ...prev,
+        title: data.title || prev.title,
+        slug: data.slug || prev.slug,
+        category: data.category || prev.category,
+        excerpt: data.excerpt || prev.excerpt,
+        content: data.content || prev.content,
+        coverImage: data.coverImage || prev.coverImage,
+      }));
+
+      if (data.imageError) {
+        setAiError(`文章已生成，但封面圖片失敗：${data.imageError}`);
+      }
+    } catch {
+      setAiError("網路錯誤，無法連線 AI 服務");
+    } finally {
+      setAiLoading(false);
     }
   }
 
@@ -92,8 +142,102 @@ export default function ArticleForm({
     }
   }
 
+  const inputClass =
+    "w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20";
+
   return (
     <form onSubmit={handleSubmit}>
+      {/* AI 協助撰寫區塊 */}
+      <div className="mb-6 rounded-xl border border-indigo-200 bg-gradient-to-br from-indigo-50 to-purple-50 p-6 shadow-sm">
+        <div className="mb-4 flex items-center gap-2">
+          <Sparkles className="h-5 w-5 text-indigo-600" />
+          <h3 className="text-base font-semibold text-indigo-800">
+            AI 協助撰寫
+          </h3>
+        </div>
+
+        {aiError && (
+          <div className="mb-4 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            <AlertCircle className="h-4 w-4 flex-shrink-0" />
+            {aiError}
+          </div>
+        )}
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-indigo-700">
+              主題（必填）
+            </label>
+            <input
+              type="text"
+              value={aiTopic}
+              onChange={(e) => setAiTopic(e.target.value)}
+              className={inputClass}
+              placeholder="例：Next.js 14 App Router 完整教學"
+              disabled={aiLoading}
+            />
+          </div>
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-indigo-700">
+              補充上下文（選填）
+            </label>
+            <input
+              type="text"
+              value={aiContext}
+              onChange={(e) => setAiContext(e.target.value)}
+              className={inputClass}
+              placeholder="例：面向初學者、包含實作範例"
+              disabled={aiLoading}
+            />
+          </div>
+        </div>
+
+        <div className="mt-4">
+          <label className="mb-1.5 block text-sm font-medium text-indigo-700">
+            AI 模型
+          </label>
+          <select
+            value={aiModel}
+            onChange={(e) => setAiModel(e.target.value)}
+            disabled={aiLoading}
+            className={inputClass}
+          >
+            <optgroup label="免費模型">
+              <option value="arcee-ai/trinity-large-preview:free">Trinity Large (Free)</option>
+              <option value="stepfun/step-3.5-flash:free">Step 3.5 Flash (Free)</option>
+              <option value="z-ai/glm-4.5-air:free">GLM-4.5 Air (Free)</option>
+              <option value="deepseek/deepseek-r1-0528:free">DeepSeek R1 (Free)</option>
+              <option value="nvidia/nemotron-3-nano-30b-a3b:free">Nemotron 3 Nano (Free)</option>
+            </optgroup>
+            <optgroup label="付費模型">
+              <option value="minimax/minimax-m2.5">MiniMax M2.5</option>
+              <option value="moonshotai/kimi-k2.5">Kimi K2.5</option>
+              <option value="google/gemini-3-flash-preview">Gemini 3 Flash</option>
+              <option value="z-ai/glm-5">GLM-5</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleAIGenerate}
+          disabled={aiLoading}
+          className="mt-4 inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-indigo-700 disabled:opacity-60"
+        >
+          {aiLoading ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              AI 生成中…
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" />
+              AI 產生文章
+            </>
+          )}
+        </button>
+      </div>
+
       <div className="rounded-xl bg-white border border-slate-200 shadow-sm p-6 space-y-5">
         {error && (
           <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
@@ -113,7 +257,7 @@ export default function ArticleForm({
               value={form.title}
               onChange={(e) => updateField("title", e.target.value)}
               onBlur={autoSlug}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className={inputClass}
               placeholder="文章標題"
               required
             />
@@ -126,7 +270,7 @@ export default function ArticleForm({
               type="text"
               value={form.slug}
               onChange={(e) => updateField("slug", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className={inputClass}
               placeholder="article-url-slug"
               required
             />
@@ -143,7 +287,7 @@ export default function ArticleForm({
               type="text"
               value={form.category}
               onChange={(e) => updateField("category", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              className={inputClass}
               placeholder="例：前端開發、Vue.js"
               required
             />
@@ -219,6 +363,20 @@ export default function ArticleForm({
             )}
           </div>
         </div>
+
+        {/* 封面圖片預覽 */}
+        {form.coverImage && (
+          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <h4 className="mb-3 text-sm font-medium text-slate-700">
+              封面圖片預覽
+            </h4>
+            <img
+              src={form.coverImage}
+              alt="封面圖片預覽"
+              className="max-h-64 rounded-lg border border-slate-200 object-cover"
+            />
+          </div>
+        )}
       </div>
 
       {/* 發佈與儲存 */}
