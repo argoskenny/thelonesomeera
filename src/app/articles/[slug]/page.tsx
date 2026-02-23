@@ -6,6 +6,8 @@ import { formatDate } from "@/lib/utils";
 import MarkdownContent from "@/components/ui/MarkdownContent";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: { slug: string };
 };

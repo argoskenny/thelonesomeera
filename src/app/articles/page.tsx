@@ -4,6 +4,8 @@ import { Calendar, Tag } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "技術文章 | The Lonesome Era",
   description: "前端開發、遊戲製作與效能優化的技術文章",

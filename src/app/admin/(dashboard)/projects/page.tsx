@@ -3,6 +3,8 @@ import Link from "next/link";
 import { Plus, Pencil, Star } from "lucide-react";
 import DeleteButton from "@/components/admin/DeleteButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminProjectsPage() {
   const projects = await prisma.project.findMany({
     orderBy: { sortOrder: "asc" },

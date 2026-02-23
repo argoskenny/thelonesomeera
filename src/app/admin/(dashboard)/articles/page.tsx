@@ -4,6 +4,8 @@ import { Plus, Eye, EyeOff, Pencil } from "lucide-react";
 import { formatDate } from "@/lib/utils";
 import DeleteButton from "@/components/admin/DeleteButton";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminArticlesPage() {
   const articles = await prisma.article.findMany({
     orderBy: { createdAt: "desc" },

@@ -4,6 +4,8 @@ import ArticleForm from "@/components/admin/ArticleForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditArticlePage({
   params,
 }: {

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "作品分享 | The Lonesome Era",
   description: "Web / App 作品展示 — 遊戲、應用程式與技術 Demo",

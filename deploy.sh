@@ -1,13 +1,13 @@
 #!/bin/bash
 # ============================================================
 # The Lonesome Era - 伺服器部署腳本
-# 用法：在伺服器上執行 bash deploy.sh
+# 用法：在伺服器上的專案目錄執行 bash deploy.sh
 # ============================================================
 
 set -e
 
 APP_DIR="/var/www/thelonesomeera"
-REPO_URL="你的-git-repo-url"  # 替換為你的 Git repo URL
+DB_FILE="$APP_DIR/prisma/production.db"
 
 echo "=========================================="
 echo " The Lonesome Era - 部署開始"
@@ -15,7 +15,7 @@ echo "=========================================="
 
 # ---- 1. 安裝系統依賴（首次部署才需要）----
 install_dependencies() {
-    echo "[1/7] 檢查系統依賴..."
+    echo "[1/6] 檢查系統依賴..."
 
     if ! command -v node &> /dev/null; then
         echo "  安裝 Node.js 20..."
@@ -39,47 +39,41 @@ install_dependencies() {
     sudo mkdir -p /var/log/pm2
 }
 
-# ---- 2. 拉取程式碼 ----
-pull_code() {
-    echo "[2/7] 拉取程式碼..."
-
-    if [ -d "$APP_DIR/.git" ]; then
-        cd "$APP_DIR"
-        git pull origin main
-    else
-        sudo mkdir -p "$APP_DIR"
-        sudo chown "$USER:$USER" "$APP_DIR"
-        git clone "$REPO_URL" "$APP_DIR"
-        cd "$APP_DIR"
-    fi
-}
-
-# ---- 3. 安裝 npm 依賴 ----
+# ---- 2. 安裝 npm 依賴 ----
 install_npm() {
-    echo "[3/7] 安裝 npm 依賴..."
+    echo "[2/6] 安裝 npm 依賴..."
     cd "$APP_DIR"
-    npm ci --production=false
+    npm ci
 }
 
-# ---- 4. 設定環境變數 ----
+# ---- 3. 設定環境變數 ----
 setup_env() {
-    echo "[4/7] 檢查環境變數..."
+    echo "[3/6] 檢查環境變數..."
 
     if [ ! -f "$APP_DIR/.env.local" ]; then
-        echo "  建立 .env.local（請手動編輯密碼與密鑰）"
-        cat > "$APP_DIR/.env.local" << 'ENVEOF'
-ADMIN_PASSWORD=請替換為你的管理密碼
-JWT_SECRET=請替換為隨機密鑰字串
-DATABASE_URL="file:./prisma/production.db"
+        echo "  建立 .env.local..."
+        cat > "$APP_DIR/.env.local" << ENVEOF
+ADMIN_PASSWORD=changeme
+JWT_SECRET=$(openssl rand -base64 32)
+DATABASE_URL="file:$DB_FILE"
 ENVEOF
-        echo "  ⚠  請編輯 $APP_DIR/.env.local 設定密碼與密鑰！"
+        echo "  ⚠  請編輯 $APP_DIR/.env.local 修改 ADMIN_PASSWORD！"
+    fi
+
+    # 確保 DATABASE_URL 使用絕對路徑
+    if grep -q 'file:\./dev\.db' "$APP_DIR/.env.local"; then
+        echo "  修正 DATABASE_URL 為生產路徑..."
+        sed -i "s|file:./dev.db|file:$DB_FILE|g" "$APP_DIR/.env.local"
     fi
 }
 
-# ---- 5. 建立資料庫 & 建置 ----
+# ---- 4. 資料庫初始化 & 建置 ----
 build_app() {
-    echo "[5/7] 建置應用..."
+    echo "[4/6] 資料庫初始化 & 建置應用..."
     cd "$APP_DIR"
+
+    # 載入環境變數供後續指令使用
+    export $(grep -v '^#' .env.local | xargs)
 
     # 產生 Prisma Client
     npx prisma generate
@@ -87,48 +81,58 @@ build_app() {
     # 推送 Schema 到 SQLite（建立/更新資料表）
     npx prisma db push
 
-    # 匯入種子資料（首次或需要重置時）
-    if [ ! -f "$APP_DIR/prisma/production.db" ] || [ "$1" = "--seed" ]; then
+    # 匯入種子資料（僅首次或明確指定 --seed 時）
+    if [ ! -f "$DB_FILE" ] || [ "$1" = "--seed" ]; then
         echo "  匯入種子資料..."
-        npm run db:seed
+        npx tsx prisma/seed.ts
     fi
 
-    # Next.js 建置
+    # 確認資料庫存在
+    if [ ! -f "$DB_FILE" ]; then
+        echo "  ❌ 資料庫檔案不存在: $DB_FILE"
+        exit 1
+    fi
+    echo "  ✓ 資料庫: $DB_FILE ($(du -h "$DB_FILE" | cut -f1))"
+
+    # Next.js 建置（所有 DB 頁面已設為 force-dynamic，不會在建置時查詢 DB）
     npm run build
 
-    # standalone 模式需要複製 public 和 static
-    cp -r public .next/standalone/public
-    cp -r .next/static .next/standalone/.next/static
+    # standalone 模式：複製必要檔案
+    if [ -d ".next/standalone" ]; then
+        echo "  複製 public/ 與 static/ 至 standalone..."
+        cp -r public .next/standalone/public
+        cp -r .next/static .next/standalone/.next/static
 
-    # 複製 prisma 資料庫到 standalone
-    mkdir -p .next/standalone/prisma
-    cp prisma/production.db .next/standalone/prisma/ 2>/dev/null || true
+        # 建立 prisma 目錄的 symlink，讓 standalone 能找到資料庫
+        mkdir -p .next/standalone/prisma
+        ln -sf "$DB_FILE" .next/standalone/prisma/production.db
+    fi
 }
 
-# ---- 6. 設定 Nginx ----
+# ---- 5. 設定 Nginx ----
 setup_nginx() {
-    echo "[6/7] 設定 Nginx..."
+    echo "[5/6] 設定 Nginx..."
 
-    sudo cp "$APP_DIR/nginx.conf" /etc/nginx/sites-available/thelonesomeera
-    sudo ln -sf /etc/nginx/sites-available/thelonesomeera /etc/nginx/sites-enabled/
+    if [ -f "$APP_DIR/nginx.conf" ]; then
+        sudo cp "$APP_DIR/nginx.conf" /etc/nginx/sites-available/thelonesomeera
+        sudo ln -sf /etc/nginx/sites-available/thelonesomeera /etc/nginx/sites-enabled/
+        sudo rm -f /etc/nginx/sites-enabled/default
 
-    # 移除預設站台（如果存在）
-    sudo rm -f /etc/nginx/sites-enabled/default
-
-    # 測試設定
-    sudo nginx -t
-
-    # 重啟 Nginx
-    sudo systemctl reload nginx
-    echo "  Nginx 已設定完成"
+        if sudo nginx -t 2>&1; then
+            sudo systemctl reload nginx
+            echo "  ✓ Nginx 已設定完成"
+        else
+            echo "  ⚠ Nginx 設定有誤，請檢查 nginx.conf"
+        fi
+    fi
 }
 
-# ---- 7. 啟動 / 重啟 PM2 ----
+# ---- 6. 啟動 / 重啟 PM2 ----
 start_app() {
-    echo "[7/7] 啟動應用..."
+    echo "[6/6] 啟動應用..."
     cd "$APP_DIR"
 
-    # 停止舊的程序（如果有）
+    # 停止舊的程序
     pm2 delete thelonesomeera 2>/dev/null || true
 
     # 啟動
@@ -140,23 +144,20 @@ start_app() {
 
     echo ""
     echo "=========================================="
-    echo " 部署完成！"
+    echo " ✓ 部署完成"
     echo "=========================================="
     echo ""
-    echo " Next.js:  http://127.0.0.1:3000"
-    echo " Nginx:    http://your-domain.com"
+    echo " 應用狀態："
+    pm2 status
     echo ""
     echo " 常用指令："
-    echo "   pm2 status          # 查看程序狀態"
     echo "   pm2 logs            # 查看即時日誌"
     echo "   pm2 restart all     # 重啟應用"
-    echo "   pm2 monit           # 監控面板"
     echo ""
 }
 
 # ---- 執行 ----
 install_dependencies
-pull_code
 install_npm
 setup_env
 build_app "$1"

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { FileText, Folder, Eye, EyeOff } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminDashboard() {
   const [articleCount, publishedCount, draftCount, projectCount] =
     await Promise.all([
