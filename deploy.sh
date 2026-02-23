@@ -8,6 +8,16 @@ set -e
 
 APP_DIR="/var/www/thelonesomeera"
 DB_FILE="$APP_DIR/prisma/production.db"
+SITE_NAME="thelonesomeera"
+NGINX_SITE_AVAILABLE="/etc/nginx/sites-available/$SITE_NAME"
+NGINX_SITE_ENABLED="/etc/nginx/sites-enabled/$SITE_NAME"
+FORCE_NGINX_CONFIG=false
+
+for arg in "$@"; do
+    if [ "$arg" = "--force-nginx" ]; then
+        FORCE_NGINX_CONFIG=true
+    fi
+done
 
 echo "=========================================="
 echo " The Lonesome Era - 部署開始"
@@ -121,15 +131,35 @@ setup_nginx() {
     sudo chmod -R 755 "$APP_DIR/.next"
 
     if [ -f "$APP_DIR/nginx.conf" ]; then
-        sudo cp "$APP_DIR/nginx.conf" /etc/nginx/sites-available/thelonesomeera
-        sudo ln -sf /etc/nginx/sites-available/thelonesomeera /etc/nginx/sites-enabled/
+        SHOULD_COPY=false
+
+        # 避免覆蓋已由 Certbot 寫入 SSL 的站台設定
+        if [ ! -f "$NGINX_SITE_AVAILABLE" ]; then
+            SHOULD_COPY=true
+            echo "  首次部署：建立 Nginx 站台設定"
+        elif [ "$FORCE_NGINX_CONFIG" = true ]; then
+            SHOULD_COPY=true
+            echo "  偵測到 --force-nginx：強制覆蓋 Nginx 設定"
+        elif grep -q "managed by Certbot\\|ssl_certificate\\|listen 443" "$NGINX_SITE_AVAILABLE"; then
+            echo "  偵測到現有 SSL/Certbot 設定，跳過覆蓋站台設定以避免憑證失效"
+            echo "  若要強制改寫請使用：bash deploy.sh --force-nginx"
+        else
+            SHOULD_COPY=true
+            echo "  更新既有非 SSL 站台設定"
+        fi
+
+        if [ "$SHOULD_COPY" = true ]; then
+            sudo cp "$APP_DIR/nginx.conf" "$NGINX_SITE_AVAILABLE"
+        fi
+
+        sudo ln -sf "$NGINX_SITE_AVAILABLE" "$NGINX_SITE_ENABLED"
         sudo rm -f /etc/nginx/sites-enabled/default
 
         if sudo nginx -t 2>&1; then
             sudo systemctl reload nginx
             echo "  ✓ Nginx 已設定完成"
         else
-            echo "  ⚠ Nginx 設定有誤，請檢查 nginx.conf"
+            echo "  ⚠ Nginx 設定有誤，請檢查 $NGINX_SITE_AVAILABLE"
         fi
     fi
 }
