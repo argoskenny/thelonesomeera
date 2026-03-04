@@ -1,19 +1,96 @@
+import { execFileSync } from "child_process";
 import { PrismaClient } from "@prisma/client";
+import fs from "fs";
 import path from "path";
 
 function buildDatabaseUrl(): string {
   const envUrl = process.env.DATABASE_URL ?? "";
+
+  if (!envUrl.startsWith("file:")) {
+    return envUrl;
+  }
 
   // 已是絕對路徑，直接使用
   if (envUrl.startsWith("file:/") && envUrl.charAt(5) === "/") {
     return envUrl;
   }
 
-  // 相對路徑：解析為基於專案根目錄的絕對路徑
-  // standalone 模式下 process.cwd() 可能不在專案根目錄
-  const relative = envUrl.replace("file:", "").replace("./", "");
-  const dbPath = path.resolve(process.cwd(), relative);
+  const relative = envUrl.replace("file:", "").replace(/^\.\/+/, "");
+  const projectRoot = resolveProjectRoot();
+  const candidates = [
+    path.resolve(projectRoot, "prisma", relative),
+    path.resolve(projectRoot, relative),
+    path.resolve(process.cwd(), "prisma", relative),
+    path.resolve(process.cwd(), relative),
+  ];
+  const dbPath = candidates.find((candidate) => fs.existsSync(candidate)) ?? candidates[0];
   return `file:${dbPath}`;
+}
+
+function resolveProjectRoot(): string {
+  let cursor = process.cwd();
+  for (let depth = 0; depth < 8; depth += 1) {
+    if (fs.existsSync(path.join(cursor, "prisma", "schema.prisma"))) {
+      return cursor;
+    }
+    const parent = path.dirname(cursor);
+    if (parent === cursor) break;
+    cursor = parent;
+  }
+  return process.cwd();
+}
+
+function resolvePrismaEngineLibraryPath(): string | undefined {
+  if (process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
+    return process.env.PRISMA_QUERY_ENGINE_LIBRARY;
+  }
+
+  const engineName =
+    process.platform === "darwin" && process.arch === "arm64"
+      ? "libquery_engine-darwin-arm64.dylib.node"
+      : process.platform === "darwin" && process.arch === "x64"
+        ? "libquery_engine-darwin.dylib.node"
+        : undefined;
+
+  if (!engineName) return undefined;
+
+  let cursor = process.cwd();
+  for (let depth = 0; depth < 5; depth += 1) {
+    const candidates = [
+      path.join(cursor, "node_modules/.prisma/client", engineName),
+      path.join(cursor, "node_modules/prisma", engineName),
+      path.join(cursor, "node_modules/@prisma/engines", engineName),
+    ];
+
+    const found = candidates.find((candidate) => fs.existsSync(candidate));
+    if (found) {
+      tryClearMacQuarantine(found);
+      return found;
+    }
+
+    const parent = path.dirname(cursor);
+    if (parent === cursor) break;
+    cursor = parent;
+  }
+
+  return undefined;
+}
+
+function tryClearMacQuarantine(filePath: string): void {
+  if (process.platform !== "darwin") return;
+
+  try {
+    execFileSync("xattr", ["-d", "com.apple.quarantine", filePath], {
+      stdio: "ignore",
+    });
+  } catch {
+    // ignore if attribute does not exist or command is unavailable
+  }
+}
+
+const prismaEngineLibraryPath = resolvePrismaEngineLibraryPath();
+if (prismaEngineLibraryPath) {
+  process.env.PRISMA_QUERY_ENGINE_LIBRARY = prismaEngineLibraryPath;
 }
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/", label: "首頁" },
+  { href: "/ai-hub", label: "AI Hub" },
   { href: "/projects", label: "作品" },
   { href: "/articles", label: "文章" },
   { href: "/about", label: "關於" },

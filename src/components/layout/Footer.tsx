@@ -51,7 +51,7 @@ export default function Footer() {
               {[
                 { href: "/hellrider/index.html", label: "Hell Rider" },
                 { href: "/sox/index.html", label: "Sox FPS" },
-                { href: "/ai-hub.html", label: "AI Demo Hub" },
+                { href: "/ai-hub", label: "AI Demo Hub" },
               ].map((link) => (
                 <li key={link.href}>
                   <a
