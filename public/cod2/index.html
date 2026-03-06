@@ -261,6 +261,34 @@ Feature checklist:
       backdrop-filter: blur(10px);
     }
 
+    .panelActions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .audioToggle {
+      border: 1px solid rgba(125, 226, 255, 0.28);
+      background: rgba(13, 22, 29, 0.82);
+      color: #e4eff7;
+      padding: 9px 12px;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+    }
+
+    .audioToggle:hover {
+      background: rgba(21, 35, 44, 0.92);
+      border-color: rgba(125, 226, 255, 0.48);
+    }
+
+    .audioToggle.muted {
+      color: #ffb9a6;
+      border-color: rgba(255, 120, 120, 0.38);
+    }
+
     .label {
       margin-bottom: 8px;
       color: var(--muted);
@@ -332,7 +360,7 @@ Feature checklist:
       }
     }
   </style>
-  <script type="module" crossorigin src="/cod2/assets/index-DYLB_ZIr.js"></script>
+  <script type="module" crossorigin src="/cod2/assets/index-Cf6sIXst.js"></script>
 </head>
 <body>
   <div id="uiRoot">
@@ -376,6 +404,9 @@ Use cover, manage your magazine, and clear the arena.</p>
         <div class="label">Weapon / Arena</div>
         <div id="ammoValue" class="value">30 / 150</div>
         <div id="arenaValue" class="subvalue">7 Hostiles Active</div>
+        <div class="panelActions">
+          <button id="audioToggle" class="audioToggle" type="button">Audio On</button>
+        </div>
       </div>
     </div>
 
