@@ -139,6 +139,47 @@ Feature checklist:
       line-height: 1.5;
     }
 
+    .loadingPanel {
+      margin-top: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .loadingPanel.hidden {
+      display: none;
+    }
+
+    .loadingMeta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: #d5e4ee;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .loadingCurrent {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .loadingBar {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .loadingFill {
+      height: 100%;
+      width: 100%;
+      transform-origin: left center;
+      transform: scaleX(0);
+      background: linear-gradient(90deg, #7de2ff, #c7f0ff);
+    }
+
     #status {
       position: absolute;
       top: 24px;
@@ -291,7 +332,7 @@ Feature checklist:
       }
     }
   </style>
-  <script type="module" crossorigin src="/cod2/assets/index-8WkzVvLT.js"></script>
+  <script type="module" crossorigin src="/cod2/assets/index-DYLB_ZIr.js"></script>
 </head>
 <body>
   <div id="uiRoot">
@@ -301,6 +342,14 @@ Feature checklist:
         <h1 id="overlayTitle" class="title">Single-File FPS</h1>
         <p id="overlayBody" class="body">Click to lock the mouse and deploy.
 Use cover, manage your magazine, and clear the arena.</p>
+        <div id="loadingPanel" class="loadingPanel hidden" aria-live="polite">
+          <div class="loadingMeta">
+            <span id="loadingProgressText">Preparing assets</span>
+            <span id="loadingPercentText">0%</span>
+          </div>
+          <div class="loadingBar"><div id="loadingFill" class="loadingFill"></div></div>
+          <div id="loadingCurrent" class="loadingCurrent">Preparing asset list...</div>
+        </div>
         <div class="actions">Move: WASD · Sprint: Shift · Jump: Space · Fire: Left Click · Reload: R · Reset: Enter</div>
       </div>
     </div>
