@@ -23,4 +23,19 @@ npm run sync:static
 npm run build:standalone
 ```
 
+## 正式機部署
+
+正式機請不要手動執行 `git pull`。標準流程是直接在伺服器執行：
+
+```bash
+cd /var/www/thelonesomeera
+bash deploy.sh
+```
+
+`deploy.sh` 會先執行 `git fetch origin`、`git reset --hard origin/main`、`git clean -fd`，再安裝相依、建置並重啟 PM2。若只想重跑建置而不重新同步 Git，可使用：
+
+```bash
+bash deploy.sh --skip-sync
+```
+
 更完整的結構說明見 `docs/architecture.md`。

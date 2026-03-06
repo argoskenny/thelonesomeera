@@ -4,28 +4,73 @@
 # 用法：在伺服器上的專案目錄執行 bash deploy.sh
 # ============================================================
 
-set -e
+set -euo pipefail
 
 APP_DIR="/var/www/thelonesomeera"
 DB_FILE="$APP_DIR/prisma/production.db"
 SITE_NAME="thelonesomeera"
 NGINX_SITE_AVAILABLE="/etc/nginx/sites-available/$SITE_NAME"
 NGINX_SITE_ENABLED="/etc/nginx/sites-enabled/$SITE_NAME"
+GIT_REMOTE="origin"
+GIT_BRANCH="main"
 FORCE_NGINX_CONFIG=false
+SKIP_SYNC=false
+SEED_DATABASE=false
 
 for arg in "$@"; do
-    if [ "$arg" = "--force-nginx" ]; then
-        FORCE_NGINX_CONFIG=true
-    fi
+    case "$arg" in
+        --force-nginx)
+            FORCE_NGINX_CONFIG=true
+            ;;
+        --skip-sync)
+            SKIP_SYNC=true
+            ;;
+        --seed)
+            SEED_DATABASE=true
+            ;;
+    esac
 done
 
 echo "=========================================="
 echo " The Lonesome Era - 部署開始"
 echo "=========================================="
 
-# ---- 1. 安裝系統依賴（首次部署才需要）----
+# ---- 1. 同步正式機程式碼 ----
+sync_repo() {
+    echo "[1/7] 同步 Git 工作目錄..."
+    cd "$APP_DIR"
+
+    if [ "$SKIP_SYNC" = true ]; then
+        echo "  跳過 Git 同步（--skip-sync）"
+        return
+    fi
+
+    git rebase --abort 2>/dev/null || true
+    git merge --abort 2>/dev/null || true
+    git cherry-pick --abort 2>/dev/null || true
+    git am --abort 2>/dev/null || true
+
+    echo "  取得最新程式碼：$GIT_REMOTE/$GIT_BRANCH"
+    git fetch "$GIT_REMOTE"
+    git reset --hard "$GIT_REMOTE/$GIT_BRANCH"
+    git clean -fd
+
+    if [ -d "$APP_DIR/cod2" ]; then
+        if [ -d "$APP_DIR/cod2/.git" ] || [ -f "$APP_DIR/cod2/.git" ]; then
+            echo "  清理 cod2 工作目錄..."
+            git -C "$APP_DIR/cod2" rebase --abort 2>/dev/null || true
+            git -C "$APP_DIR/cod2" merge --abort 2>/dev/null || true
+            git -C "$APP_DIR/cod2" cherry-pick --abort 2>/dev/null || true
+            git -C "$APP_DIR/cod2" am --abort 2>/dev/null || true
+            git -C "$APP_DIR/cod2" restore --source=HEAD --staged --worktree .
+            git -C "$APP_DIR/cod2" clean -fd
+        fi
+    fi
+}
+
+# ---- 2. 安裝系統依賴（首次部署才需要）----
 install_dependencies() {
-    echo "[1/6] 檢查系統依賴..."
+    echo "[2/7] 檢查系統依賴..."
 
     if ! command -v node &> /dev/null; then
         echo "  安裝 Node.js 20..."
@@ -49,16 +94,16 @@ install_dependencies() {
     sudo mkdir -p /var/log/pm2
 }
 
-# ---- 2. 安裝 npm 依賴 ----
+# ---- 3. 安裝 npm 依賴 ----
 install_npm() {
-    echo "[2/6] 安裝 npm 依賴..."
+    echo "[3/7] 安裝 npm 依賴..."
     cd "$APP_DIR"
     npm ci
 }
 
-# ---- 3. 設定環境變數 ----
+# ---- 4. 設定環境變數 ----
 setup_env() {
-    echo "[3/6] 檢查環境變數..."
+    echo "[4/7] 檢查環境變數..."
 
     if [ ! -f "$APP_DIR/.env.local" ]; then
         echo "  建立 .env.local..."
@@ -77,9 +122,9 @@ ENVEOF
     fi
 }
 
-# ---- 4. 資料庫初始化 & 建置 ----
+# ---- 5. 資料庫初始化 & 建置 ----
 build_app() {
-    echo "[4/6] 資料庫初始化 & 建置應用..."
+    echo "[5/7] 資料庫初始化 & 建置應用..."
     cd "$APP_DIR"
 
     # 載入環境變數供後續指令使用
@@ -92,7 +137,7 @@ build_app() {
     npx prisma db push
 
     # 匯入種子資料（僅首次或明確指定 --seed 時）
-    if [ ! -f "$DB_FILE" ] || [ "$1" = "--seed" ]; then
+    if [ ! -f "$DB_FILE" ] || [ "$SEED_DATABASE" = true ]; then
         echo "  匯入種子資料..."
         npx tsx prisma/seed.ts
     fi
@@ -119,9 +164,9 @@ build_app() {
     fi
 }
 
-# ---- 5. 設定 Nginx ----
+# ---- 6. 設定 Nginx ----
 setup_nginx() {
-    echo "[5/6] 設定 Nginx..."
+    echo "[6/7] 設定 Nginx..."
 
     # 讓 Nginx (www-data) 能讀取專案目錄
     sudo chown -R www-data:www-data "$APP_DIR/public"
@@ -164,9 +209,9 @@ setup_nginx() {
     fi
 }
 
-# ---- 6. 啟動 / 重啟 PM2 ----
+# ---- 7. 啟動 / 重啟 PM2 ----
 start_app() {
-    echo "[6/6] 啟動應用..."
+    echo "[7/7] 啟動應用..."
     cd "$APP_DIR"
 
     # 停止舊的程序
@@ -194,9 +239,10 @@ start_app() {
 }
 
 # ---- 執行 ----
+sync_repo
 install_dependencies
 install_npm
 setup_env
-build_app "$1"
+build_app
 setup_nginx
 start_app
