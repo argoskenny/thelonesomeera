@@ -17,10 +17,14 @@ yarn-error.log*
 dist/
 build/
 .next/
+# 注意：public/dist-androidtest/ 與 public/sox/ 為正式站發佈資產，
+# 目前採「建置後提交到 Git」策略，因此不要加到 ignore。
 
 # Prisma SQLite
 prisma/dev.db
 prisma/dev.db-journal
+prisma/production.db
+prisma/production.db-journal
 
 # 後台上傳檔案（保留目錄）
 public/uploads/*

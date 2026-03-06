@@ -12,6 +12,7 @@
 - `androidtest` 請只改 `androidtest/`，不要直接改 `public/dist-androidtest/`。
 - `sox` 請只改 `sox/`，不要直接改 `public/sox/`。
 - `public/` 裡的 legacy HTML 仍可直接維護，但如果是有獨立來源目錄的子專案，`public/` 應視為發佈結果。
+- 目前部署策略為「發佈產物也提交到 Git」；部署前請先在本機完成 build，並提交 `public/dist-androidtest/`、`public/sox/` 與 `cod2/` 的變更，不要在正式機直接修改這些內容。
 
 ## 常用指令
 
