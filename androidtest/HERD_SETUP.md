@@ -14,6 +14,12 @@ npm install
 npm run build
 ```
 
+或在專案根目錄執行：
+
+```bash
+npm run build:androidtest
+```
+
 ### 2. 訪問方式
 
 #### 在瀏覽器中查看
@@ -34,10 +40,11 @@ thelonesomeera/
 │   ├── src/
 │   ├── package.json
 │   └── vite.config.js
-├── dist-androidtest/      # 建置後的靜態檔案
-│   ├── assets/
-│   └── index.html
-└── androidtest.html       # Herd 環境下的入口檔案
+└── public/
+    ├── dist-androidtest/  # 建置後的靜態檔案
+    │   ├── assets/
+    │   └── index.html
+    └── androidtest.html   # Herd 環境下的入口檔案
 ```
 
 ### 4. 開發流程

@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
+  base: '/dist-androidtest/',
   plugins: [vue()],
   server: {
     host: '0.0.0.0',
@@ -9,7 +10,7 @@ export default defineConfig({
     https: false // 在 herd 環境下不需要 HTTPS
   },
   build: {
-    outDir: '../dist-androidtest', // 建置到主目錄的子資料夾
+    outDir: '../public/dist-androidtest', // 直接輸出到 Next.js public 目錄
     emptyOutDir: true
   }
-}) 
+})

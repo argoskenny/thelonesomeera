@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<!--
+README
+How to run:
+- Run `npm install` once in this folder.
+- Start the local dev server with `npm run dev`.
+- Open the local URL shown by Vite in a modern desktop browser.
+- Textures are served from `public/textures`, so do not open this file with `file://`.
+- Click the screen to lock the mouse and start playing.
+
+Key bindings:
+- Mouse: look
+- Left click: fire
+- WASD: move
+- Shift: sprint
+- Space: jump
+- R: reload
+- Enter: reset after death / reset the arena
+- Esc: release pointer lock
+
+Feature checklist:
+- [x] Pointer lock mouse look with pitch clamp
+- [x] WASD movement, sprint, jump, gravity, ground detection
+- [x] Box-based collision against arena geometry with bounds and step-up support
+- [x] Hitscan rifle, recoil, muzzle flash, hit spark, bullet marks, reload, ammo HUD
+- [x] Enemies with Patrol / Chase / Attack / Dead states and return fire
+- [x] Small training arena built from primitives with cover, steps, platform, pickups
+- [x] Sprint FOV kick, damage feedback, out-of-bounds / death reset flow
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Single-File FPS MVP</title>
+  <style>
+    :root {
+      --bg: #0b131a;
+      --panel: rgba(9, 15, 21, 0.86);
+      --line: rgba(178, 212, 236, 0.22);
+      --text: #e8f1f7;
+      --muted: #9cb1c1;
+      --accent: #7de2ff;
+      --danger: #ff6b62;
+      --warn: #ffc76c;
+      --ok: #99f08a;
+    }
+
+    * {
+      box-sizing: border-box;
+      -moz-user-select: none;
+           user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(49, 89, 126, 0.35), transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(41, 88, 74, 0.22), transparent 30%),
+        linear-gradient(180deg, #304859 0%, #101820 42%, #091015 100%);
+      color: var(--text);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      touch-action: none;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: crosshair;
+    }
+
+    #uiRoot {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    #overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        linear-gradient(180deg, rgba(8, 12, 17, 0.62), rgba(8, 12, 17, 0.78)),
+        radial-gradient(circle at 50% 35%, rgba(125, 226, 255, 0.08), transparent 35%);
+      pointer-events: auto;
+      transition: opacity 0.18s ease;
+    }
+
+    #overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .card {
+      width: min(560px, calc(100vw - 32px));
+      padding: 28px 28px 24px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      font-size: 12px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 0.94;
+      letter-spacing: 0.02em;
+    }
+
+    .body {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 15px;
+      white-space: pre-line;
+    }
+
+    .actions {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+      color: #c7d6e0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    #status {
+      position: absolute;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 9px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(8, 14, 19, 0.58);
+      backdrop-filter: blur(8px);
+      color: #dce7ef;
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.92;
+    }
+
+    #crosshair {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 64px;
+      height: 64px;
+      transform: translate(-50%, -50%);
+      filter: drop-shadow(0 0 8px rgba(125, 226, 255, 0.16));
+    }
+
+    .cross {
+      position: absolute;
+      background: rgba(233, 244, 251, 0.94);
+      border-radius: 999px;
+      transition: transform 0.06s ease, background 0.08s ease, opacity 0.08s ease;
+    }
+
+    .cross.hit {
+      background: rgba(255, 119, 119, 0.98);
+    }
+
+    #crossTop,
+    #crossBottom {
+      left: 50%;
+      width: 2px;
+      height: 10px;
+      transform: translateX(-50%);
+    }
+
+    #crossLeft,
+    #crossRight {
+      top: 50%;
+      width: 10px;
+      height: 2px;
+      transform: translateY(-50%);
+    }
+
+    #crossCenter {
+      width: 4px;
+      height: 4px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(233, 244, 251, 0.92);
+    }
+
+    #hudBottom {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 16px;
+    }
+
+    .panel {
+      min-width: 210px;
+      padding: 14px 16px 12px;
+      border: 1px solid var(--line);
+      background: rgba(8, 13, 18, 0.62);
+      backdrop-filter: blur(10px);
+    }
+
+    .label {
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .value {
+      font-size: clamp(24px, 5vw, 34px);
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .subvalue {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #d4e0e8;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .healthBar {
+      height: 8px;
+      margin-top: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+
+    .healthFill {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #e95d5d, #ffb258 60%, #8fe98c);
+      transform-origin: left center;
+    }
+
+    #damageVignette {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, transparent 36%, rgba(255, 69, 69, 0.14) 58%, rgba(255, 69, 69, 0.5) 100%);
+      opacity: 0;
+      transition: opacity 0.05s linear;
+    }
+
+    #flash {
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.08);
+      opacity: 0;
+    }
+
+    @media (max-width: 760px) {
+      .card {
+        padding: 22px 20px 18px;
+      }
+
+      #hudBottom {
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        gap: 12px;
+      }
+
+      .panel {
+        min-width: 0;
+        flex: 1;
+      }
+    }
+  </style>
+  <script type="module" crossorigin src="/cod2/assets/index-8WkzVvLT.js"></script>
+</head>
+<body>
+  <div id="uiRoot">
+    <div id="overlay">
+      <div class="card">
+        <div class="eyebrow">Training Range</div>
+        <h1 id="overlayTitle" class="title">Single-File FPS</h1>
+        <p id="overlayBody" class="body">Click to lock the mouse and deploy.
+Use cover, manage your magazine, and clear the arena.</p>
+        <div class="actions">Move: WASD · Sprint: Shift · Jump: Space · Fire: Left Click · Reload: R · Reset: Enter</div>
+      </div>
+    </div>
+
+    <div id="status">Click To Deploy</div>
+
+    <div id="crosshair" aria-hidden="true">
+      <div id="crossTop" class="cross"></div>
+      <div id="crossBottom" class="cross"></div>
+      <div id="crossLeft" class="cross"></div>
+      <div id="crossRight" class="cross"></div>
+      <div id="crossCenter" class="cross"></div>
+    </div>
+
+    <div id="hudBottom">
+      <div class="panel">
+        <div class="label">Health</div>
+        <div id="healthValue" class="value">100</div>
+        <div id="healthState" class="subvalue">Combat Ready</div>
+        <div class="healthBar"><div id="healthFill" class="healthFill"></div></div>
+      </div>
+
+      <div class="panel" style="text-align: right;">
+        <div class="label">Weapon / Arena</div>
+        <div id="ammoValue" class="value">30 / 150</div>
+        <div id="arenaValue" class="subvalue">7 Hostiles Active</div>
+      </div>
+    </div>
+
+    <div id="damageVignette"></div>
+    <div id="flash"></div>
+  </div>
+
+</body>
+</html>

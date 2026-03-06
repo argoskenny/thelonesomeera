@@ -342,6 +342,12 @@ Before starting, provide a concise checklist (3-7 items) outlining the main subt
     prompt: callOfDutyPrompt,
     cards: [
       {
+        title: "GPT-5.4",
+        description: "FPS MVP 測試頁（GPT-5.4）",
+        tags: ["LLM", "GPT-5.4", "FPS"],
+        link: "/cod2",
+      },
+      {
         title: "GPT-5.3-Codex",
         description: "FPS MVP 測試頁（GPT-5.3-Codex）",
         tags: ["LLM", "GPT-5.3-Codex", "FPS"],

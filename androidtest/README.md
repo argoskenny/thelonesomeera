@@ -1,6 +1,6 @@
 # Android WebView Vue 專案
 
-這是一個簡單的 Vue 3 專案，用於接收並顯示來自 Android WebView 的參數。
+這是 Android WebView demo 的單一來源目錄。實際部署到網站的靜態檔案會由 Vite 建置到 `public/dist-androidtest/`，網站入口則維持 `public/androidtest.html`。
 
 ## 功能特色
 
@@ -29,6 +29,18 @@ npm run dev
 npm run build
 ```
 
+建置完成後，輸出會寫入：
+
+```text
+../public/dist-androidtest/
+```
+
+若要從專案根目錄操作，也可以使用：
+
+```bash
+npm run build:androidtest
+```
+
 ## Android 整合
 
 此專案設計用於與 Android WebView 整合，透過 `AndroidBridge` 接收以下參數：
@@ -50,6 +62,14 @@ androidtest/
 ├── package.json         # 專案配置
 ├── vite.config.js       # Vite 配置
 └── README.md           # 專案說明
+```
+
+部署相關檔案：
+
+```text
+public/
+├── androidtest.html          # 對外入口
+└── dist-androidtest/         # Vite build 輸出
 ```
 
 ## 技術棧

@@ -1,19 +1,20 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-This repository is a collection of static web pages and small web apps. Key locations:
-- Root: standalone HTML pages like `index.html`, `ai-hub.html`, and `stock.html`, plus shared `style.css` and `app.js`.
-- `assets/`: shared images, audio, and built bundles used across pages.
-- `androidtest/`: Vue 3 + Vite source for an Android WebView demo; build output lives in `dist-androidtest/`, and the Herd entry page is `androidtest.html`.
-- `sox/`: a Three.js FPS prototype with a simple Node dev server.
-- Other mini-apps: `hellrider/`, `mini-minecraft/`, `earthmoonsystem/`, `blackhole/`, etc., each mostly self-contained HTML/CSS/JS.
+This repository mixes a Next.js site with legacy static pages and a few standalone demos. Key locations:
+- `src/app`, `src/components`, `src/lib`: the main Next.js site, admin UI, and shared logic.
+- `public/`: deployable static assets only, including legacy HTML pages and built standalone apps.
+- `androidtest/`: Vue 3 + Vite source for the Android WebView demo. Build output is generated into `public/dist-androidtest/`, and the public entry page is `public/androidtest.html`.
+- `sox/`: source for the Three.js FPS prototype. Sync it into `public/sox/` with `npm run sync:static`.
+- Other mini-apps under `public/` such as `hellrider/`, `mini-minecraft/`, `earthmoonsystem/`, and `blackhole/` are static deploy targets.
 
 ## Build, Test, and Development Commands
-Most pages are static and can be opened directly in a browser. For subprojects:
-- `cd androidtest && npm install` to install dependencies.
-- `cd androidtest && npm run dev` to run the Vite dev server.
-- `cd androidtest && npm run build` to build into `dist-androidtest/`.
-- `cd androidtest && npm run preview` to preview the build.
+Most legacy pages are static and can be opened directly in a browser. Common commands:
+- `npm run dev` to run the main Next.js site.
+- `npm run build:androidtest` to build the Android WebView demo into `public/dist-androidtest/`.
+- `npm run sync:static` to sync standalone static app sources (currently `sox/`) into `public/`.
+- `npm run build:standalone` to refresh all standalone app outputs before deployment.
+- `cd androidtest && npm run dev` to run the Vite dev server for the Android demo.
 - `cd sox && npm install && npm run start` to run the Node server (`server.js`).
 
 ## Coding Style & Naming Conventions
@@ -23,7 +24,7 @@ Most pages are static and can be opened directly in a browser. For subprojects:
 - No repo-wide formatter is configured; keep edits consistent with nearby code.
 
 ## Testing Guidelines
-There is no automated test suite in this repo. When changing interactive pages, verify manually in a browser and, for `androidtest/`, confirm the built output loads via `androidtest.html`.
+There is no automated test suite in this repo. When changing interactive pages, verify manually in a browser. For `androidtest/`, confirm `public/dist-androidtest/` is refreshed and `androidtest.html` still loads correctly.
 
 ## Commit & Pull Request Guidelines
 Commit history mixes concise English and Chinese messages and favors present-tense summaries (e.g., “fix url”, “update UI”). Use a short, descriptive subject line.
