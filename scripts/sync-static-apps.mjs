@@ -13,9 +13,15 @@ const syncTargets = [
   },
   {
     name: "cod2",
-    sourceDir: "cod2/dist",
+    sourceDir: "cod2",
     targetDir: "public/cod2",
-    entries: ["index.html", "assets", "audios", "textures"],
+    entries: [
+      { source: "dist/index.html", target: "index.html" },
+      { source: "dist/assets", target: "assets" },
+      { source: "public/audios", target: "audios" },
+      { source: "public/textures", target: "textures" },
+      { source: "public/intro_cover.png", target: "intro_cover.png" },
+    ],
   },
 ];
 
@@ -52,11 +58,13 @@ for (const target of syncTargets) {
   fs.mkdirSync(targetDir, { recursive: true });
 
   for (const entry of target.entries) {
-    const sourcePath = path.join(sourceDir, entry);
-    const targetPath = path.join(targetDir, entry);
+    const sourceEntry = typeof entry === "string" ? entry : entry.source;
+    const targetEntry = typeof entry === "string" ? entry : entry.target;
+    const sourcePath = path.join(sourceDir, sourceEntry);
+    const targetPath = path.join(targetDir, targetEntry);
 
     if (!fs.existsSync(sourcePath)) {
-      throw new Error(`[sync-static] missing ${target.sourceDir}/${entry}`);
+      throw new Error(`[sync-static] missing ${target.sourceDir}/${sourceEntry}`);
     }
 
     copyEntry(sourcePath, targetPath);
