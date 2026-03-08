@@ -149,16 +149,34 @@ build_app() {
     . ./.env.local
     set +a
 
+    DB_EXISTED_BEFORE_PUSH=false
+    if [ -s "$DB_FILE" ]; then
+        DB_EXISTED_BEFORE_PUSH=true
+    fi
+
     # 產生 Prisma Client
     npx prisma generate
 
     # 推送 Schema 到 SQLite（建立/更新資料表）
     npx prisma db push
 
-    # 匯入種子資料（僅首次或明確指定 --seed 時）
-    if [ ! -f "$DB_FILE" ] || [ "$SEED_DATABASE" = true ]; then
+    # 匯入種子資料：
+    # - 明確指定 --seed
+    # - db push 前資料庫不存在 / 為空檔
+    # - 資料表存在但 Article 為 0 筆（避免重新部署後只剩 schema）
+    ARTICLE_COUNT=$(npx prisma db execute --stdin --schema prisma/schema.prisma <<'SQL' | tail -n 1 | tr -d '[:space:]'
+SELECT COUNT(*) AS article_count FROM Article;
+SQL
+)
+    ARTICLE_COUNT=${ARTICLE_COUNT:-0}
+
+    if [ "$SEED_DATABASE" = true ] || [ "$DB_EXISTED_BEFORE_PUSH" = false ] || [ "$ARTICLE_COUNT" = "0" ]; then
         echo "  匯入種子資料..."
         npx tsx prisma/seed.ts
+        ARTICLE_COUNT=$(npx prisma db execute --stdin --schema prisma/schema.prisma <<'SQL' | tail -n 1 | tr -d '[:space:]'
+SELECT COUNT(*) AS article_count FROM Article;
+SQL
+)
     fi
 
     # 確認資料庫存在
@@ -167,6 +185,7 @@ build_app() {
         exit 1
     fi
     echo "  ✓ 資料庫: $DB_FILE ($(du -h "$DB_FILE" | cut -f1))"
+    echo "  ✓ Article 筆數: ${ARTICLE_COUNT:-unknown}"
 
     # 重建所有獨立靜態遊戲 / demo 輸出
     npm run build:standalone
