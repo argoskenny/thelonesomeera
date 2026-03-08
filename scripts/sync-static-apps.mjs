@@ -52,6 +52,19 @@ function copyEntry(sourcePath, targetPath) {
   fs.copyFileSync(sourcePath, targetPath);
 }
 
+function ensureEntriesExist(sourceDir, entries) {
+  for (const entry of entries) {
+    const sourceEntry = typeof entry === "string" ? entry : entry.source;
+    const sourcePath = path.join(sourceDir, sourceEntry);
+
+    if (!fs.existsSync(sourcePath)) {
+      return `${sourceDir}/${sourceEntry}`;
+    }
+  }
+
+  return null;
+}
+
 for (const target of syncTargets) {
   const sourceDir = path.join(rootDir, target.sourceDir);
   const targetDir = path.join(rootDir, target.targetDir);
@@ -61,24 +74,26 @@ for (const target of syncTargets) {
     continue;
   }
 
-  fs.rmSync(targetDir, { recursive: true, force: true });
-  fs.mkdirSync(targetDir, { recursive: true });
+  const missingEntry = ensureEntriesExist(sourceDir, target.entries);
+  if (missingEntry) {
+    console.warn(`[sync-static] skipped ${target.name}: missing ${missingEntry}`);
+    continue;
+  }
+
+  const stagingDir = `${targetDir}.tmp`;
+  fs.rmSync(stagingDir, { recursive: true, force: true });
+  fs.mkdirSync(stagingDir, { recursive: true });
 
   for (const entry of target.entries) {
     const sourceEntry = typeof entry === "string" ? entry : entry.source;
     const targetEntry = typeof entry === "string" ? entry : entry.target;
     const sourcePath = path.join(sourceDir, sourceEntry);
-    const targetPath = path.join(targetDir, targetEntry);
-
-    if (!fs.existsSync(sourcePath)) {
-      console.warn(`[sync-static] skipped ${target.name}: missing ${target.sourceDir}/${sourceEntry}`);
-      fs.rmSync(targetDir, { recursive: true, force: true });
-      fs.mkdirSync(targetDir, { recursive: true });
-      continue;
-    }
+    const targetPath = path.join(stagingDir, targetEntry);
 
     copyEntry(sourcePath, targetPath);
   }
 
+  fs.rmSync(targetDir, { recursive: true, force: true });
+  fs.renameSync(stagingDir, targetDir);
   console.log(`[sync-static] synced ${target.sourceDir} -> ${target.targetDir}`);
 }

@@ -10,7 +10,7 @@ export default function DeleteButton({
   name,
 }: {
   id: number;
-  type: "articles" | "projects";
+  type: "articles";
   name: string;
 }) {
   const router = useRouter();

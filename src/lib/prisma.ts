@@ -3,43 +3,6 @@ import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
-function buildDatabaseUrl(): string {
-  const envUrl = process.env.DATABASE_URL ?? "";
-
-  if (!envUrl.startsWith("file:")) {
-    return envUrl;
-  }
-
-  // 已是絕對路徑，直接使用
-  if (envUrl.startsWith("file:/") && envUrl.charAt(5) === "/") {
-    return envUrl;
-  }
-
-  const relative = envUrl.replace("file:", "").replace(/^\.\/+/, "");
-  const projectRoot = resolveProjectRoot();
-  const candidates = [
-    path.resolve(projectRoot, "prisma", relative),
-    path.resolve(projectRoot, relative),
-    path.resolve(process.cwd(), "prisma", relative),
-    path.resolve(process.cwd(), relative),
-  ];
-  const dbPath = candidates.find((candidate) => fs.existsSync(candidate)) ?? candidates[0];
-  return `file:${dbPath}`;
-}
-
-function resolveProjectRoot(): string {
-  let cursor = process.cwd();
-  for (let depth = 0; depth < 8; depth += 1) {
-    if (fs.existsSync(path.join(cursor, "prisma", "schema.prisma"))) {
-      return cursor;
-    }
-    const parent = path.dirname(cursor);
-    if (parent === cursor) break;
-    cursor = parent;
-  }
-  return process.cwd();
-}
-
 function resolvePrismaEngineLibraryPath(): string | undefined {
   if (process.env.PRISMA_QUERY_ENGINE_LIBRARY) {
     return process.env.PRISMA_QUERY_ENGINE_LIBRARY;
@@ -96,9 +59,6 @@ if (prismaEngineLibraryPath) {
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
 export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    datasourceUrl: buildDatabaseUrl(),
-  });
+  globalForPrisma.prisma ?? new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;

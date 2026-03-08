@@ -1,16 +1,14 @@
 import { prisma } from "@/lib/prisma";
-import { FileText, Folder, Eye, EyeOff } from "lucide-react";
+import { FileText, Eye, EyeOff } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminDashboard() {
-  const [articleCount, publishedCount, draftCount, projectCount] =
-    await Promise.all([
-      prisma.article.count(),
-      prisma.article.count({ where: { published: true } }),
-      prisma.article.count({ where: { published: false } }),
-      prisma.project.count(),
-    ]);
+  const [articleCount, publishedCount, draftCount] = await Promise.all([
+    prisma.article.count(),
+    prisma.article.count({ where: { published: true } }),
+    prisma.article.count({ where: { published: false } }),
+  ]);
 
   const stats = [
     {
@@ -34,13 +32,6 @@ export default async function AdminDashboard() {
       color: "text-amber-600",
       bg: "bg-amber-50",
     },
-    {
-      label: "作品總數",
-      value: projectCount,
-      icon: Folder,
-      color: "text-violet-600",
-      bg: "bg-violet-50",
-    },
   ];
 
   return (
@@ -50,7 +41,7 @@ export default async function AdminDashboard() {
         <p className="mt-1 text-sm text-slate-500">內容管理總覽</p>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => {
           const Icon = stat.icon;
           return (

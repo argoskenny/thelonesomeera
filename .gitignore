@@ -21,6 +21,10 @@ build/
 # 目前採「建置後提交到 Git」策略，因此不要加到 ignore。
 
 # Prisma SQLite
+/dev.db
+/dev.db-journal
+/production.db
+/production.db-journal
 prisma/dev.db
 prisma/dev.db-journal
 prisma/production.db

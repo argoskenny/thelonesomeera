@@ -130,10 +130,12 @@ ENVEOF
         echo "  ⚠  請編輯 $APP_DIR/.env.local 修改 ADMIN_PASSWORD！"
     fi
 
-    # 確保 DATABASE_URL 使用絕對路徑
-    if grep -q 'file:\./dev\.db' "$APP_DIR/.env.local"; then
-        echo "  修正 DATABASE_URL 為生產路徑..."
-        sed -i "s|file:./dev.db|file:$DB_FILE|g" "$APP_DIR/.env.local"
+    if grep -q '^DATABASE_URL=' "$APP_DIR/.env.local"; then
+        echo "  設定正式機 DATABASE_URL..."
+        sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"file:$DB_FILE\"|g" "$APP_DIR/.env.local"
+    else
+        echo "  補上 DATABASE_URL..."
+        printf '\nDATABASE_URL="file:%s"\n' "$DB_FILE" >> "$APP_DIR/.env.local"
     fi
 }
 
@@ -143,7 +145,9 @@ build_app() {
     cd "$APP_DIR"
 
     # 載入環境變數供後續指令使用
-    export $(grep -v '^#' .env.local | xargs)
+    set -a
+    . ./.env.local
+    set +a
 
     # 產生 Prisma Client
     npx prisma generate
@@ -176,9 +180,6 @@ build_app() {
         cp -r public .next/standalone/public
         cp -r .next/static .next/standalone/.next/static
 
-        # 建立 prisma 目錄的 symlink，讓 standalone 能找到資料庫
-        mkdir -p .next/standalone/prisma
-        ln -sf "$DB_FILE" .next/standalone/prisma/production.db
     fi
 }
 

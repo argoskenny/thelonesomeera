@@ -1,19 +1,13 @@
-import { prisma } from "@/lib/prisma";
+import { projects } from "@/lib/projects";
 import { ExternalLink } from "lucide-react";
 import type { Metadata } from "next";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "作品分享 | The Lonesome Era",
   description: "Web / App 作品展示 — 遊戲、應用程式與技術 Demo",
 };
 
-export default async function ProjectsPage() {
-  const projects = await prisma.project.findMany({
-    orderBy: { sortOrder: "asc" },
-  });
-
+export default function ProjectsPage() {
   return (
     <main className="px-6 pt-28 pb-20">
       <div className="mx-auto max-w-6xl">
@@ -33,10 +27,9 @@ export default async function ProjectsPage() {
         {/* 作品列表 */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => {
-            const tags: string[] = JSON.parse(project.tags);
             return (
               <a
-                key={project.id}
+                key={project.title}
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -66,7 +59,7 @@ export default async function ProjectsPage() {
 
                 {/* 標籤 */}
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {tags.map((tag) => (
+                  {project.tags.map((tag) => (
                     <span
                       key={tag}
                       className="rounded-md bg-slate-800 px-2 py-1 font-mono text-xs text-text-muted"

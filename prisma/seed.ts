@@ -42,63 +42,6 @@ function extractArticleContent(filename: string): string {
   }
 }
 
-const projects = [
-  {
-    title: "Selfie Cat",
-    description:
-      "AI 驅動的貓咪自拍應用程式，讓您的貓咪與螢幕上的互動玩具遊戲時自動拍攝可愛照片，將遊戲時光變成珍貴回憶。",
-    image: "/app_preview.png",
-    link: "/selfiecat.html",
-    tags: JSON.stringify([
-      "iOS App",
-      "AI Photography",
-      "Pet Tech",
-      "Mobile Development",
-    ]),
-    featured: true,
-    sortOrder: 1,
-  },
-  {
-    title: "小明問答遊戲",
-    description:
-      "一個基於 Web 技術的互動問答遊戲，包含多媒體元素與響應式設計，讓使用者在遊戲中學習。",
-    image: "/assets/xiaoming/imgs/mvp.png",
-    link: "/xiaoming/index.html",
-    tags: JSON.stringify(["JavaScript", "HTML5", "CSS3", "遊戲開發"]),
-    featured: true,
-    sortOrder: 2,
-  },
-  {
-    title: "Hell Rider 競速遊戲",
-    description:
-      "使用原生 JavaScript 開發的 2D 競速遊戲，具有物理引擎和碰撞偵測系統。",
-    image: "/hellrider/pagebg1.png",
-    link: "/hellrider/index.html",
-    tags: JSON.stringify(["Canvas", "JavaScript", "遊戲引擎", "物理模擬"]),
-    featured: true,
-    sortOrder: 3,
-  },
-  {
-    title: "Sox 射擊遊戲",
-    description:
-      "以 Web 技術打造的射擊遊戲，包含音效系統和動畫效果，展現前端技術在遊戲開發的可能性。",
-    image: "/sox/favicon.svg",
-    link: "/sox/index.html",
-    tags: JSON.stringify(["Vue.js", "Web Audio API", "動畫", "遊戲設計"]),
-    featured: false,
-    sortOrder: 4,
-  },
-  {
-    title: "AI Demo Hub",
-    description: "整合 signuptest 與 solarsystem 內各模型示範頁的快速入口。",
-    image: "/tle_logo.png",
-    link: "/ai-hub.html",
-    tags: JSON.stringify(["LLM", "Demo", "Integration"]),
-    featured: false,
-    sortOrder: 5,
-  },
-];
-
 interface ArticleSeed {
   title: string;
   slug: string;
@@ -170,15 +113,6 @@ const htmlFileMap: Record<string, string> = {
 
 async function main() {
   console.log("Seeding database...");
-
-  for (const project of projects) {
-    await prisma.project.upsert({
-      where: { id: projects.indexOf(project) + 1 },
-      update: project,
-      create: project,
-    });
-  }
-  console.log(`Seeded ${projects.length} projects`);
 
   for (const meta of articleMeta) {
     const htmlFile = htmlFileMap[meta.slug];
