@@ -99,6 +99,21 @@ install_npm() {
     echo "[3/7] 安裝 npm 依賴..."
     cd "$APP_DIR"
     npm ci
+
+    if [ -f "$APP_DIR/androidtest/package-lock.json" ]; then
+        echo "  安裝 androidtest 依賴..."
+        npm --prefix androidtest ci
+    fi
+
+    if [ -f "$APP_DIR/cod2/package-lock.json" ]; then
+        echo "  安裝 cod2 依賴..."
+        npm --prefix cod2 ci
+    fi
+
+    if [ -f "$APP_DIR/pulsesync/package-lock.json" ]; then
+        echo "  安裝 pulsesync 依賴..."
+        npm --prefix pulsesync ci
+    fi
 }
 
 # ---- 4. 設定環境變數 ----
@@ -148,6 +163,9 @@ build_app() {
         exit 1
     fi
     echo "  ✓ 資料庫: $DB_FILE ($(du -h "$DB_FILE" | cut -f1))"
+
+    # 重建所有獨立靜態遊戲 / demo 輸出
+    npm run build:standalone
 
     # Next.js 建置（所有 DB 頁面已設為 force-dynamic，不會在建置時查詢 DB）
     npm run build

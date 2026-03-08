@@ -23,6 +23,12 @@ const syncTargets = [
       { source: "public/intro_cover.png", target: "intro_cover.png" },
     ],
   },
+  {
+    name: "pulsesync",
+    sourceDir: "pulsesync/dist",
+    targetDir: "public/pulsesync",
+    entries: ["index.html", "assets", "favicon.svg"],
+  },
 ];
 
 function copyEntry(sourcePath, targetPath) {
