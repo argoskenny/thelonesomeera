@@ -195,23 +195,37 @@ setup_nginx() {
 
     if [ -f "$APP_DIR/nginx.conf" ]; then
         SHOULD_COPY=false
+        HAS_EXISTING_SITE=false
+        HAS_SSL_CONFIG=false
 
-        # 避免覆蓋已由 Certbot 寫入 SSL 的站台設定
-        if [ ! -f "$NGINX_SITE_AVAILABLE" ]; then
+        if [ -f "$NGINX_SITE_AVAILABLE" ]; then
+            HAS_EXISTING_SITE=true
+        fi
+
+        if [ "$HAS_EXISTING_SITE" = true ] && grep -q "managed by Certbot\\|ssl_certificate\\|listen 443" "$NGINX_SITE_AVAILABLE"; then
+            HAS_SSL_CONFIG=true
+        fi
+
+        if [ "$HAS_EXISTING_SITE" = false ]; then
             SHOULD_COPY=true
             echo "  首次部署：建立 Nginx 站台設定"
+        elif [ "$HAS_SSL_CONFIG" = true ]; then
+            echo "  偵測到現有 SSL/Certbot 設定，為避免覆蓋 HTTPS 站台，跳過寫入 repo 內的 nginx.conf"
+            echo "  如需調整正式機 Nginx，請先手動備份後再修改 /etc/nginx/sites-available/$SITE_NAME"
         elif [ "$FORCE_NGINX_CONFIG" = true ]; then
             SHOULD_COPY=true
-            echo "  偵測到 --force-nginx：強制覆蓋 Nginx 設定"
-        elif grep -q "managed by Certbot\\|ssl_certificate\\|listen 443" "$NGINX_SITE_AVAILABLE"; then
-            echo "  偵測到現有 SSL/Certbot 設定，跳過覆蓋站台設定以避免憑證失效"
-            echo "  若要強制改寫請使用：bash deploy.sh --force-nginx"
+            echo "  偵測到 --force-nginx：將覆蓋既有非 SSL Nginx 設定"
         else
             SHOULD_COPY=true
             echo "  更新既有非 SSL 站台設定"
         fi
 
         if [ "$SHOULD_COPY" = true ]; then
+            if [ "$HAS_EXISTING_SITE" = true ]; then
+                BACKUP_PATH="${NGINX_SITE_AVAILABLE}.bak.$(date +%Y%m%d%H%M%S)"
+                echo "  備份現有 Nginx 設定到 $BACKUP_PATH"
+                sudo cp "$NGINX_SITE_AVAILABLE" "$BACKUP_PATH"
+            fi
             sudo cp "$APP_DIR/nginx.conf" "$NGINX_SITE_AVAILABLE"
         fi
 
