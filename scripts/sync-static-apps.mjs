@@ -57,7 +57,8 @@ for (const target of syncTargets) {
   const targetDir = path.join(rootDir, target.targetDir);
 
   if (!fs.existsSync(sourceDir)) {
-    throw new Error(`[sync-static] missing source directory: ${target.sourceDir}`);
+    console.warn(`[sync-static] skipped ${target.name}: missing source directory ${target.sourceDir}`);
+    continue;
   }
 
   fs.rmSync(targetDir, { recursive: true, force: true });
@@ -70,7 +71,10 @@ for (const target of syncTargets) {
     const targetPath = path.join(targetDir, targetEntry);
 
     if (!fs.existsSync(sourcePath)) {
-      throw new Error(`[sync-static] missing ${target.sourceDir}/${sourceEntry}`);
+      console.warn(`[sync-static] skipped ${target.name}: missing ${target.sourceDir}/${sourceEntry}`);
+      fs.rmSync(targetDir, { recursive: true, force: true });
+      fs.mkdirSync(targetDir, { recursive: true });
+      continue;
     }
 
     copyEntry(sourcePath, targetPath);
