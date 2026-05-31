@@ -14,7 +14,12 @@ function isSectionKey(value: string): value is SectionKey {
 }
 
 export default function AiHubClientPage() {
-  const [activeKey, setActiveKey] = useState<SectionKey>(aiHubSections[0].key);
+  const [activeKey, setActiveKey] = useState<SectionKey>(() => {
+    if (typeof window === "undefined") return aiHubSections[0].key;
+
+    const initial = window.location.hash.replace("#", "");
+    return isSectionKey(initial) ? initial : aiHubSections[0].key;
+  });
   const [copied, setCopied] = useState(false);
 
   const activeSection = useMemo(
@@ -23,15 +28,11 @@ export default function AiHubClientPage() {
   );
 
   useEffect(() => {
-    const initial = window.location.hash.replace("#", "");
-    if (isSectionKey(initial)) {
-      setActiveKey(initial);
-    }
-
     const onHashChange = () => {
       const next = window.location.hash.replace("#", "");
       if (isSectionKey(next)) {
         setActiveKey(next);
+        setCopied(false);
       }
     };
 
@@ -39,12 +40,9 @@ export default function AiHubClientPage() {
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
 
-  useEffect(() => {
-    setCopied(false);
-  }, [activeKey]);
-
   const switchSection = (nextKey: SectionKey) => {
     setActiveKey(nextKey);
+    setCopied(false);
     window.history.replaceState(null, "", `#${nextKey}`);
   };
 
@@ -67,7 +65,7 @@ export default function AiHubClientPage() {
 
   const openDemo = (link: string) => {
     if (window.innerWidth <= 768) {
-      window.location.href = link;
+      window.location.assign(link);
       return;
     }
     window.open(link, "_blank", "noopener,noreferrer");

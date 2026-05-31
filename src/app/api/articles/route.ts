@@ -1,22 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
+import { parseArticlePayload } from "@/lib/articlePayload";
+import { isAdminHostRequest } from "@/lib/adminHost";
 
 export async function GET() {
   const articles = await prisma.article.findMany({
+    where: { published: true },
     orderBy: { createdAt: "desc" },
   });
   return NextResponse.json(articles);
 }
 
 export async function POST(request: NextRequest) {
+  if (!isAdminHostRequest(request)) {
+    return NextResponse.json({ error: "Not Found" }, { status: 404 });
+  }
+
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "未授權" }, { status: 401 });
   }
 
   try {
-    const data = await request.json();
+    const data = parseArticlePayload(await request.json());
     const article = await prisma.article.create({ data });
     return NextResponse.json(article, { status: 201 });
   } catch (err) {

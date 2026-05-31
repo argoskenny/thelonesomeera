@@ -1,22 +1,54 @@
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
-const SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || "fallback-dev-secret-change-me"
-);
 const COOKIE_NAME = "admin_token";
+const DEFAULT_ADMIN_PASSWORD = "changeme";
+const MIN_SECRET_LENGTH = 32;
+const AUTH_CONFIG_ERROR = "管理員認證尚未設定";
+
+export function getAuthConfigurationError() {
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const jwtSecret = process.env.JWT_SECRET;
+
+  if (!adminPassword || adminPassword === DEFAULT_ADMIN_PASSWORD) {
+    return AUTH_CONFIG_ERROR;
+  }
+
+  if (!jwtSecret || jwtSecret.length < MIN_SECRET_LENGTH) {
+    return AUTH_CONFIG_ERROR;
+  }
+
+  return null;
+}
+
+export function verifyAdminPassword(password: unknown) {
+  return (
+    typeof password === "string" &&
+    !getAuthConfigurationError() &&
+    password === process.env.ADMIN_PASSWORD
+  );
+}
+
+function getJwtSecret() {
+  const configError = getAuthConfigurationError();
+  if (configError) {
+    throw new Error(configError);
+  }
+
+  return new TextEncoder().encode(process.env.JWT_SECRET);
+}
 
 export async function signToken() {
   return new SignJWT({ role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("7d")
-    .sign(SECRET);
+    .sign(getJwtSecret());
 }
 
 export async function verifyToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload;
   } catch {
     return null;

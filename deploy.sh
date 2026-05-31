@@ -123,11 +123,22 @@ setup_env() {
     if [ ! -f "$APP_DIR/.env.local" ]; then
         echo "  建立 .env.local..."
         cat > "$APP_DIR/.env.local" << ENVEOF
-ADMIN_PASSWORD=changeme
+ADMIN_PASSWORD=$(openssl rand -base64 24)
 JWT_SECRET=$(openssl rand -base64 32)
+ADMIN_HOSTNAME=admin.thelonesomeera.com
 DATABASE_URL="file:$DB_FILE"
 ENVEOF
-        echo "  ⚠  請編輯 $APP_DIR/.env.local 修改 ADMIN_PASSWORD！"
+        echo "  ✓ 已產生隨機 ADMIN_PASSWORD，請至 $APP_DIR/.env.local 查看或改成自訂密碼"
+    fi
+
+    if grep -q '^ADMIN_HOSTNAME=[[:space:]]*$' "$APP_DIR/.env.local"; then
+        echo "  設定管理後台網域..."
+        sed -i "s|^ADMIN_HOSTNAME=.*|ADMIN_HOSTNAME=admin.thelonesomeera.com|g" "$APP_DIR/.env.local"
+    elif grep -q '^ADMIN_HOSTNAME=' "$APP_DIR/.env.local"; then
+        echo "  管理後台網域：$(grep '^ADMIN_HOSTNAME=' "$APP_DIR/.env.local" | cut -d= -f2-)"
+    else
+        echo "  補上管理後台網域..."
+        printf '\nADMIN_HOSTNAME=admin.thelonesomeera.com\n' >> "$APP_DIR/.env.local"
     fi
 
     if grep -q '^DATABASE_URL=' "$APP_DIR/.env.local"; then
@@ -209,9 +220,11 @@ setup_nginx() {
     # 讓 Nginx (www-data) 能讀取專案目錄
     sudo chown -R www-data:www-data "$APP_DIR/public"
     sudo chown -R www-data:www-data "$APP_DIR/.next/static"
-    sudo chmod -R 755 "$APP_DIR"
+    sudo chmod 755 "$APP_DIR"
     sudo chmod -R 755 "$APP_DIR/public"
     sudo chmod -R 755 "$APP_DIR/.next"
+    sudo chmod 600 "$APP_DIR/.env.local"
+    sudo chmod 600 "$DB_FILE"
 
     if [ -f "$APP_DIR/nginx.conf" ]; then
         SHOULD_COPY=false
@@ -230,8 +243,14 @@ setup_nginx() {
             SHOULD_COPY=true
             echo "  首次部署：建立 Nginx 站台設定"
         elif [ "$HAS_SSL_CONFIG" = true ]; then
-            echo "  偵測到現有 SSL/Certbot 設定，為避免覆蓋 HTTPS 站台，跳過寫入 repo 內的 nginx.conf"
-            echo "  如需調整正式機 Nginx，請先手動備份後再修改 /etc/nginx/sites-available/$SITE_NAME"
+            if sudo grep -Rqs "server_name[[:space:]].*admin\\.thelonesomeera\\.com" /etc/nginx/sites-enabled /etc/nginx/sites-available; then
+                echo "  偵測到現有 SSL/Certbot 設定與管理後台網域，跳過寫入 repo 內的 nginx.conf"
+                echo "  如需調整正式機 Nginx，請先手動備份後再修改 /etc/nginx/sites-available/$SITE_NAME"
+            else
+                echo "  ❌ 偵測到現有 SSL/Certbot 設定，但 Nginx 尚未設定 admin.thelonesomeera.com"
+                echo "  請先替 admin.thelonesomeera.com 建立 HTTPS server block，再重新部署"
+                exit 1
+            fi
         elif [ "$FORCE_NGINX_CONFIG" = true ]; then
             SHOULD_COPY=true
             echo "  偵測到 --force-nginx：將覆蓋既有非 SSL Nginx 設定"

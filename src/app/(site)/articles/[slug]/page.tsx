@@ -9,12 +9,13 @@ import type { Metadata } from "next";
 export const dynamic = "force-dynamic";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const article = await prisma.article.findUnique({
-    where: { slug: params.slug },
+    where: { slug },
   });
   if (!article) return { title: "Not Found" };
   return {
@@ -24,8 +25,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ArticlePage({ params }: Props) {
+  const { slug } = await params;
   const article = await prisma.article.findUnique({
-    where: { slug: params.slug, published: true },
+    where: { slug, published: true },
   });
 
   if (!article) notFound();

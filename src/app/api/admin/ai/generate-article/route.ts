@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { isAdminHostRequest } from "@/lib/adminHost";
 import { generateArticle } from "@/lib/services/AIArticleService";
 import {
   generateImage,
@@ -13,6 +14,10 @@ import { prisma } from "@/lib/prisma";
  * 整合文章生成、圖片生成、圖片下載的一站式 API
  */
 export async function POST(request: NextRequest) {
+  if (!isAdminHostRequest(request)) {
+    return NextResponse.json({ error: "Not Found" }, { status: 404 });
+  }
+
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "未授權" }, { status: 401 });

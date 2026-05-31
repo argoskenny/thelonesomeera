@@ -17,6 +17,7 @@ yarn-error.log*
 dist/
 build/
 .next/
+tsconfig.tsbuildinfo
 # 注意：public/dist-androidtest/ 與 public/sox/ 為正式站發佈資產，
 # 目前採「建置後提交到 Git」策略，因此不要加到 ignore。
 

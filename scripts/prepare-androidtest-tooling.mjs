@@ -20,22 +20,23 @@ if (!esbuildPackage) {
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const appDir = path.join(rootDir, "androidtest");
-const fallbackBinary = path.join(appDir, "node_modules/esbuild/bin/esbuild");
 const targetBinary = path.join(appDir, "node_modules", esbuildPackage, "bin/esbuild");
-
-if (!fs.existsSync(fallbackBinary)) {
-  console.warn("[androidtest-tooling] esbuild fallback binary not found");
-  process.exit(0);
-}
+const fallbackBinary = path.join(appDir, "node_modules/esbuild/bin/esbuild");
 
 if (!fs.existsSync(targetBinary)) {
+  if (!fs.existsSync(fallbackBinary)) {
+    process.exit(0);
+  }
+
   fs.mkdirSync(path.dirname(targetBinary), { recursive: true });
   fs.copyFileSync(fallbackBinary, targetBinary);
   fs.chmodSync(targetBinary, 0o755);
   console.log(`[androidtest-tooling] repaired ${esbuildPackage}/bin/esbuild`);
 }
 
-for (const target of [path.dirname(targetBinary), targetBinary, fallbackBinary]) {
+for (const target of [path.dirname(targetBinary), targetBinary, fallbackBinary].filter((target) =>
+  fs.existsSync(target),
+)) {
   try {
     execFileSync("xattr", ["-dr", "com.apple.quarantine", target], {
       stdio: "ignore",
