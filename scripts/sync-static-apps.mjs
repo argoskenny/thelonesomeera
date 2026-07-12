@@ -24,6 +24,12 @@ const syncTargets = [
     ],
   },
   {
+    name: "rooms",
+    sourceDir: "rooms/dist",
+    targetDir: "public/room",
+    entries: ["index.html", "assets", "og.png"],
+  },
+  {
     name: "pulsesync",
     sourceDir: "pulsesync/dist",
     targetDir: "public/pulsesync",

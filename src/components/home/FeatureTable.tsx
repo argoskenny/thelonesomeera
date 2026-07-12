@@ -1,4 +1,5 @@
 import { Check, Minus } from "lucide-react";
+import { Fragment } from "react";
 
 const features = [
   {
@@ -68,9 +69,8 @@ export default function FeatureTable() {
             </thead>
             <tbody>
               {features.map((group) => (
-                <>
+                <Fragment key={group.category}>
                   <tr
-                    key={`cat-${group.category}`}
                     className="border-b border-slate-800/50"
                   >
                     <td
@@ -99,7 +99,7 @@ export default function FeatureTable() {
                       </td>
                     </tr>
                   ))}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
