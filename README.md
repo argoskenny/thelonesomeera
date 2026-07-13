@@ -1,20 +1,18 @@
 # The Lonesome Era
 
-這個 repo 目前由三個維度組成：
+這個 repo 目前由四個清楚的區域組成：
 
 - `src/`：主要的 Next.js 網站與後台。
-- `public/`：對外提供的靜態檔案與 legacy 頁面。
-- `androidtest/`、`sox/`、`cod2/`、`pulsesync/`：獨立小專案的原始碼。
+- `showcase/<project>/`：所有獨立 demo 與 AI 實驗專案的原始碼。
+- `public/showcase/<project>/`：對外發佈的 showcase 靜態成品。
+- `public/`：主站共用資產與尚未專案化的 legacy 頁面。
 
 ## 建議維護規則
 
 - 主站功能請改 `src/app`、`src/components`、`src/lib`。
-- `androidtest` 請只改 `androidtest/`，不要直接改 `public/dist-androidtest/`。
-- `sox` 請只改 `sox/`，不要直接改 `public/sox/`。
-- `cod2` 請只改 `cod2/`，不要直接改 `public/cod2/`。
-- `pulsesync` 請只改 `pulsesync/`，不要直接改 `public/pulsesync/`。
+- 有 source app 的專案請只改 `showcase/<project>/`，不要直接改 `public/showcase/<project>/`。
 - `public/` 裡的 legacy HTML 仍可直接維護，但如果是有獨立來源目錄的子專案，`public/` 應視為發佈結果。
-- 目前部署策略為「發佈產物也提交到 Git」；部署前請先在本機完成 build，並提交 `public/dist-androidtest/`、`public/sox/`、`public/cod2/`、`public/pulsesync/` 與對應 source app 的變更，不要在正式機直接修改這些內容。
+- 目前部署策略為「發佈產物也提交到 Git」；部署前請先在本機完成 build，並提交 `showcase/` source 與 `public/showcase/` 發佈成品。
 
 ## 資料庫規則
 

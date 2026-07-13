@@ -37,9 +37,6 @@
   ],
   "exclude": [
     "node_modules",
-    "androidtest",
-    "cod2",
-    "pulsesync",
-    "sox"
+    "showcase"
   ]
 }

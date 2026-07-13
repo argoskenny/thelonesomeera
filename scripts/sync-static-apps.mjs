@@ -7,14 +7,14 @@ const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const syncTargets = [
   {
     name: "sox",
-    sourceDir: "sox",
-    targetDir: "public/sox",
+    sourceDir: "showcase/sox",
+    targetDir: "public/showcase/sox",
     entries: ["index.html", "favicon.svg", "js", "assets"],
   },
   {
     name: "cod2",
-    sourceDir: "cod2",
-    targetDir: "public/cod2",
+    sourceDir: "showcase/cod2",
+    targetDir: "public/showcase/cod2",
     entries: [
       { source: "dist/index.html", target: "index.html" },
       { source: "dist/assets", target: "assets" },
@@ -25,14 +25,14 @@ const syncTargets = [
   },
   {
     name: "rooms",
-    sourceDir: "rooms/dist",
-    targetDir: "public/room",
+    sourceDir: "showcase/room/dist",
+    targetDir: "public/showcase/room",
     entries: ["index.html", "assets", "og.png"],
   },
   {
     name: "pulsesync",
-    sourceDir: "pulsesync/dist",
-    targetDir: "public/pulsesync",
+    sourceDir: "showcase/pulsesync/dist",
+    targetDir: "public/showcase/pulsesync",
     entries: ["index.html", "assets", "favicon.svg"],
   },
 ];

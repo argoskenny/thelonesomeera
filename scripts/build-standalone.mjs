@@ -8,22 +8,22 @@ const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const tasks = [
   {
     name: "androidtest",
-    checkPath: "androidtest/package.json",
+    checkPath: "showcase/androidtest/package.json",
     command: ["npm", "run", "build:androidtest"],
   },
   {
     name: "cod2",
-    checkPath: "cod2/package.json",
+    checkPath: "showcase/cod2/package.json",
     command: ["npm", "run", "build:cod2"],
   },
   {
     name: "rooms",
-    checkPath: "rooms/package.json",
+    checkPath: "showcase/room/package.json",
     command: ["npm", "run", "build:rooms"],
   },
   {
     name: "pulsesync",
-    checkPath: "pulsesync/package.json",
+    checkPath: "showcase/pulsesync/package.json",
     command: ["npm", "run", "build:pulsesync"],
   },
 ];

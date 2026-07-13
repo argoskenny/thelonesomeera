@@ -55,15 +55,15 @@ sync_repo() {
     git reset --hard "$GIT_REMOTE/$GIT_BRANCH"
     git clean -fd
 
-    if [ -d "$APP_DIR/cod2" ]; then
-        if [ -d "$APP_DIR/cod2/.git" ] || [ -f "$APP_DIR/cod2/.git" ]; then
+    if [ -d "$APP_DIR/showcase/cod2" ]; then
+        if [ -d "$APP_DIR/showcase/cod2/.git" ] || [ -f "$APP_DIR/showcase/cod2/.git" ]; then
             echo "  清理 cod2 工作目錄..."
-            git -C "$APP_DIR/cod2" rebase --abort 2>/dev/null || true
-            git -C "$APP_DIR/cod2" merge --abort 2>/dev/null || true
-            git -C "$APP_DIR/cod2" cherry-pick --abort 2>/dev/null || true
-            git -C "$APP_DIR/cod2" am --abort 2>/dev/null || true
-            git -C "$APP_DIR/cod2" restore --source=HEAD --staged --worktree .
-            git -C "$APP_DIR/cod2" clean -fd
+            git -C "$APP_DIR/showcase/cod2" rebase --abort 2>/dev/null || true
+            git -C "$APP_DIR/showcase/cod2" merge --abort 2>/dev/null || true
+            git -C "$APP_DIR/showcase/cod2" cherry-pick --abort 2>/dev/null || true
+            git -C "$APP_DIR/showcase/cod2" am --abort 2>/dev/null || true
+            git -C "$APP_DIR/showcase/cod2" restore --source=HEAD --staged --worktree .
+            git -C "$APP_DIR/showcase/cod2" clean -fd
         fi
     fi
 }
@@ -100,19 +100,24 @@ install_npm() {
     cd "$APP_DIR"
     npm ci
 
-    if [ -f "$APP_DIR/androidtest/package-lock.json" ]; then
+    if [ -f "$APP_DIR/showcase/androidtest/package-lock.json" ]; then
         echo "  安裝 androidtest 依賴..."
-        npm --prefix androidtest ci
+        npm --prefix showcase/androidtest ci
     fi
 
-    if [ -f "$APP_DIR/cod2/package-lock.json" ]; then
+    if [ -f "$APP_DIR/showcase/cod2/package-lock.json" ]; then
         echo "  安裝 cod2 依賴..."
-        npm --prefix cod2 ci
+        npm --prefix showcase/cod2 ci
     fi
 
-    if [ -f "$APP_DIR/pulsesync/package-lock.json" ]; then
+    if [ -f "$APP_DIR/showcase/room/package-lock.json" ]; then
+        echo "  安裝 room 依賴..."
+        npm --prefix showcase/room ci
+    fi
+
+    if [ -f "$APP_DIR/showcase/pulsesync/package-lock.json" ]; then
         echo "  安裝 pulsesync 依賴..."
-        npm --prefix pulsesync ci
+        npm --prefix showcase/pulsesync ci
     fi
 }
 

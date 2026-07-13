@@ -62,20 +62,20 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/cod2',
-        destination: '/cod2/index.html',
+        source: '/showcase/cod2',
+        destination: '/showcase/cod2/index.html',
       },
       {
-        source: '/cod2/',
-        destination: '/cod2/index.html',
+        source: '/showcase/cod2/',
+        destination: '/showcase/cod2/index.html',
       },
       {
-        source: '/pulsesync',
-        destination: '/pulsesync/index.html',
+        source: '/showcase/pulsesync',
+        destination: '/showcase/pulsesync/index.html',
       },
       {
-        source: '/pulsesync/',
-        destination: '/pulsesync/index.html',
+        source: '/showcase/pulsesync/',
+        destination: '/showcase/pulsesync/index.html',
       },
     ];
   },

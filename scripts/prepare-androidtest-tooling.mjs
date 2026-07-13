@@ -19,7 +19,7 @@ if (!esbuildPackage) {
 }
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const appDir = path.join(rootDir, "androidtest");
+const appDir = path.join(rootDir, "showcase/androidtest");
 const targetBinary = path.join(appDir, "node_modules", esbuildPackage, "bin/esbuild");
 const fallbackBinary = path.join(appDir, "node_modules/esbuild/bin/esbuild");
 

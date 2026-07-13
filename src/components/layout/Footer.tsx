@@ -49,8 +49,8 @@ export default function Footer() {
             </h3>
             <ul className="space-y-2">
               {[
-                { href: "/hellrider/index.html", label: "Hell Rider" },
-                { href: "/sox/index.html", label: "Sox FPS" },
+                { href: "/showcase/hellrider/index.html", label: "Hell Rider" },
+                { href: "/showcase/sox/index.html", label: "Sox FPS" },
                 { href: "/ai-hub", label: "AI Demo Hub" },
               ].map((link) => (
                 <li key={link.href}>

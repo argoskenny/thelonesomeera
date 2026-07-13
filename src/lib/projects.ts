@@ -19,24 +19,24 @@ export const projects: ProjectItem[] = [
     title: "小明問答遊戲",
     description:
       "一個基於 Web 技術的互動問答遊戲，包含多媒體元素與響應式設計，讓使用者在遊戲中學習。",
-    image: "/assets/xiaoming/imgs/mvp.png",
-    link: "/xiaoming/index.html",
+    image: "/showcase/xiaoming/assets/imgs/mvp.png",
+    link: "/showcase/xiaoming/index.html",
     tags: ["JavaScript", "HTML5", "CSS3", "遊戲開發"],
   },
   {
     title: "Hell Rider 競速遊戲",
     description:
       "使用原生 JavaScript 開發的 2D 競速遊戲，具有物理引擎和碰撞偵測系統。",
-    image: "/hellrider/pagebg1.png",
-    link: "/hellrider/index.html",
+    image: "/showcase/hellrider/pagebg1.png",
+    link: "/showcase/hellrider/index.html",
     tags: ["Canvas", "JavaScript", "遊戲引擎", "物理模擬"],
   },
   {
     title: "Sox 射擊遊戲",
     description:
       "以 Web 技術打造的射擊遊戲，包含音效系統和動畫效果，展現前端技術在遊戲開發的可能性。",
-    image: "/sox/favicon.svg",
-    link: "/sox/index.html",
+    image: "/showcase/sox/favicon.svg",
+    link: "/showcase/sox/index.html",
     tags: ["Vue.js", "Web Audio API", "動畫", "遊戲設計"],
   },
 ];

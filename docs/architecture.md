@@ -8,7 +8,12 @@
 - `src/components`: UI 與區塊元件
 - `src/lib`: Prisma、auth、service 等共用邏輯
 
-### 2. Public static content
+### 2. Showcase projects
+
+- `showcase/<project>/`: 有建置流程的 demo 原始碼
+- `public/showcase/<project>/`: 所有 demo 的對外發佈路徑
+
+### 3. Public static content
 
 - `public/`: 網站部署後直接對外提供的靜態檔案
 - `public/*.html`: 歷史頁面、實驗頁面或單檔入口
@@ -18,10 +23,11 @@
 
 | App | Source of truth | Published path | Notes |
 | --- | --- | --- | --- |
-| Android WebView demo | `androidtest/` | `public/dist-androidtest/` + `public/androidtest.html` | 用 Vite build 發佈 |
-| SOX FPS demo | `sox/` | `public/sox/` | 用同步腳本發佈 |
-| COD2 FPS demo | `cod2/` | `public/cod2/` | 用 Vite build 後同步發佈 |
-| PulseSync demo | `pulsesync/` | `public/pulsesync/` | 用 Vite build 後同步發佈 |
+| Android WebView demo | `showcase/androidtest/` | `public/showcase/androidtest/` | 用 Vite build 發佈 |
+| SOX FPS demo | `showcase/sox/` | `public/showcase/sox/` | 用同步腳本發佈 |
+| COD2 FPS demo | `showcase/cod2/` | `public/showcase/cod2/` | 用 Vite build 後同步發佈 |
+| Room demo | `showcase/room/` | `public/showcase/room/` | 用 Vite build 後同步發佈 |
+| PulseSync demo | `showcase/pulsesync/` | `public/showcase/pulsesync/` | 用 Vite build 後同步發佈 |
 
 ## 資料庫約定
 
@@ -34,10 +40,9 @@
 
 ## 這次整理後的維護規則
 
-1. 不直接修改 `public/dist-androidtest/`。
-2. 不直接修改 `public/sox/`。
-3. `public/` 只保留部署內容與 legacy 靜態頁面，不再放可編輯的 `androidtest` 原始碼副本。
-4. 若新增新的獨立小專案，優先放在專屬來源目錄，再用 build 或 sync 輸出到 `public/`。
+1. 不直接修改有 source app 對應的 `public/showcase/<project>/`。
+2. 若新增獨立小專案，一律放在 `showcase/<project>/`，並發佈到 `public/showcase/<project>/`。
+3. `public/` 根目錄只保留主站共用內容與 legacy 靜態頁面。
 5. 靜態輸出目錄一律視為發佈結果，不直接手改。
 
 ## 建議工作流程
