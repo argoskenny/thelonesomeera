@@ -14,12 +14,7 @@ function isSectionKey(value: string): value is SectionKey {
 }
 
 export default function AiHubClientPage() {
-  const [activeKey, setActiveKey] = useState<SectionKey>(() => {
-    if (typeof window === "undefined") return aiHubSections[0].key;
-
-    const initial = window.location.hash.replace("#", "");
-    return isSectionKey(initial) ? initial : aiHubSections[0].key;
-  });
+  const [activeKey, setActiveKey] = useState<SectionKey>(aiHubSections[0].key);
   const [copied, setCopied] = useState(false);
 
   const activeSection = useMemo(
@@ -36,6 +31,7 @@ export default function AiHubClientPage() {
       }
     };
 
+    onHashChange();
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);

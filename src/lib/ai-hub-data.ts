@@ -12,7 +12,8 @@ export type AiHubSection = {
     | "earthmoonsystem"
     | "blackhole"
     | "cybermessager"
-    | "callofduty";
+    | "callofduty"
+    | "room";
   label: string;
   title: string;
   subtitle: string;
@@ -364,6 +365,20 @@ Before starting, provide a concise checklist (3-7 items) outlining the main subt
         description: "FPS MVP 測試頁（Gemini 3）",
         tags: ["LLM", "Gemini 3", "FPS"],
         link: "/showcase/callofduty/gemini3.html",
+      },
+    ],
+  },
+  {
+    key: "room",
+    label: "3D Room Test",
+    title: "3D Room Test",
+    subtitle: "Interactive Three.js Room Demo",
+    cards: [
+      {
+        title: "Rooms 測試頁",
+        description: "可即時探索的 Three.js 3D 室內空間測試頁。",
+        tags: ["Three.js", "3D", "Room"],
+        link: "/showcase/room/",
       },
     ],
   },

@@ -77,6 +77,14 @@ const nextConfig = {
         source: '/showcase/pulsesync/',
         destination: '/showcase/pulsesync/index.html',
       },
+      {
+        source: '/showcase/room',
+        destination: '/showcase/room/index.html',
+      },
+      {
+        source: '/showcase/room/',
+        destination: '/showcase/room/index.html',
+      },
     ];
   },
 };
