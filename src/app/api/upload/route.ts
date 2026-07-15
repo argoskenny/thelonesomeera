@@ -2,17 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { getSession } from "@/lib/auth";
-import { isAdminHostRequest } from "@/lib/adminHost";
 import {
   assertImageSignature,
   getSafeUploadMetadata,
 } from "@/lib/uploadValidation";
 
 export async function POST(request: NextRequest) {
-  if (!isAdminHostRequest(request)) {
-    return NextResponse.json({ error: "Not Found" }, { status: 404 });
-  }
-
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "未授權" }, { status: 401 });

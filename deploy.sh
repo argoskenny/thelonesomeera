@@ -130,20 +130,9 @@ setup_env() {
         cat > "$APP_DIR/.env.local" << ENVEOF
 ADMIN_PASSWORD=$(openssl rand -base64 24)
 JWT_SECRET=$(openssl rand -base64 32)
-ADMIN_HOSTNAME=admin.thelonesomeera.com
 DATABASE_URL="file:$DB_FILE"
 ENVEOF
         echo "  ✓ 已產生隨機 ADMIN_PASSWORD，請至 $APP_DIR/.env.local 查看或改成自訂密碼"
-    fi
-
-    if grep -q '^ADMIN_HOSTNAME=[[:space:]]*$' "$APP_DIR/.env.local"; then
-        echo "  設定管理後台網域..."
-        sed -i "s|^ADMIN_HOSTNAME=.*|ADMIN_HOSTNAME=admin.thelonesomeera.com|g" "$APP_DIR/.env.local"
-    elif grep -q '^ADMIN_HOSTNAME=' "$APP_DIR/.env.local"; then
-        echo "  管理後台網域：$(grep '^ADMIN_HOSTNAME=' "$APP_DIR/.env.local" | cut -d= -f2-)"
-    else
-        echo "  補上管理後台網域..."
-        printf '\nADMIN_HOSTNAME=admin.thelonesomeera.com\n' >> "$APP_DIR/.env.local"
     fi
 
     if grep -q '^DATABASE_URL=' "$APP_DIR/.env.local"; then
@@ -153,6 +142,9 @@ ENVEOF
         echo "  補上 DATABASE_URL..."
         printf '\nDATABASE_URL="file:%s"\n' "$DB_FILE" >> "$APP_DIR/.env.local"
     fi
+
+    # 舊版曾使用獨立 admin 子網域，現已回復為主網域的 /admin。
+    sed -i '/^ADMIN_HOSTNAME=/d' "$APP_DIR/.env.local"
 }
 
 # ---- 5. 資料庫初始化 & 建置 ----
@@ -248,14 +240,8 @@ setup_nginx() {
             SHOULD_COPY=true
             echo "  首次部署：建立 Nginx 站台設定"
         elif [ "$HAS_SSL_CONFIG" = true ]; then
-            if sudo grep -Rqs "server_name[[:space:]].*admin\\.thelonesomeera\\.com" /etc/nginx/sites-enabled /etc/nginx/sites-available; then
-                echo "  偵測到現有 SSL/Certbot 設定與管理後台網域，跳過寫入 repo 內的 nginx.conf"
-                echo "  如需調整正式機 Nginx，請先手動備份後再修改 /etc/nginx/sites-available/$SITE_NAME"
-            else
-                echo "  ❌ 偵測到現有 SSL/Certbot 設定，但 Nginx 尚未設定 admin.thelonesomeera.com"
-                echo "  請先替 admin.thelonesomeera.com 建立 HTTPS server block，再重新部署"
-                exit 1
-            fi
+            echo "  偵測到現有 SSL/Certbot 設定，跳過寫入 repo 內的 nginx.conf"
+            echo "  如需調整正式機 Nginx，請先手動備份後再修改 /etc/nginx/sites-available/$SITE_NAME"
         elif [ "$FORCE_NGINX_CONFIG" = true ]; then
             SHOULD_COPY=true
             echo "  偵測到 --force-nginx：將覆蓋既有非 SSL Nginx 設定"

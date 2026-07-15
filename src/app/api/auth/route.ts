@@ -6,14 +6,9 @@ import {
   getAuthConfigurationError,
   verifyAdminPassword,
 } from "@/lib/auth";
-import { isAdminHostRequest } from "@/lib/adminHost";
 
 export async function POST(request: NextRequest) {
   try {
-    if (!isAdminHostRequest(request)) {
-      return NextResponse.json({ error: "Not Found" }, { status: 404 });
-    }
-
     const configError = getAuthConfigurationError();
     if (configError) {
       return NextResponse.json({ error: configError }, { status: 500 });
@@ -35,11 +30,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
-  if (!isAdminHostRequest(request)) {
-    return NextResponse.json({ error: "Not Found" }, { status: 404 });
-  }
-
+export async function DELETE() {
   const response = NextResponse.json({ success: true });
   const cookieOpts = deleteCookieOptions();
   response.cookies.set(cookieOpts);

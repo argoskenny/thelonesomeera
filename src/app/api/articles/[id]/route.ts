@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/auth";
 import { parseArticlePayload } from "@/lib/articlePayload";
-import { isAdminHostRequest } from "@/lib/adminHost";
 
 type Context = { params: Promise<{ id: string }> };
 
@@ -23,10 +22,6 @@ export async function GET(_request: NextRequest, { params }: Context) {
 }
 
 export async function PUT(request: NextRequest, { params }: Context) {
-  if (!isAdminHostRequest(request)) {
-    return NextResponse.json({ error: "Not Found" }, { status: 404 });
-  }
-
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "未授權" }, { status: 401 });
@@ -52,10 +47,6 @@ export async function PUT(request: NextRequest, { params }: Context) {
 }
 
 export async function DELETE(request: NextRequest, { params }: Context) {
-  if (!isAdminHostRequest(request)) {
-    return NextResponse.json({ error: "Not Found" }, { status: 404 });
-  }
-
   const session = await getSession();
   if (!session) {
     return NextResponse.json({ error: "未授權" }, { status: 401 });

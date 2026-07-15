@@ -16,14 +16,8 @@ test("deploy script tightens secret and database file permissions", () => {
   assert.match(deployScript, /chmod 600 "\$DB_FILE"/);
 });
 
-test("deploy script configures the dedicated admin hostname", () => {
-  assert.match(deployScript, /ADMIN_HOSTNAME=admin\.thelonesomeera\.com/);
-});
-
-test("deploy script refuses SSL deployments without the admin nginx hostname", () => {
-  assert.match(
-    deployScript,
-    /sudo grep -Rqs "server_name\[\[:space:\]\]\.\*admin\\\\\.thelonesomeera\\\\\.com"/,
-  );
-  assert.match(deployScript, /Nginx 尚未設定 admin\.thelonesomeera\.com/);
+test("deploy script preserves existing SSL configuration", () => {
+  assert.match(deployScript, /偵測到現有 SSL\/Certbot 設定，跳過寫入/);
+  assert.match(deployScript, /sed -i '\/\^ADMIN_HOSTNAME=\/d'/);
+  assert.doesNotMatch(deployScript, /admin\.thelonesomeera\.com/);
 });
