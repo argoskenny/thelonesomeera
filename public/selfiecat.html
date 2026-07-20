@@ -69,6 +69,8 @@
             padding: 0;
             color: #333;
             background-color: #fff;
+            line-height: 1.5;
+            overflow-x: hidden;
         }
 
         .navbar {
@@ -114,11 +116,16 @@
             padding: 6rem 0;
             position: relative;
             overflow: hidden;
+            min-height: auto;
+            text-align: left;
         }
 
         .hero-content {
             position: relative;
             z-index: 2;
+            max-width: none;
+            margin: 0;
+            padding: 0 12px;
         }
 
         .hero-title {
@@ -248,6 +255,7 @@
             padding: 2rem 0;
             background-color: #fff;
             text-align: center;
+            color: #333;
         }
 
         .footer-links a {
@@ -308,19 +316,47 @@
             .col-md-4 {
                 margin-bottom: 20px;
             }
+
+            .hero-section {
+                padding: 3rem 0;
+                text-align: center;
+            }
+
+            .hero-content {
+                padding: 0 12px;
+            }
+
+            .hero-subtitle {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+
+            .navbar-brand img {
+                width: min(245px, 70vw);
+                height: auto;
+            }
+
+            .how-to-img {
+                width: 100%;
+                height: auto;
+            }
         }
     </style>
-    <link rel="stylesheet" href="style.css">
 </head>
 
-<body>
+<body id="top">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="#top" aria-label="Selfie Cat home">
                 <img src="title_logo.png" alt="Selfie Cat">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -333,7 +369,7 @@
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button"
-                            data-bs-toggle="dropdown">
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             🌐 Language
                         </a>
                         <ul class="dropdown-menu">
@@ -598,6 +634,9 @@
                 step4: "Teile den Spaß",
                 tryToday: "Probiere Selfie Cat heute aus",
                 forFree: "KOSTENLOS!!",
+                playtimeFunDesc: "Laserpointer, hüpfende Bälle, farbenfrohes Feuerwerk und schwimmende Fische! Selfie Cat unterhält deine Katze mit spannenden digitalen Spielzeugen, die ihre Aufmerksamkeit wecken.",
+                autoSnapMagicDesc: "Deine Katze tippt, wir fotografieren! Selfie Cat nimmt automatisch bei jeder Bildschirmberührung ein Foto auf—ganz ohne zusätzlichen Aufwand!",
+                shareCutenessDesc: "Zeige die schönsten Momente deiner Katze! Speichere und teile ihre lustigen und herzerwärmenden Selfies ganz einfach mit Freunden in sozialen Medien.",
                 step1Desc: "Wähle aus vier lustigen Spielzeugen: Laserpointer, Bälle, Feuerwerk oder Fische.",
                 step2Desc: "Platziere dein Gerät vor deiner Katze und beobachte, wie sie mit dem Bildschirm interagiert.",
                 step3Desc: "Jede Berührung löst ein Selfie aus—fange ihre süßesten Reaktionen mühelos ein!",
@@ -619,6 +658,9 @@
                 step4: "Bagikan Keseruan",
                 tryToday: "Coba Selfie Cat Hari Ini",
                 forFree: "GRATIS!!",
+                playtimeFunDesc: "Pointer laser, bola memantul, kembang api warna-warni, dan ikan berenang! Selfie Cat menghibur kucing Anda dengan mainan digital seru yang dirancang untuk menarik perhatiannya.",
+                autoSnapMagicDesc: "Kucing Anda menyentuh, kami memotret! Selfie Cat otomatis mengambil foto setiap kali kucing menyentuh layar—tanpa usaha tambahan!",
+                shareCutenessDesc: "Tampilkan momen terbaik kucing Anda! Simpan dan bagikan selfie lucu dan menggemaskan dengan teman di media sosial dengan mudah.",
                 step1Desc: "Pilih dari empat mainan seru: Pointer Laser, Bola, Kembang Api, atau Ikan.",
                 step2Desc: "Letakkan perangkat Anda di depan kucing dan lihat mereka berinteraksi dengan layar.",
                 step3Desc: "Setiap sentuhan memicu selfie—tangkap reaksi termanis mereka dengan mudah!",
@@ -640,6 +682,9 @@
                 step4: "Condividi il divertimento",
                 tryToday: "Prova Selfie Cat oggi",
                 forFree: "GRATIS!!",
+                playtimeFunDesc: "Puntatori laser, palline rimbalzanti, fuochi d'artificio colorati e pesci che nuotano! Selfie Cat intrattiene il tuo gatto con giocattoli digitali pensati per attirare la sua attenzione.",
+                autoSnapMagicDesc: "Il tuo gatto tocca, noi scattiamo! Selfie Cat fotografa automaticamente ogni volta che il gatto tocca lo schermo—senza alcuno sforzo aggiuntivo!",
+                shareCutenessDesc: "Mostra i momenti migliori del tuo gatto! Salva e condividi facilmente con gli amici i suoi selfie più divertenti e teneri sui social media.",
                 step1Desc: "Scegli tra quattro giocattoli divertenti: Puntatore Laser, Palline, Fuochi d'Artificio o Pesci.",
                 step2Desc: "Posiziona il tuo dispositivo davanti al tuo gatto e osservalo interagire con lo schermo.",
                 step3Desc: "Ogni tocco attiva un selfie—cattura le loro reazioni più dolci senza sforzo!",
@@ -661,6 +706,9 @@
                 step4: "즐거움 공유하기",
                 tryToday: "지금 Selfie Cat을 사용해보세요",
                 forFree: "무료!!",
+                playtimeFunDesc: "레이저 포인터, 통통 튀는 공, 화려한 불꽃놀이와 헤엄치는 물고기까지! Selfie Cat은 고양이의 시선을 끌도록 설계된 재미있는 디지털 장난감으로 즐거운 놀이 시간을 만들어 줍니다.",
+                autoSnapMagicDesc: "고양이가 화면을 터치하면 자동으로 찰칵! Selfie Cat은 화면을 터치할 때마다 사진을 촬영하므로 별도의 조작이 필요 없습니다.",
+                shareCutenessDesc: "고양이의 최고의 순간을 자랑해 보세요! 재미있고 사랑스러운 셀카를 손쉽게 저장하고 소셜 미디어에서 친구들과 공유할 수 있습니다.",
                 step1Desc: "네 가지 재미있는 장난감 중 선택하세요: 레이저 포인터, 공, 불꽃놀이, 또는 물고기.",
                 step2Desc: "기기를 고양이 앞에 놓고 화면과 상호작용하는 모습을 지켜보세요.",
                 step3Desc: "터치할 때마다 셀카를 찍어—가장 귀여운 반응을 쉽게 포착하세요!",
@@ -813,28 +861,34 @@
         };
 
         function changeLanguage(lang) {
+            const selectedTranslation = translations[lang] || translations.en;
+            const selectedLang = translations[lang] ? lang : 'en';
+
             // Store the selected language in localStorage
-            localStorage.setItem('preferredLanguage', lang);
+            localStorage.setItem('preferredLanguage', selectedLang);
+            document.documentElement.lang = selectedLang === 'zh' ? 'zh-Hant' : selectedLang;
+            document.documentElement.dir = selectedLang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelector('#languageDropdown').textContent = `🌐 ${selectedLang.toUpperCase()}`;
 
             // Update text content
-            document.querySelector('a[href="#features"]').textContent = translations[lang].features;
-            document.querySelector('a[href="#how-it-works"]').textContent = translations[lang].howItWorks;
-            document.querySelector('.hero-title').textContent = translations[lang].heroTitle;
-            document.querySelector('.hero-subtitle').textContent = translations[lang].heroSubtitle;
-            document.querySelector('.section-title').textContent = translations[lang].amazingFeatures;
+            document.querySelector('a[href="#features"]').textContent = selectedTranslation.features;
+            document.querySelector('a[href="#how-it-works"]').textContent = selectedTranslation.howItWorks;
+            document.querySelector('.hero-title').textContent = selectedTranslation.heroTitle;
+            document.querySelector('.hero-subtitle').textContent = selectedTranslation.heroSubtitle;
+            document.querySelector('.section-title').textContent = selectedTranslation.amazingFeatures;
 
             // Update feature cards
             const featureCards = document.querySelectorAll('.feature-card h3');
-            featureCards[0].textContent = `🎾 ${translations[lang].playtimeFun}`;
-            featureCards[1].textContent = `📸 ${translations[lang].autoSnapMagic}`;
-            featureCards[2].textContent = `🌟 ${translations[lang].shareCuteness}`;
+            featureCards[0].textContent = `🎾 ${selectedTranslation.playtimeFun}`;
+            featureCards[1].textContent = `📸 ${selectedTranslation.autoSnapMagic}`;
+            featureCards[2].textContent = `🌟 ${selectedTranslation.shareCuteness}`;
 
             // Update feature cards content
-            const featureCardsContent = document.querySelectorAll('.feature-card');
+            const featureCardsContent = document.querySelectorAll('#features .feature-card');
             const featureTexts = [
-                translations[lang].playtimeFunDesc,
-                translations[lang].autoSnapMagicDesc,
-                translations[lang].shareCutenessDesc
+                selectedTranslation.playtimeFunDesc,
+                selectedTranslation.autoSnapMagicDesc,
+                selectedTranslation.shareCutenessDesc
             ];
 
             featureCardsContent.forEach((card, index) => {
@@ -842,25 +896,25 @@
             });
 
             // Update How It Works section
-            document.querySelector('#how-it-works .section-title').textContent = translations[lang].howSelfieWorks;
+            document.querySelector('#how-it-works .section-title').textContent = selectedTranslation.howSelfieWorks;
 
             // Update steps
             const steps = document.querySelectorAll('.step-block');
             steps.forEach((step, index) => {
                 const stepNumber = index + 1;
-                step.querySelector('h3').textContent = `${['1️⃣', '2️⃣', '3️⃣', '4️⃣'][index]} ${translations[lang]['step' + stepNumber]}`;
-                step.querySelector('p').textContent = translations[lang]['step' + stepNumber + 'Desc'];
+                step.querySelector('h3').textContent = `${['1️⃣', '2️⃣', '3️⃣', '4️⃣'][index]} ${selectedTranslation['step' + stepNumber]}`;
+                step.querySelector('p').textContent = selectedTranslation['step' + stepNumber + 'Desc'];
             });
 
             // Update CTA section
-            document.querySelector('.cta-title').innerHTML = `${translations[lang].tryToday} <span class="highlight-text">${translations[lang].forFree}</span>`;
+            document.querySelector('.cta-title').innerHTML = `${selectedTranslation.tryToday} <span class="highlight-text">${selectedTranslation.forFree}</span>`;
         }
 
         // Set initial language based on stored preference or browser language
         document.addEventListener('DOMContentLoaded', () => {
             const storedLang = localStorage.getItem('preferredLanguage');
             const browserLang = navigator.language.split('-')[0];
-            const initialLang = storedLang || (translations[browserLang] ? browserLang : 'en');
+            const initialLang = translations[storedLang] ? storedLang : (translations[browserLang] ? browserLang : 'en');
             changeLanguage(initialLang);
         });
     </script>
