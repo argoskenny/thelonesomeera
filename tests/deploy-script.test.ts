@@ -16,6 +16,17 @@ test("deploy script tightens secret and database file permissions", () => {
   assert.match(deployScript, /chmod 600 "\$DB_FILE"/);
 });
 
+test("deploy script installs dependencies for every Vite showcase build", () => {
+  assert.match(
+    deployScript,
+    /npm --prefix showcase\/colorful_kart ci/,
+  );
+  assert.match(
+    deployScript,
+    /npm --prefix showcase\/mini_fantasy ci/,
+  );
+});
+
 test("deploy script preserves existing SSL configuration", () => {
   assert.match(deployScript, /偵測到現有 SSL\/Certbot 設定，跳過寫入/);
   assert.match(deployScript, /sed -i '\/\^ADMIN_HOSTNAME=\/d'/);

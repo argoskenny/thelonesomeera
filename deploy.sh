@@ -119,6 +119,16 @@ install_npm() {
         echo "  安裝 pulsesync 依賴..."
         npm --prefix showcase/pulsesync ci
     fi
+
+    if [ -f "$APP_DIR/showcase/colorful_kart/package-lock.json" ]; then
+        echo "  安裝 colorful_kart 依賴..."
+        npm --prefix showcase/colorful_kart ci
+    fi
+
+    if [ -f "$APP_DIR/showcase/mini_fantasy/package-lock.json" ]; then
+        echo "  安裝 mini_fantasy 依賴..."
+        npm --prefix showcase/mini_fantasy ci
+    fi
 }
 
 # ---- 4. 設定環境變數 ----
