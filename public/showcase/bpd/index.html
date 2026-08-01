@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <base href="/showcase/bpd/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071018" />
+    <meta
+      name="description"
+      content="Sigil Keep — a five-room top-down stone-pushing puzzle game."
+    />
+    <title>Sigil Keep</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="game-shell" aria-labelledby="game-title">
+      <aside class="left-rail" aria-label="Game title and movement controls">
+        <div class="brand-plaque">
+          <svg aria-hidden="true" viewBox="0 0 44 44">
+            <path d="M29.5 7.5A16.2 16.2 0 1 0 36 32.8 18 18 0 1 1 29.5 7.5Z" />
+          </svg>
+          <h1 id="game-title">SIGIL KEEP</h1>
+        </div>
+
+        <div class="keyboard-hint" aria-hidden="true">
+          <span>WASD</span>
+          <i></i>
+          <span>ARROW KEYS</span>
+        </div>
+
+        <div class="d-pad" aria-label="Movement controls">
+          <button class="d-pad-button up" type="button" data-direction="up" aria-label="Move up">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6.5 14.5 5.5-5.5 5.5 5.5" /></svg>
+          </button>
+          <button class="d-pad-button left" type="button" data-direction="left" aria-label="Move left">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 6.5-5.5 5.5 5.5 5.5" /></svg>
+          </button>
+          <button class="d-pad-button right" type="button" data-direction="right" aria-label="Move right">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9.5 6.5 5.5 5.5-5.5 5.5" /></svg>
+          </button>
+          <button class="d-pad-button down" type="button" data-direction="down" aria-label="Move down">
+            <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m6.5 9.5 5.5 5.5 5.5-5.5" /></svg>
+          </button>
+        </div>
+      </aside>
+
+      <section class="board-column" aria-label="Puzzle room">
+        <div class="board-frame">
+          <div id="board" class="board" role="grid" tabindex="0" aria-label="Sigil Keep puzzle board"></div>
+          <span class="corner-rune top-left" aria-hidden="true"></span>
+          <span class="corner-rune top-right" aria-hidden="true"></span>
+          <span class="corner-rune bottom-left" aria-hidden="true"></span>
+          <span class="corner-rune bottom-right" aria-hidden="true"></span>
+        </div>
+        <div class="board-status" aria-live="polite">
+          <span id="door-status" class="door-status">DOOR SEALED</span>
+          <span id="room-name">THE FIRST SEAL</span>
+          <span id="sigil-status">0 / 1 SIGILS</span>
+        </div>
+      </section>
+
+      <aside class="status-panel" aria-label="Room status and puzzle actions">
+        <section class="room-progress" aria-labelledby="room-label">
+          <p id="room-label" class="room-label">ROOM <span id="room-number">1</span> / 5</p>
+          <ol id="room-dots" aria-label="Room progress"></ol>
+        </section>
+
+        <section class="objective-panel">
+          <img src="./assets/sprites/sigil.webp" alt="" />
+          <p id="objective-text">Awaken every sigil</p>
+        </section>
+
+        <section class="moves-panel" aria-label="Move count">
+          <span>MOVES</span>
+          <strong id="moves">000</strong>
+        </section>
+
+        <section class="inventory" aria-label="Key inventory">
+          <img id="key-icon" src="./assets/sprites/key.webp" alt="" />
+          <span id="key-status">NO KEY REQUIRED</span>
+        </section>
+
+        <div class="action-buttons">
+          <button id="reset-button" class="action-button" type="button">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M4.8 8.2A8 8 0 1 1 4 13" />
+              <path d="M4.8 3.8v4.4h4.4" />
+            </svg>
+            RESET
+          </button>
+          <button id="undo-button" class="action-button" type="button" disabled>
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M9 7 4 12l5 5" />
+              <path d="M5 12h8a6 6 0 0 1 6 6" />
+            </svg>
+            UNDO
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <div id="completion-modal" class="completion-modal" hidden>
+      <section class="completion-card" role="dialog" aria-modal="true" aria-labelledby="completion-title">
+        <div class="completion-sigil" aria-hidden="true">
+          <img src="./assets/sprites/sigil.webp" alt="" />
+        </div>
+        <h2 id="completion-title">THE KEEP AWAKENS</h2>
+        <p>Every sigil answers your call.</p>
+        <button id="play-again-button" class="action-button" type="button">PLAY AGAIN</button>
+      </section>
+    </div>
+
+    <div id="announcement" class="visually-hidden" aria-live="assertive"></div>
+
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>

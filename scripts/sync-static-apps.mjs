@@ -35,6 +35,30 @@ const syncTargets = [
     targetDir: "public/showcase/pulsesync",
     entries: ["index.html", "assets", "favicon.svg"],
   },
+  {
+    name: "mma",
+    sourceDir: "showcase/mma",
+    targetDir: "public/showcase/mma",
+    entries: ["index.html", "app.js", "styles.css", "assets"],
+  },
+  {
+    name: "colorful_kart",
+    sourceDir: "showcase/colorful_kart/dist",
+    targetDir: "public/showcase/colorful_kart",
+    entries: ["index.html", "assets"],
+  },
+  {
+    name: "bpd",
+    sourceDir: "showcase/bpd",
+    targetDir: "public/showcase/bpd",
+    entries: ["index.html", "game.js", "levels.js", "style.css", "assets"],
+  },
+  {
+    name: "mini_fantasy",
+    sourceDir: "showcase/mini_fantasy/dist",
+    targetDir: "public/showcase/mini_fantasy",
+    entries: ["index.html", "assets", "preview.png"],
+  },
 ];
 
 function copyEntry(sourcePath, targetPath) {

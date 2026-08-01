@@ -28,6 +28,10 @@
 | COD2 FPS demo | `showcase/cod2/` | `public/showcase/cod2/` | 用 Vite build 後同步發佈 |
 | Room demo | `showcase/room/` | `public/showcase/room/` | 用 Vite build 後同步發佈 |
 | PulseSync demo | `showcase/pulsesync/` | `public/showcase/pulsesync/` | 用 Vite build 後同步發佈 |
+| Mythic Match | `showcase/mma/` | `public/showcase/mma/` | 用同步腳本發佈 |
+| Colorful Kart | `showcase/colorful_kart/` | `public/showcase/colorful_kart/` | 用 Vite build 後同步發佈 |
+| Sigil Keep | `showcase/bpd/` | `public/showcase/bpd/` | 用同步腳本發佈 |
+| Mini Fantasy | `showcase/mini_fantasy/` | `public/showcase/mini_fantasy/` | 用 Vite build 後同步發佈 |
 
 ## 資料庫約定
 

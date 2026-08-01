@@ -26,6 +26,16 @@ const tasks = [
     checkPath: "showcase/pulsesync/package.json",
     command: ["npm", "run", "build:pulsesync"],
   },
+  {
+    name: "colorful_kart",
+    checkPath: "showcase/colorful_kart/package.json",
+    command: ["npm", "run", "build:colorful_kart"],
+  },
+  {
+    name: "mini_fantasy",
+    checkPath: "showcase/mini_fantasy/package.json",
+    command: ["npm", "run", "build:mini_fantasy"],
+  },
 ];
 
 for (const task of tasks) {

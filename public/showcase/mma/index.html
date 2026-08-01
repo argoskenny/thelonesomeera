@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <base href="/showcase/mma/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#071521" />
+    <meta
+      name="description"
+      content="Mythic Match — a magical creature memory card game with combos and three difficulty levels."
+    />
+    <title>Mythic Match</title>
+    <link rel="preload" href="assets/observatory-bg.png" as="image" fetchpriority="high" />
+    <link rel="preload" href="assets/magical-creatures.png" as="image" fetchpriority="high" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="is-loading">
+    <div class="asset-loader" id="asset-loader" role="status" aria-live="polite">
+      <div class="asset-loader__content">
+        <span class="asset-loader__sigil" aria-hidden="true"></span>
+        <strong>Opening the bestiary…</strong>
+        <span id="asset-loader-status">Loading magical creatures</span>
+        <button id="asset-retry" type="button" hidden>Try again</button>
+      </div>
+    </div>
+
+    <div class="app-shell" id="app-shell" aria-hidden="true" inert>
+      <header class="topbar">
+        <a class="brand" href="./" aria-label="Mythic Match home">
+          <svg class="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M20 3l3.2 10.8L34 17l-10.8 3.2L20 31l-3.2-10.8L6 17l10.8-3.2L20 3z" />
+            <circle cx="20" cy="17" r="3.1" />
+          </svg>
+          <span>Mythic Match</span>
+        </a>
+        <button class="icon-button" id="sound-toggle" type="button" aria-label="Mute sound" aria-pressed="true">
+          <svg class="sound-on" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M11 5L6.8 8.5H3.5v7h3.3L11 19V5z" />
+            <path d="M15 8.3a5 5 0 010 7.4M17.6 5.7a8.5 8.5 0 010 12.6" />
+          </svg>
+          <svg class="sound-off" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M11 5L6.8 8.5H3.5v7h3.3L11 19V5zM15 9l5 5M20 9l-5 5" />
+          </svg>
+        </button>
+      </header>
+
+      <main class="game-layout">
+        <section class="intro" aria-labelledby="game-title">
+          <div class="title-lockup">
+            <span class="title-flourish" aria-hidden="true"></span>
+            <h1 id="game-title">Awaken the Arcana</h1>
+            <span class="title-flourish title-flourish--right" aria-hidden="true"></span>
+          </div>
+          <p>Match pairs of magical creatures to restore balance to the realm.</p>
+
+          <div class="difficulty" aria-label="Choose difficulty">
+            <button type="button" data-difficulty="easy">Easy</button>
+            <button type="button" data-difficulty="mystic" class="is-selected">Mystic</button>
+            <button type="button" data-difficulty="mythic">Mythic</button>
+          </div>
+        </section>
+
+        <section class="hud" aria-label="Game status">
+          <div class="hud-stat">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10M7 22h10M8 2c0 5 1.7 6.2 4 8-2.3 1.8-4 3-4 8m8-16c0 5-1.7 6.2-4 8 2.3 1.8 4 3 4 8" /></svg>
+            <span class="hud-label">Timer</span>
+            <strong id="timer">00:00</strong>
+          </div>
+          <div class="hud-stat hud-stat--combo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1l1.8 7.2L21 10l-7.2 1.8L12 19l-1.8-7.2L3 10l7.2-1.8L12 1z" /></svg>
+            <span class="hud-label">Combo</span>
+            <strong id="combo">×0</strong>
+          </div>
+          <div class="hud-stat">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l1.5 6.5L20 10l-6.5 1.5L12 18l-1.5-6.5L4 10l6.5-1.5L12 2z" /></svg>
+            <span class="hud-label">Score</span>
+            <strong id="score">0</strong>
+          </div>
+        </section>
+
+        <section class="play-area" aria-label="Memory card board">
+          <div class="board-frame">
+            <div class="board" id="game-board" aria-live="polite"></div>
+          </div>
+
+          <div class="combo-burst" id="combo-burst" aria-live="polite" aria-atomic="true">
+            <span class="combo-burst__eyebrow">Enchanted match!</span>
+            <strong id="combo-burst-value">2 combo</strong>
+            <span id="combo-burst-points">+150</span>
+          </div>
+
+          <button class="restart-button" id="restart-button" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v6h6M20 20v-6h-6M5.6 15a7 7 0 0011.7 2.6L20 14M4 10l2.7-3.6A7 7 0 0118.4 9" /></svg>
+            Restart
+          </button>
+        </section>
+      </main>
+
+      <footer class="game-footer">
+        <span id="difficulty-note">Mystic · 6 pairs</span>
+        <span>Every consecutive match increases your combo reward.</span>
+      </footer>
+    </div>
+
+    <div class="modal-backdrop" id="result-modal" hidden>
+      <section class="result-card" role="dialog" aria-modal="true" aria-labelledby="result-title">
+        <button class="result-card__close" id="result-close" type="button" aria-label="Close score screen">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+        </button>
+        <svg class="result-sigil" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="27" />
+          <path d="M32 8l4.5 19.5L56 32l-19.5 4.5L32 56l-4.5-19.5L8 32l19.5-4.5L32 8z" />
+        </svg>
+        <h2 id="result-title">Arcana Awakened!</h2>
+        <p>You restored the balance.</p>
+
+        <dl class="result-stats">
+          <div><dt>Final score</dt><dd id="final-score">0</dd></div>
+          <div><dt>Best combo</dt><dd id="final-combo">×0</dd></div>
+          <div><dt>Time</dt><dd id="final-time">00:00</dd></div>
+          <div><dt>Difficulty</dt><dd id="final-difficulty">Mystic</dd></div>
+        </dl>
+
+        <p class="personal-best" id="personal-best" hidden>New personal best</p>
+
+        <div class="result-actions">
+          <button class="primary-button" id="play-again" type="button">Play again</button>
+          <button class="secondary-button" id="change-difficulty" type="button">Change difficulty</button>
+        </div>
+      </section>
+    </div>
+
+    <template id="card-template">
+      <button class="memory-card" type="button">
+        <span class="memory-card__inner">
+          <span class="memory-card__back" aria-hidden="true">
+            <span class="card-sigil"></span>
+          </span>
+          <span class="memory-card__front">
+            <span class="creature-art" aria-hidden="true">
+              <img class="creature-image" alt="" draggable="false" />
+            </span>
+            <span class="creature-name"></span>
+          </span>
+        </span>
+      </button>
+    </template>
+
+    <script src="app.js"></script>
+  </body>
+</html>

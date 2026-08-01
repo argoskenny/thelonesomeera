@@ -85,6 +85,38 @@ const nextConfig = {
         source: '/showcase/room/',
         destination: '/showcase/room/index.html',
       },
+      {
+        source: '/showcase/mma',
+        destination: '/showcase/mma/index.html',
+      },
+      {
+        source: '/showcase/mma/',
+        destination: '/showcase/mma/index.html',
+      },
+      {
+        source: '/showcase/colorful_kart',
+        destination: '/showcase/colorful_kart/index.html',
+      },
+      {
+        source: '/showcase/colorful_kart/',
+        destination: '/showcase/colorful_kart/index.html',
+      },
+      {
+        source: '/showcase/bpd',
+        destination: '/showcase/bpd/index.html',
+      },
+      {
+        source: '/showcase/bpd/',
+        destination: '/showcase/bpd/index.html',
+      },
+      {
+        source: '/showcase/mini_fantasy',
+        destination: '/showcase/mini_fantasy/index.html',
+      },
+      {
+        source: '/showcase/mini_fantasy/',
+        destination: '/showcase/mini_fantasy/index.html',
+      },
     ];
   },
 };

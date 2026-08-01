@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b80eb" />
+    <meta
+      name="description"
+      content="Colorful Kart — a fast, original Three.js kart racing game."
+    />
+    <title>Colorful Kart</title>
+  </head>
+  <body>
+    <main id="game" aria-label="Colorful Kart racing game">
+      <div id="scene" aria-hidden="true"></div>
+
+      <header class="brand" aria-label="Game title">
+        <span class="brand-mark">COLORFUL</span>
+        <span class="brand-word">KART</span>
+      </header>
+
+      <section class="hud" aria-live="polite">
+        <div class="position-panel">
+          <span id="position-value">1ST</span>
+          <span class="position-label">POSITION</span>
+        </div>
+
+        <div class="lap-panel">
+          <span id="lap-value">LAP 1 / 3</span>
+          <div class="lap-track"><span id="lap-fill"></span></div>
+        </div>
+
+        <ol id="leaderboard" class="leaderboard" aria-label="Live ranking"></ol>
+
+        <div class="speed-panel">
+          <div class="speed-ring" id="speed-ring">
+            <span id="speed-value">0</span>
+            <span>KM/H</span>
+          </div>
+          <div id="boost-label" class="boost-label">BOOST</div>
+        </div>
+
+        <button id="item-button" class="item-panel" type="button" aria-label="Use held item">
+          <span id="item-icon" class="item-icon">?</span>
+          <span id="item-value">NO ITEM</span>
+          <kbd>SPACE</kbd>
+        </button>
+
+        <div class="controls-panel" aria-label="Controls">
+          <div class="key-row"><kbd>W</kbd></div>
+          <div class="key-row"><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
+          <span>DRIVE &amp; STEER</span>
+        </div>
+      </section>
+
+      <div id="countdown" class="countdown" aria-live="assertive">3</div>
+      <div id="toast" class="toast" aria-live="polite"></div>
+
+      <section id="results" class="results" aria-labelledby="results-title" hidden>
+        <div class="confetti" aria-hidden="true">
+          <i style="--x:5%;--c:#ff5a55;--d:-0.7s;--r:18deg"></i>
+          <i style="--x:12%;--c:#35e6f2;--d:-1.9s;--r:66deg"></i>
+          <i style="--x:19%;--c:#ffda3e;--d:-0.2s;--r:31deg"></i>
+          <i style="--x:27%;--c:#a94cf4;--d:-2.6s;--r:82deg"></i>
+          <i style="--x:34%;--c:#ff5a55;--d:-1.2s;--r:11deg"></i>
+          <i style="--x:41%;--c:#56e07f;--d:-2.1s;--r:54deg"></i>
+          <i style="--x:48%;--c:#35e6f2;--d:-0.4s;--r:72deg"></i>
+          <i style="--x:56%;--c:#ffda3e;--d:-2.9s;--r:26deg"></i>
+          <i style="--x:63%;--c:#ff5a55;--d:-1.5s;--r:90deg"></i>
+          <i style="--x:70%;--c:#a94cf4;--d:-0.8s;--r:38deg"></i>
+          <i style="--x:77%;--c:#35e6f2;--d:-2.4s;--r:15deg"></i>
+          <i style="--x:84%;--c:#ffda3e;--d:-1.1s;--r:62deg"></i>
+          <i style="--x:91%;--c:#56e07f;--d:-2.7s;--r:43deg"></i>
+          <i style="--x:96%;--c:#ff5a55;--d:-0.1s;--r:77deg"></i>
+        </div>
+        <div class="results-card">
+          <h1 id="results-title">RACE COMPLETE</h1>
+          <div class="results-divider"><span></span>FINAL RANKING<span></span></div>
+          <ol id="final-ranking" class="final-ranking"></ol>
+          <div class="results-actions">
+            <button id="race-again" type="button">RACE AGAIN</button>
+            <button id="view-track" class="secondary" type="button">VIEW TRACK</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="touch-controls" aria-label="Touch controls">
+        <button type="button" data-control="left" aria-label="Steer left">◀</button>
+        <button type="button" data-control="drive" aria-label="Accelerate">GO</button>
+        <button type="button" data-control="right" aria-label="Steer right">▶</button>
+      </div>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

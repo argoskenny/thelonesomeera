@@ -27,6 +27,8 @@
 ```bash
 npm run dev
 npm run build:androidtest
+npm run build:colorful_kart
+npm run build:mini_fantasy
 npm run sync:static
 npm run build:standalone
 ```
