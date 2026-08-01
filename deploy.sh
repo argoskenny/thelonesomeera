@@ -98,36 +98,38 @@ install_dependencies() {
 install_npm() {
     echo "[3/7] 安裝 npm 依賴..."
     cd "$APP_DIR"
-    npm ci
+    # 建置階段需要 TypeScript、Prisma、Vite、Vitest 等 devDependencies。
+    # 即使伺服器環境已設定 NODE_ENV=production，也不能省略它們。
+    npm ci --include=dev
 
     if [ -f "$APP_DIR/showcase/androidtest/package-lock.json" ]; then
         echo "  安裝 androidtest 依賴..."
-        npm --prefix showcase/androidtest ci
+        npm --prefix showcase/androidtest ci --include=dev
     fi
 
     if [ -f "$APP_DIR/showcase/cod2/package-lock.json" ]; then
         echo "  安裝 cod2 依賴..."
-        npm --prefix showcase/cod2 ci
+        npm --prefix showcase/cod2 ci --include=dev
     fi
 
     if [ -f "$APP_DIR/showcase/room/package-lock.json" ]; then
         echo "  安裝 room 依賴..."
-        npm --prefix showcase/room ci
+        npm --prefix showcase/room ci --include=dev
     fi
 
     if [ -f "$APP_DIR/showcase/pulsesync/package-lock.json" ]; then
         echo "  安裝 pulsesync 依賴..."
-        npm --prefix showcase/pulsesync ci
+        npm --prefix showcase/pulsesync ci --include=dev
     fi
 
     if [ -f "$APP_DIR/showcase/colorful_kart/package-lock.json" ]; then
         echo "  安裝 colorful_kart 依賴..."
-        npm --prefix showcase/colorful_kart ci
+        npm --prefix showcase/colorful_kart ci --include=dev
     fi
 
     if [ -f "$APP_DIR/showcase/mini_fantasy/package-lock.json" ]; then
         echo "  安裝 mini_fantasy 依賴..."
-        npm --prefix showcase/mini_fantasy ci
+        npm --prefix showcase/mini_fantasy ci --include=dev
     fi
 }
 

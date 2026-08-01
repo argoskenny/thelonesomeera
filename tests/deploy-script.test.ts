@@ -19,12 +19,23 @@ test("deploy script tightens secret and database file permissions", () => {
 test("deploy script installs dependencies for every Vite showcase build", () => {
   assert.match(
     deployScript,
-    /npm --prefix showcase\/colorful_kart ci/,
+    /npm --prefix showcase\/colorful_kart ci --include=dev/,
   );
   assert.match(
     deployScript,
-    /npm --prefix showcase\/mini_fantasy ci/,
+    /npm --prefix showcase\/mini_fantasy ci --include=dev/,
   );
+});
+
+test("deploy script keeps devDependencies available during every build install", () => {
+  const installCommands = deployScript
+    .split("\n")
+    .filter((line) => line.includes("npm") && line.includes(" ci"));
+
+  assert.equal(installCommands.length, 7);
+  for (const command of installCommands) {
+    assert.match(command, /ci --include=dev/);
+  }
 });
 
 test("deploy script preserves existing SSL configuration", () => {
