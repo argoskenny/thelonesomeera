@@ -11,9 +11,19 @@ test("deploy script does not make the entire app directory world-readable", () =
   assert.doesNotMatch(deployScript, /chmod -R 755 "\$APP_DIR"/);
 });
 
-test("deploy script tightens secret and database file permissions", () => {
-  assert.match(deployScript, /chmod 600 "\$APP_DIR\/\.env\.local"/);
-  assert.match(deployScript, /chmod 600 "\$DB_FILE"/);
+test("deploy script does not initialize removed admin or database state", () => {
+  for (const removedMarker of [
+    "ADMIN_PASSWORD",
+    "JWT_SECRET",
+    "DATABASE_URL",
+    "DB_FILE",
+    "SEED_DATABASE",
+    "ARTICLE_COUNT",
+    "prisma",
+    "--seed",
+  ]) {
+    assert.doesNotMatch(deployScript, new RegExp(removedMarker, "i"));
+  }
 });
 
 test("deploy script installs dependencies for every Vite showcase build", () => {
@@ -40,6 +50,4 @@ test("deploy script keeps devDependencies available during every build install",
 
 test("deploy script preserves existing SSL configuration", () => {
   assert.match(deployScript, /偵測到現有 SSL\/Certbot 設定，跳過寫入/);
-  assert.match(deployScript, /sed -i '\/\^ADMIN_HOSTNAME=\/d'/);
-  assert.doesNotMatch(deployScript, /admin\.thelonesomeera\.com/);
 });

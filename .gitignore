@@ -21,7 +21,8 @@ tsconfig.tsbuildinfo
 # 注意：public/showcase/ 內為正式站發佈資產，
 # 目前採「建置後提交到 Git」策略，因此不要加到 ignore。
 
-# Prisma SQLite
+# 舊版部署資料安全網：runtime 已不使用 DB／uploads。
+# 保留 ignore，避免既有正式機第一次 git clean 時在備份前誤刪資料。
 /dev.db
 /dev.db-journal
 /production.db
@@ -31,9 +32,8 @@ prisma/dev.db-journal
 prisma/production.db
 prisma/production.db-journal
 
-# 後台上傳檔案（保留目錄）
+# 舊版上傳資料安全網（程式不再提供 upload route）
 public/uploads/*
-!public/uploads/.gitkeep
 
 # 環境變數檔案
 .env

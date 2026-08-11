@@ -8,8 +8,13 @@ export default function SiteLayout({
 }) {
   return (
     <>
+      <a className="skip-link" href="#main-content">
+        跳到主要內容
+      </a>
       <Header />
-      <div className="min-h-screen">{children}</div>
+      <div id="main-content" className="site-content">
+        {children}
+      </div>
       <Footer />
     </>
   );

@@ -1,31 +1,44 @@
 # The Lonesome Era
 
-這個 repo 目前由四個清楚的區域組成：
+The Lonesome Era 是一個以 Next.js 建置的個人創作網站，內容集中在作品、前端與遊戲實驗，以及開發文章。主站只保留四個清楚的入口：
 
-- `src/`：主要的 Next.js 網站與後台。
-- `showcase/<project>/`：所有獨立 demo 與 AI 實驗專案的原始碼。
-- `public/showcase/<project>/`：對外發佈的 showcase 靜態成品。
-- `public/`：主站共用資產與尚未專案化的 legacy 頁面。
+- `/`：首頁與精選內容
+- `/demo`：Demo、遊戲與 AI 實驗
+- `/blog`：文章列表
+- `/about`：網站理念與作者介紹
 
-## 建議維護規則
+文章內容不使用資料庫或後台。每篇文章都是 `public/blog/` 內可直接閱讀與部署的靜態 HTML。
 
-- 主站功能請改 `src/app`、`src/components`、`src/lib`。
-- 有 source app 的專案請只改 `showcase/<project>/`，不要直接改 `public/showcase/<project>/`。
-- `public/` 裡的 legacy HTML 仍可直接維護，但如果是有獨立來源目錄的子專案，`public/` 應視為發佈結果。
-- 目前部署策略為「發佈產物也提交到 Git」；部署前請先在本機完成 build，並提交 `showcase/` source 與 `public/showcase/` 發佈成品。
+## Project structure
 
-## 資料庫規則
+```text
+src/
+  app/(site)/          # 首頁、Demo、Blog 列表、About
+  components/          # 共用版面與 UI 元件
+  data/                # Demo 與 Blog 的靜態 metadata
+public/
+  blog/                # Blog HTML、共用文章樣式
+  showcase/<project>/  # 對外發佈的獨立 Demo 成品
+  selfiecat.html       # Selfie Cat 既有產品展示頁
+showcase/<project>/    # 有原始碼與建置流程的獨立 Demo
+scripts/               # Standalone build 與同步腳本
+```
 
-- 本地開發只使用 `prisma/dev.db`。
-- `.env.local` 在本地請寫 `DATABASE_URL="file:./dev.db"`；這是 Prisma 的標準寫法，會對應到 `prisma/dev.db`。
-- 正式機只使用絕對路徑 `file:/var/www/thelonesomeera/prisma/production.db`。
-- 作品列表改為程式內靜態資料，只有文章內容使用 Prisma / SQLite。
-- 不要在 repo 根目錄建立 `dev.db` 或 `production.db`。
+`showcase/<project>/` 是可建置 Demo 的 source of truth；對應的 `public/showcase/<project>/` 是部署輸出。部分早期單檔實驗只有 `public/showcase/` 版本，仍可作為靜態 Demo 維護。
 
-## 常用指令
+## Development
 
 ```bash
 npm run dev
+npm run lint
+npm run build
+```
+
+`npm run build` 會一併封裝 standalone 所需的 `public/` 與 Next.js static assets；完成後可直接用 `npm start` 驗證 production 產物。
+
+常用的獨立 Demo 指令：
+
+```bash
 npm run build:androidtest
 npm run build:colorful_kart
 npm run build:mini_fantasy
@@ -33,19 +46,33 @@ npm run sync:static
 npm run build:standalone
 ```
 
-## 正式機部署
+修改有 source project 的 Demo 時，只修改 `showcase/<project>/`，再執行對應 build 或 `npm run build:standalone` 刷新 `public/showcase/<project>/`。不要直接手改產出的 bundle。
 
-正式機請不要手動執行 `git pull`。標準流程是直接在伺服器執行：
+## Add a blog post
+
+1. 在 `public/blog/` 新增 kebab-case HTML，例如 `making-a-web-game.html`。
+2. 沿用現有文章的語意結構、引用 `/blog/article.css`，並補齊 `<title>`、description、日期、分類、閱讀時間與文章內容。
+3. 將文章的標題、slug、日期、摘要、分類與 URL 加入 `src/data/blog-posts.ts`。
+4. 確認文章內的返回連結指向 `/blog`，並直接開啟 `/blog/making-a-web-game.html` 檢查桌面與行動版。
+5. 若有維護 RSS，同步更新 `public/rss.xml`。
+
+文章不需要 migration、seed、API 或部署前匯入；HTML 與列表 metadata 一起提交即可。
+
+## Production deployment
+
+正式環境沿用 Next.js standalone、PM2 與 Nginx。伺服器上的標準入口是：
 
 ```bash
 cd /var/www/thelonesomeera
 bash deploy.sh
 ```
 
-`deploy.sh` 會先執行 `git fetch origin`、`git reset --hard origin/main`、`git clean -fd`，再安裝相依、建置並重啟 PM2。若只想重跑建置而不重新同步 Git，可使用：
+`deploy.sh` 會同步指定分支、安裝相依、刷新 standalone Demo、建置 Next.js 並重啟 PM2。若只需要重新建置目前 checkout，可使用：
 
 ```bash
 bash deploy.sh --skip-sync
 ```
 
-更完整的結構說明見 `docs/architecture.md`。
+若正式機站台設定已由 Certbot 加入 SSL，部署腳本會保留該檔案，不會自動覆寫。首次套用本次 Nginx 靜態路由時，請先備份並手動合併 repo 的 `nginx.conf`，再執行 `nginx -t`。
+
+完整邊界與發佈規則見 `docs/architecture.md`。

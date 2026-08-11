@@ -1,125 +1,118 @@
-import { Code2, Gamepad2, Smartphone, Globe } from "lucide-react";
 import type { Metadata } from "next";
+import Image from "next/image";
+import { ArrowRight, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "關於 | The Lonesome Era",
-  description: "關於 The Lonesome Era — 一個屬於創作者與思考者的技術角落",
+  title: "About",
+  description: "關於 The Lonesome Era，以及程式、遊戲、產品與生活觀察。",
 };
 
-const beliefs = [
+const principles = [
   {
-    icon: Code2,
-    title: "程式即創作",
-    description: "每一行程式碼都是一次思考的體現，我們追求優雅與效能的平衡。",
-    color: "text-syntax-blue",
+    title: "做能被使用的東西",
+    description: "從真實需求出發，設計有用、好用，也值得持續優化的產品與體驗。",
   },
   {
-    icon: Gamepad2,
-    title: "遊戲即探索",
-    description:
-      "從 2D Canvas 到 3D Three.js，在遊戲開發中探索前端技術的無限可能。",
-    color: "text-syntax-green",
+    title: "寫能回頭理解的文字",
+    description: "把複雜概念拆成清楚脈絡，讓未來的自己也能快速回到狀態。",
   },
   {
-    icon: Smartphone,
-    title: "行動即體驗",
-    description: "以 SwiftUI 打造原生體驗，讓每一次觸控互動都自然流暢。",
-    color: "text-syntax-orange",
+    title: "留一點空間給好奇心",
+    description: "保持探索的彈性，讓跨領域的靈感在日常裡自然發生。",
   },
-  {
-    icon: Globe,
-    title: "開放即共享",
-    description: "將開發中的經驗化為文字，與社群分享每一次技術探索的成果。",
-    color: "text-syntax-purple",
-  },
+];
+
+const practices = [
+  ["01", "Web & Product", "網站與產品設計、前後端開發、使用者體驗與系統化思考。"],
+  ["02", "Interactive & Games", "互動體驗設計、遊戲原型開發、玩法機制與內容樂趣的探索。"],
+  ["03", "Mobile Experiences", "行動應用設計與開發，打造流暢、直覺且有意義的使用情境。"],
+  ["04", "Writing & Research", "技術與生活觀察寫作、資料整理與研究，建立屬於自己的知識脈絡。"],
 ];
 
 export default function AboutPage() {
   return (
-    <main className="px-6 pt-28 pb-20">
-      <div className="mx-auto max-w-4xl">
-        {/* 頁面標題 */}
-        <div className="mb-16">
-          <p className="mb-2 font-mono text-sm text-syntax-purple">
-            {"// 關於我們"}
-          </p>
-          <h1 className="mb-4 font-mono text-4xl font-bold text-text-main md:text-5xl">
-            About
+    <main className="page-container page-main about-page">
+      <section className="about-hero">
+        <div className="about-hero__copy">
+          <h1>
+            在快速變動的科技裡，
+            <br />
+            保留一點<span>自己的節奏</span>。
           </h1>
-        </div>
-
-        {/* 介紹文字 */}
-        <div className="mb-16 max-w-2xl">
-          <p className="mb-4 text-lg leading-relaxed text-text-muted">
-            <span className="text-text-main font-semibold">The Lonesome Era</span>{" "}
-            是一個屬於開發者、設計者、與每一位熱愛科技的人們的空間。
-          </p>
-          <p className="text-text-muted leading-relaxed">
-            在這個充滿喧囂與快速變動的科技時代，我們選擇站在一個略為孤寂卻清晰的位置，靜靜觀察、深入探索。透過作品與文章，記錄每一次技術旅程中的發現與思考。
+          <p>
+            The Lonesome Era 是一個關於程式、遊戲、產品與生活觀察的個人數位空間。
+            技術是工具，創作是過程，思考才是核心。
           </p>
         </div>
-
-        {/* 信念卡片 */}
-        <div className="grid gap-6 md:grid-cols-2">
-          {beliefs.map((item) => {
-            const Icon = item.icon;
-            return (
-              <div key={item.title} className="glow-card">
-                <Icon className={`mb-4 h-8 w-8 ${item.color}`} />
-                <h3 className="mb-2 font-mono text-lg font-semibold text-text-main">
-                  {item.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-text-muted">
-                  {item.description}
-                </p>
-              </div>
-            );
-          })}
+        <div className="about-hero__visual">
+          <Image
+            src="/images/creative-studio.png"
+            alt="夜晚城市窗景前的創作工作桌"
+            fill
+            loading="eager"
+            fetchPriority="high"
+            sizes="(max-width: 760px) 100vw, 48vw"
+          />
         </div>
+      </section>
 
-        {/* 技術棧 */}
-        <div className="mt-16 rounded-xl border border-slate-700/50 bg-card/50 p-8">
-          <h2 className="mb-6 font-mono text-xl font-bold text-text-main">
-            {"// 常用技術棧"}
-          </h2>
-          <div className="code-window">
-            <div className="code-window-header">
-              <div className="code-window-dot bg-red-500" />
-              <div className="code-window-dot bg-yellow-500" />
-              <div className="code-window-dot bg-green-500" />
-              <span className="ml-3 font-mono text-xs text-text-muted">
-                tech-stack.json
-              </span>
-            </div>
-            <pre className="p-6 font-mono text-sm leading-7">
-              <code>
-                <span className="text-text-muted">{"{"}</span>{"\n"}
-                {"  "}<span className="text-syntax-blue">&quot;frontend&quot;</span><span className="text-text-muted">: [</span>
-                <span className="text-syntax-orange">&quot;Vue 3&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;React&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;Next.js&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;Tailwind CSS&quot;</span>
-                <span className="text-text-muted">],</span>{"\n"}
-                {"  "}<span className="text-syntax-blue">&quot;3d_game&quot;</span><span className="text-text-muted">: [</span>
-                <span className="text-syntax-orange">&quot;Three.js&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;PixiJS&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;Canvas 2D&quot;</span>
-                <span className="text-text-muted">],</span>{"\n"}
-                {"  "}<span className="text-syntax-blue">&quot;mobile&quot;</span><span className="text-text-muted">: [</span>
-                <span className="text-syntax-orange">&quot;SwiftUI&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;iOS Development&quot;</span>
-                <span className="text-text-muted">],</span>{"\n"}
-                {"  "}<span className="text-syntax-blue">&quot;backend&quot;</span><span className="text-text-muted">: [</span>
-                <span className="text-syntax-orange">&quot;Node.js&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;Prisma&quot;</span><span className="text-text-muted">, </span>
-                <span className="text-syntax-orange">&quot;SQLite&quot;</span>
-                <span className="text-text-muted">]</span>{"\n"}
-                <span className="text-text-muted">{"}"}</span>
-              </code>
-            </pre>
-          </div>
+      <section className="manifesto reveal-section">
+        <div className="section-label">
+          <span>我的創作觀</span>
+          <span>／ MANIFESTO</span>
         </div>
-      </div>
+        <div className="manifesto__content">
+          <blockquote>如果你也喜歡思考、創造、分享，那麼你並不孤單。</blockquote>
+          <p>
+            我相信，好作品來自真實問題意識與長時間琢磨。在這裡，我記錄學習、打造實驗、分享想法，也試著把複雜的東西說清楚。
+          </p>
+        </div>
+      </section>
+
+      <section className="about-list reveal-section">
+        <div className="section-label">
+          <span>三個原則</span>
+          <span>／ PRINCIPLES</span>
+        </div>
+        <div>
+          {principles.map((principle) => (
+            <article className="principle-row" key={principle.title}>
+              <ArrowRight aria-hidden="true" />
+              <h2>{principle.title}</h2>
+              <p>{principle.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="about-list reveal-section">
+        <div className="section-label">
+          <span>我正在做的事</span>
+          <span>／ WORKING WITH</span>
+        </div>
+        <div>
+          {practices.map(([number, title, description]) => (
+            <article className="practice-row" key={number}>
+              <span>{number}</span>
+              <h2>{title}</h2>
+              <p>{description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="contact-row reveal-section">
+        <div className="section-label">
+          <span>聯絡我</span>
+          <span>／ CONTACT</span>
+        </div>
+        <a href="mailto:argoskenny@gmail.com">
+          <Mail aria-hidden="true" />
+          <span>合作、交流或任何想法，歡迎來信</span>
+          <strong>argoskenny@gmail.com</strong>
+          <ArrowRight aria-hidden="true" />
+        </a>
+      </section>
     </main>
   );
 }

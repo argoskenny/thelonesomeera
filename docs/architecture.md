@@ -1,76 +1,112 @@
 # Architecture Notes
 
-## 目前結構
+## Site information architecture
 
-### 1. Main app
+The main site uses Next.js App Router and exposes four primary areas:
 
-- `src/app`: Next.js App Router 頁面與 API route
-- `src/components`: UI 與區塊元件
-- `src/lib`: Prisma、auth、service 等共用邏輯
+| Route | Responsibility |
+| --- | --- |
+| `/` | Brand introduction, featured demos, recent writing, and primary calls to action |
+| `/demo` | Curated games, applications, AI comparisons, and smaller experiments |
+| `/blog` | Static article index and metadata |
+| `/about` | Site story, values, capabilities, and contact information |
 
-### 2. Showcase projects
+Navigation, footer, typography, layout, buttons, and cards are shared components. Standalone demos and article HTML use the same visual direction where practical, but remain independent static documents rather than additional Next.js application routes.
 
-- `showcase/<project>/`: 有建置流程的 demo 原始碼
-- `public/showcase/<project>/`: 所有 demo 的對外發佈路徑
+## Repository layout
 
-### 3. Public static content
+### Main app
 
-- `public/`: 網站部署後直接對外提供的靜態檔案
-- `public/*.html`: 歷史頁面、實驗頁面或單檔入口
-- `public/uploads/`: 後台上傳內容
+- `src/app/(site)/`: the four public routes and their route metadata
+- `src/components/`: reusable site layout, navigation, cards, and page sections
+- `src/data/demos.ts`: Demo groups, card copy, tags, and public URLs
+- `src/data/blog-posts.ts`: Blog list metadata and static HTML URLs
+- `src/app/globals.css`: site tokens, typography, responsive rules, and restrained motion
 
-### 3. Standalone app sources
+The main site has no article database, admin console, content API, or upload pipeline. Demo and Blog catalogs are checked-in static data.
 
-| App | Source of truth | Published path | Notes |
+### Static Blog
+
+- `public/blog/article.css`: shared reading layout and article typography
+- `public/blog/<slug>.html`: one complete, directly addressable article per file
+- `public/rss.xml`: optional RSS catalog for published articles
+
+The HTML file is the article source of truth. The Next.js `/blog` page only keeps the metadata needed to render its article cards; it does not fetch or transform article content at runtime.
+
+To add an article:
+
+1. Add a complete kebab-case HTML file under `public/blog/`.
+2. Reference `/blog/article.css` and include title, description, date, category, reading time, and semantic article markup.
+3. Point the article's back link to `/blog`.
+4. Add the same title, slug, date, excerpt, category, and URL to `src/data/blog-posts.ts`.
+5. Update `public/rss.xml` when RSS publication is desired.
+6. Open the direct HTML URL and verify both desktop and mobile reading layouts.
+
+No migration, seed, database connection, or deployment-time import is involved.
+
+### Standalone demos
+
+- `showcase/<project>/`: editable source for demos that have a build or sync workflow
+- `public/showcase/<project>/`: deployable output and static-only historical experiments
+- `scripts/build-standalone.mjs`: umbrella build for source-backed standalone apps
+- `scripts/sync-static-apps.mjs`: controlled source-to-public synchronization
+
+Source-backed apps currently follow these paths:
+
+| App | Source of truth | Published path | Publish model |
 | --- | --- | --- | --- |
-| Android WebView demo | `showcase/androidtest/` | `public/showcase/androidtest/` | 用 Vite build 發佈 |
-| SOX FPS demo | `showcase/sox/` | `public/showcase/sox/` | 用同步腳本發佈 |
-| COD2 FPS demo | `showcase/cod2/` | `public/showcase/cod2/` | 用 Vite build 後同步發佈 |
-| Room demo | `showcase/room/` | `public/showcase/room/` | 用 Vite build 後同步發佈 |
-| PulseSync demo | `showcase/pulsesync/` | `public/showcase/pulsesync/` | 用 Vite build 後同步發佈 |
-| Mythic Match | `showcase/mma/` | `public/showcase/mma/` | 用同步腳本發佈 |
-| Colorful Kart | `showcase/colorful_kart/` | `public/showcase/colorful_kart/` | 用 Vite build 後同步發佈 |
-| Sigil Keep | `showcase/bpd/` | `public/showcase/bpd/` | 用同步腳本發佈 |
-| Mini Fantasy | `showcase/mini_fantasy/` | `public/showcase/mini_fantasy/` | 用 Vite build 後同步發佈 |
+| Android WebView demo | `showcase/androidtest/` | `public/showcase/androidtest/` | Vite build |
+| SOX FPS | `showcase/sox/` | `public/showcase/sox/` | Static sync |
+| COD2 FPS | `showcase/cod2/` | `public/showcase/cod2/` | Vite build, then sync |
+| Room | `showcase/room/` | `public/showcase/room/` | Vite build, then sync |
+| PulseSync | `showcase/pulsesync/` | `public/showcase/pulsesync/` | Vite build, then sync |
+| Mythic Match | `showcase/mma/` | `public/showcase/mma/` | Static sync |
+| Colorful Kart | `showcase/colorful_kart/` | `public/showcase/colorful_kart/` | Vite build, then sync |
+| Sigil Keep | `showcase/bpd/` | `public/showcase/bpd/` | Static sync |
+| Mini Fantasy | `showcase/mini_fantasy/` | `public/showcase/mini_fantasy/` | Vite build, then sync |
 
-## 資料庫約定
+Other directories under `public/showcase/` may be intentionally static-only demos. They are content, not duplicate source projects, and can be edited in place when no corresponding `showcase/<project>/` exists.
 
-- Prisma schema 固定放在 `prisma/schema.prisma`。
-- 本地開發資料庫固定使用 `prisma/dev.db`。
-- 正式機資料庫固定使用 `/var/www/thelonesomeera/prisma/production.db`。
-- 只有文章內容使用 Prisma / SQLite；作品列表改由 `src/lib/projects.ts` 維護。
-- `.env.local` 若使用 `DATABASE_URL="file:./dev.db"`，這是 Prisma 標準相對路徑，實際會落在 `prisma/dev.db`。
-- 不再保留根目錄 `dev.db` 這種第二條路徑。
+`public/selfiecat.html` is the one intentional legacy product-page exception. It remains at `/selfiecat.html` because it has an established public URL and is linked from the Demo catalog; it is content, not a second main-site route or redirect fallback.
 
-## 這次整理後的維護規則
+## Ownership rules
 
-1. 不直接修改有 source app 對應的 `public/showcase/<project>/`。
-2. 若新增獨立小專案，一律放在 `showcase/<project>/`，並發佈到 `public/showcase/<project>/`。
-3. `public/` 根目錄只保留主站共用內容與 legacy 靜態頁面。
-5. 靜態輸出目錄一律視為發佈結果，不直接手改。
+1. Edit main-site routes and components under `src/`.
+2. Edit Blog content only in `public/blog/<slug>.html`; keep list metadata small and static.
+3. For a source-backed demo, edit `showcase/<project>/` and regenerate its `public/showcase/<project>/` output.
+4. Do not hand-edit generated JavaScript, CSS, or asset bundles in a source-backed public output.
+5. For a static-only demo, `public/showcase/<project>/` is its source of truth.
+6. New independent demos should default to `showcase/<project>/` source and publish to the matching `public/showcase/<project>/` path.
+7. New Demo URLs use `/showcase/<project>/...`; do not recreate old root aliases such as `/cod2/` or `/pulsesync/`. Preserve the documented `/selfiecat.html` product-page exception.
 
-## 建議工作流程
+## Build and verification
 
-### Android demo
+For the main site:
 
 ```bash
-npm run build:androidtest
+npm run lint
+npm run build
 ```
 
-### SOX demo
+The build command also copies `public/` and `/_next/static/` into `.next/standalone/`, so `npm start` runs the same self-contained artifact used by PM2.
 
-```bash
-npm run sync:static
-```
-
-### 部署前刷新所有獨立 app
+To refresh every source-backed standalone app before deployment:
 
 ```bash
 npm run build:standalone
 ```
 
-## 後續仍值得考慮的整理
+After changing an interactive page, verify the affected route in a browser. A complete release check should cover `/`, `/demo`, `/blog`, `/about`, at least one direct `/blog/<slug>.html` article, and the changed `/showcase/**` route.
 
-- 把 `public/` 內的 legacy 單頁依主題移到 `public/legacy/` 或獨立資料夾，降低根目錄噪音。
-- 為 `public/` 內仍在使用的單檔頁面補最基本的 README 或清單，標記用途與是否仍在維護。
-- 若獨立小專案再增加，考慮改成 `apps/` 目錄統一管理。
+## Production request flow
+
+Production keeps the existing Next.js standalone, PM2, and Nginx model:
+
+1. Nginx serves immutable `/_next/static/` assets.
+2. Nginx resolves `/showcase/**` from `public/showcase/` and direct Blog HTML from `public/blog/`.
+3. Other public assets use the shared static-file rule.
+4. Main routes and unmatched requests are proxied to the PM2-managed standalone Next.js server.
+
+This keeps static content cacheable and inspectable while preserving one application process and one canonical host.
+
+When Certbot has already added SSL directives to the production site file, `deploy.sh` deliberately keeps that file instead of replacing it. Merge new static-location rules from `nginx.conf` into the SSL-enabled file manually, back it up first, and validate with `nginx -t` before reload.

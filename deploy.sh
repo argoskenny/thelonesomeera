@@ -7,7 +7,6 @@
 set -euo pipefail
 
 APP_DIR="/var/www/thelonesomeera"
-DB_FILE="$APP_DIR/prisma/production.db"
 SITE_NAME="thelonesomeera"
 NGINX_SITE_AVAILABLE="/etc/nginx/sites-available/$SITE_NAME"
 NGINX_SITE_ENABLED="/etc/nginx/sites-enabled/$SITE_NAME"
@@ -15,7 +14,6 @@ GIT_REMOTE="origin"
 GIT_BRANCH="main"
 FORCE_NGINX_CONFIG=false
 SKIP_SYNC=false
-SEED_DATABASE=false
 
 for arg in "$@"; do
     case "$arg" in
@@ -24,9 +22,6 @@ for arg in "$@"; do
             ;;
         --skip-sync)
             SKIP_SYNC=true
-            ;;
-        --seed)
-            SEED_DATABASE=true
             ;;
     esac
 done
@@ -37,7 +32,7 @@ echo "=========================================="
 
 # ---- 1. 同步正式機程式碼 ----
 sync_repo() {
-    echo "[1/7] 同步 Git 工作目錄..."
+    echo "[1/6] 同步 Git 工作目錄..."
     cd "$APP_DIR"
 
     if [ "$SKIP_SYNC" = true ]; then
@@ -70,7 +65,7 @@ sync_repo() {
 
 # ---- 2. 安裝系統依賴（首次部署才需要）----
 install_dependencies() {
-    echo "[2/7] 檢查系統依賴..."
+    echo "[2/6] 檢查系統依賴..."
 
     if ! command -v node &> /dev/null; then
         echo "  安裝 Node.js 20..."
@@ -96,9 +91,9 @@ install_dependencies() {
 
 # ---- 3. 安裝 npm 依賴 ----
 install_npm() {
-    echo "[3/7] 安裝 npm 依賴..."
+    echo "[3/6] 安裝 npm 依賴..."
     cd "$APP_DIR"
-    # 建置階段需要 TypeScript、Prisma、Vite、Vitest 等 devDependencies。
+    # 建置階段需要 TypeScript 與各 showcase 的 Vite/Vitest 等 devDependencies。
     # 即使伺服器環境已設定 NODE_ENV=production，也不能省略它們。
     npm ci --include=dev
 
@@ -133,98 +128,21 @@ install_npm() {
     fi
 }
 
-# ---- 4. 設定環境變數 ----
-setup_env() {
-    echo "[4/7] 檢查環境變數..."
-
-    if [ ! -f "$APP_DIR/.env.local" ]; then
-        echo "  建立 .env.local..."
-        cat > "$APP_DIR/.env.local" << ENVEOF
-ADMIN_PASSWORD=$(openssl rand -base64 24)
-JWT_SECRET=$(openssl rand -base64 32)
-DATABASE_URL="file:$DB_FILE"
-ENVEOF
-        echo "  ✓ 已產生隨機 ADMIN_PASSWORD，請至 $APP_DIR/.env.local 查看或改成自訂密碼"
-    fi
-
-    if grep -q '^DATABASE_URL=' "$APP_DIR/.env.local"; then
-        echo "  設定正式機 DATABASE_URL..."
-        sed -i "s|^DATABASE_URL=.*|DATABASE_URL=\"file:$DB_FILE\"|g" "$APP_DIR/.env.local"
-    else
-        echo "  補上 DATABASE_URL..."
-        printf '\nDATABASE_URL="file:%s"\n' "$DB_FILE" >> "$APP_DIR/.env.local"
-    fi
-
-    # 舊版曾使用獨立 admin 子網域，現已回復為主網域的 /admin。
-    sed -i '/^ADMIN_HOSTNAME=/d' "$APP_DIR/.env.local"
-}
-
-# ---- 5. 資料庫初始化 & 建置 ----
+# ---- 4. 建置 ----
 build_app() {
-    echo "[5/7] 資料庫初始化 & 建置應用..."
+    echo "[4/6] 建置應用..."
     cd "$APP_DIR"
-
-    # 載入環境變數供後續指令使用
-    set -a
-    . ./.env.local
-    set +a
-
-    DB_EXISTED_BEFORE_PUSH=false
-    if [ -s "$DB_FILE" ]; then
-        DB_EXISTED_BEFORE_PUSH=true
-    fi
-
-    # 產生 Prisma Client
-    npx prisma generate
-
-    # 推送 Schema 到 SQLite（建立/更新資料表）
-    npx prisma db push
-
-    # 匯入種子資料：
-    # - 明確指定 --seed
-    # - db push 前資料庫不存在 / 為空檔
-    # - 資料表存在但 Article 為 0 筆（避免重新部署後只剩 schema）
-    ARTICLE_COUNT=$(npx prisma db execute --stdin --schema prisma/schema.prisma <<'SQL' | tail -n 1 | tr -d '[:space:]'
-SELECT COUNT(*) AS article_count FROM Article;
-SQL
-)
-    ARTICLE_COUNT=${ARTICLE_COUNT:-0}
-
-    if [ "$SEED_DATABASE" = true ] || [ "$DB_EXISTED_BEFORE_PUSH" = false ] || [ "$ARTICLE_COUNT" = "0" ]; then
-        echo "  匯入種子資料..."
-        npx tsx prisma/seed.ts
-        ARTICLE_COUNT=$(npx prisma db execute --stdin --schema prisma/schema.prisma <<'SQL' | tail -n 1 | tr -d '[:space:]'
-SELECT COUNT(*) AS article_count FROM Article;
-SQL
-)
-    fi
-
-    # 確認資料庫存在
-    if [ ! -f "$DB_FILE" ]; then
-        echo "  ❌ 資料庫檔案不存在: $DB_FILE"
-        exit 1
-    fi
-    echo "  ✓ 資料庫: $DB_FILE ($(du -h "$DB_FILE" | cut -f1))"
-    echo "  ✓ Article 筆數: ${ARTICLE_COUNT:-unknown}"
 
     # 重建所有獨立靜態遊戲 / demo 輸出
     npm run build:standalone
 
-    # Next.js 建置（所有 DB 頁面已設為 force-dynamic，不會在建置時查詢 DB）
+    # Next.js 建置；build script 同步準備 standalone 的 public 與 static 資產。
     npm run build
-
-    # standalone 模式：複製必要檔案
-    if [ -d ".next/standalone" ]; then
-        echo "  複製 public/ 與 static/ 至 standalone..."
-        cp -r public .next/standalone/public
-        cp -r .next/static .next/standalone/.next/static
-
-    fi
 }
 
-# ---- 6. 設定 Nginx ----
+# ---- 5. 設定 Nginx ----
 setup_nginx() {
-    echo "[6/7] 設定 Nginx..."
+    echo "[5/6] 設定 Nginx..."
 
     # 讓 Nginx (www-data) 能讀取專案目錄
     sudo chown -R www-data:www-data "$APP_DIR/public"
@@ -232,8 +150,6 @@ setup_nginx() {
     sudo chmod 755 "$APP_DIR"
     sudo chmod -R 755 "$APP_DIR/public"
     sudo chmod -R 755 "$APP_DIR/.next"
-    sudo chmod 600 "$APP_DIR/.env.local"
-    sudo chmod 600 "$DB_FILE"
 
     if [ -f "$APP_DIR/nginx.conf" ]; then
         SHOULD_COPY=false
@@ -283,9 +199,9 @@ setup_nginx() {
     fi
 }
 
-# ---- 7. 啟動 / 重啟 PM2 ----
+# ---- 6. 啟動 / 重啟 PM2 ----
 start_app() {
-    echo "[7/7] 啟動應用..."
+    echo "[6/6] 啟動應用..."
     cd "$APP_DIR"
 
     # 停止舊的程序
@@ -316,7 +232,6 @@ start_app() {
 sync_repo
 install_dependencies
 install_npm
-setup_env
 build_app
 setup_nginx
 start_app

@@ -3,11 +3,13 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "prisma:prepare-engine": "node scripts/prepare-prisma-engine.mjs",
-    "dev": "npm run prisma:prepare-engine && next dev",
-    "build": "npm run prisma:prepare-engine && next build",
-    "start": "npm run prisma:prepare-engine && next start",
+    "dev": "next dev",
+    "build": "next build && node scripts/prepare-standalone-assets.mjs",
+    "start": "node .next/standalone/server.js",
     "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "verify": "npm run lint && npm run typecheck && npm test && npm run build",
     "dev:androidtest": "node scripts/prepare-androidtest-tooling.mjs && npm --prefix showcase/androidtest run dev",
     "build:androidtest": "node scripts/prepare-androidtest-tooling.mjs && npm --prefix showcase/androidtest run build",
     "build:cod2": "npm --prefix showcase/cod2 run build",
@@ -18,39 +20,21 @@
     "dev:mini_fantasy": "npm --prefix showcase/mini_fantasy run dev",
     "build:mini_fantasy": "npm --prefix showcase/mini_fantasy run build",
     "sync:static": "node scripts/sync-static-apps.mjs",
-    "build:standalone": "node scripts/build-standalone.mjs",
-    "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "build:standalone": "node scripts/build-standalone.mjs"
   },
   "dependencies": {
-    "@prisma/client": "^6.0.0",
-    "jose": "^5.0.0",
     "lucide-react": "^0.460.0",
     "next": "^16.2.6",
-    "openai": "^6.22.0",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0",
-    "react-markdown": "^9.0.0",
-    "remark-gfm": "^4.0.0",
-    "shiki": "^1.0.0"
+    "react-dom": "^18.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",
-    "autoprefixer": "^10.4.0",
     "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.6",
-    "postcss": "^8.5.15",
-    "prisma": "^6.0.0",
-    "tailwindcss": "^3.4.0",
     "tsx": "^4.0.0",
-    "turndown": "^7.2.2",
     "typescript": "^5.5.0"
-  },
-  "overrides": {
-    "postcss": "^8.5.15"
   }
 }

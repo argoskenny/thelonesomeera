@@ -9,7 +9,6 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 3000,
         HOSTNAME: "0.0.0.0",
-        DATABASE_URL: "file:/var/www/thelonesomeera/prisma/production.db",
       },
       instances: 1,
       autorestart: true,

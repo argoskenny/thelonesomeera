@@ -1,0 +1,37 @@
+import type { Metadata } from "next";
+import DemoCard from "@/components/demo/DemoCard";
+import { demos } from "@/data/demos";
+
+export const metadata: Metadata = {
+  title: "Demo",
+  description: "遊戲、互動實驗與小型產品；每一個 Demo 都能直接打開試玩。",
+};
+
+export default function DemoPage() {
+  const [featured, ...rest] = demos;
+
+  return (
+    <main className="page-container page-main">
+      <header className="page-intro">
+        <h1>
+          把想法做成<span>可以玩的東西</span>。
+        </h1>
+        <p>
+          遊戲、互動實驗與小型產品。
+          <br />
+          每一個 Demo 都能直接打開、親手試試。
+        </p>
+      </header>
+
+      <section aria-label="精選 Demo" className="demo-featured">
+        <DemoCard demo={featured} featured headingLevel={2} />
+      </section>
+
+      <section aria-label="所有 Demo" className="demo-grid">
+        {rest.map((demo) => (
+          <DemoCard key={demo.title} demo={demo} headingLevel={2} />
+        ))}
+      </section>
+    </main>
+  );
+}
