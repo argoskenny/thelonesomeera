@@ -2,11 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import { aiHubCollections, aiHubDemoCount } from "@/data/ai-hub-demos";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "AI Hub",
   description: "把相同題目交給不同 AI 模型，直接比較 32 個可開啟的介面、3D 與遊戲實驗。",
-};
+  path: "/demo/ai-hub",
+  image: {
+    path: "/images/ai-hub-card.png",
+    width: 1672,
+    height: 941,
+    alt: "AI Hub 模型實驗室",
+  },
+});
 
 export default function AiHubPage() {
   return (

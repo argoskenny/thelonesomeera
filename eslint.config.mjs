@@ -10,7 +10,6 @@ export default defineConfig([
     "node_modules/**",
     "public/**",
     "showcase/**",
-    "tests/**",
     "next-env.d.ts",
   ]),
 ]);

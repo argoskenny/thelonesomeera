@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { ArrowRight, Mail } from "lucide-react";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "About",
   description: "關於 The Lonesome Era，以及程式、遊戲、產品與生活觀察。",
-};
+  path: "/about",
+});
 
 const principles = [
   {

@@ -84,8 +84,7 @@ Other directories under `public/showcase/` may be intentionally static-only demo
 For the main site:
 
 ```bash
-npm run lint
-npm run build
+npm run verify
 ```
 
 The build command also copies `public/` and `/_next/static/` into `.next/standalone/`, so `npm start` runs the same self-contained artifact used by PM2.
@@ -96,15 +95,19 @@ To refresh every source-backed standalone app before deployment:
 npm run build:standalone
 ```
 
+This command fails when a registered source project or publish entry is missing, so a release cannot silently retain stale output. `npm run build:standalone -- --allow-skip` is reserved for intentional partial local checkouts and must not be used for deployment.
+
+For the complete production gate, run `npm run verify:release`. It covers root lint, type checks and tests; showcase lint, type checks and tests; all standalone builds; the Next.js production build; and HTTP smoke checks against the standalone server. CI then runs `npm run check:generated` to reject source/output drift.
+
 After changing an interactive page, verify the affected route in a browser. A complete release check should cover `/`, `/demo`, `/blog`, `/about`, at least one direct `/blog/<slug>.html` article, and the changed `/showcase/**` route.
 
 ## Production request flow
 
 Production keeps the existing Next.js standalone, PM2, and Nginx model:
 
-1. Nginx serves immutable `/_next/static/` assets.
+1. Nginx serves immutable `/_next/static/` and content-hashed Vite assets.
 2. Nginx resolves `/showcase/**` from `public/showcase/` and direct Blog HTML from `public/blog/`.
-3. Other public assets use the shared static-file rule.
+3. Stable-name public assets and static HTML are revalidated so updates cannot remain hidden behind a long browser cache.
 4. Main routes and unmatched requests are proxied to the PM2-managed standalone Next.js server.
 
 This keeps static content cacheable and inspectable while preserving one application process and one canonical host.

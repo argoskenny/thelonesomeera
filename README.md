@@ -32,9 +32,13 @@ scripts/               # Standalone build 與同步腳本
 npm run dev
 npm run lint
 npm run build
+npm run verify
+npm run verify:release
 ```
 
 `npm run build` 會一併封裝 standalone 所需的 `public/` 與 Next.js static assets；完成後可直接用 `npm start` 驗證 production 產物。
+
+`npm run verify` 會檢查主站與所有具測試／型別檢查的 showcase；`npm run verify:release` 還會重建全部發布輸出，啟動 production standalone server 並檢查主路由、文章與 demo。CI 另以 `npm run check:generated` 確認提交的 `public/showcase/` 沒有落後來源。
 
 常用的獨立 Demo 指令：
 
@@ -47,6 +51,8 @@ npm run build:standalone
 ```
 
 修改有 source project 的 Demo 時，只修改 `showcase/<project>/`，再執行對應 build 或 `npm run build:standalone` 刷新 `public/showcase/<project>/`。不要直接手改產出的 bundle。
+
+`build:standalone` 與 `sync:static` 預設採 fail-closed：缺少任何已登錄的來源或發布入口就會失敗，避免沿用舊 bundle。只有刻意使用不完整的本機 checkout 時，才可加上 `-- --allow-skip` 明確略過缺項；正式發佈不可使用此選項。
 
 ## Add a blog post
 

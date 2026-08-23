@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import BlogRow from "@/components/blog/BlogRow";
 import { blogPosts } from "@/data/blog-posts";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Blog",
   description: "關於前端、遊戲、產品與那些值得慢慢想的細節。",
-};
+  path: "/blog",
+});
 
 export default function BlogPage() {
   return (

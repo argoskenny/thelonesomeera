@@ -14,6 +14,8 @@ GIT_REMOTE="origin"
 GIT_BRANCH="main"
 FORCE_NGINX_CONFIG=false
 SKIP_SYNC=false
+HEALTHCHECK_URL="http://127.0.0.1:3000/"
+HEALTHCHECK_ATTEMPTS=10
 
 for arg in "$@"; do
     case "$arg" in
@@ -96,36 +98,27 @@ install_npm() {
     # 建置階段需要 TypeScript 與各 showcase 的 Vite/Vitest 等 devDependencies。
     # 即使伺服器環境已設定 NODE_ENV=production，也不能省略它們。
     npm ci --include=dev
+    npm run ci:showcases
+}
 
-    if [ -f "$APP_DIR/showcase/androidtest/package-lock.json" ]; then
-        echo "  安裝 androidtest 依賴..."
-        npm --prefix showcase/androidtest ci --include=dev
-    fi
+wait_for_http() {
+    local url="$1"
+    local label="$2"
+    local attempt
 
-    if [ -f "$APP_DIR/showcase/cod2/package-lock.json" ]; then
-        echo "  安裝 cod2 依賴..."
-        npm --prefix showcase/cod2 ci --include=dev
-    fi
+    for ((attempt = 1; attempt <= HEALTHCHECK_ATTEMPTS; attempt++)); do
+        if curl --fail --silent --show-error --max-time 5 "$url" > /dev/null; then
+            echo "  ✓ $label health check passed: $url"
+            return 0
+        fi
 
-    if [ -f "$APP_DIR/showcase/room/package-lock.json" ]; then
-        echo "  安裝 room 依賴..."
-        npm --prefix showcase/room ci --include=dev
-    fi
+        if [ "$attempt" -lt "$HEALTHCHECK_ATTEMPTS" ]; then
+            sleep 1
+        fi
+    done
 
-    if [ -f "$APP_DIR/showcase/pulsesync/package-lock.json" ]; then
-        echo "  安裝 pulsesync 依賴..."
-        npm --prefix showcase/pulsesync ci --include=dev
-    fi
-
-    if [ -f "$APP_DIR/showcase/colorful_kart/package-lock.json" ]; then
-        echo "  安裝 colorful_kart 依賴..."
-        npm --prefix showcase/colorful_kart ci --include=dev
-    fi
-
-    if [ -f "$APP_DIR/showcase/mini_fantasy/package-lock.json" ]; then
-        echo "  安裝 mini_fantasy 依賴..."
-        npm --prefix showcase/mini_fantasy ci --include=dev
-    fi
+    echo "  ✗ $label health check failed after $HEALTHCHECK_ATTEMPTS attempts: $url" >&2
+    return 1
 }
 
 # ---- 4. 建置 ----
@@ -133,11 +126,9 @@ build_app() {
     echo "[4/6] 建置應用..."
     cd "$APP_DIR"
 
-    # 重建所有獨立靜態遊戲 / demo 輸出
-    npm run build:standalone
-
-    # Next.js 建置；build script 同步準備 standalone 的 public 與 static 資產。
-    npm run build
+    # 同一套 release gate 會驗證主站與 showcases、重建發布輸出，
+    # 再以 production standalone server 執行 HTTP smoke test。
+    npm run verify:release
 }
 
 # ---- 5. 設定 Nginx ----
@@ -155,6 +146,7 @@ setup_nginx() {
         SHOULD_COPY=false
         HAS_EXISTING_SITE=false
         HAS_SSL_CONFIG=false
+        BACKUP_PATH=""
 
         if [ -f "$NGINX_SITE_AVAILABLE" ]; then
             HAS_EXISTING_SITE=true
@@ -188,13 +180,26 @@ setup_nginx() {
         fi
 
         sudo ln -sf "$NGINX_SITE_AVAILABLE" "$NGINX_SITE_ENABLED"
-        sudo rm -f /etc/nginx/sites-enabled/default
 
         if sudo nginx -t 2>&1; then
+            sudo rm -f /etc/nginx/sites-enabled/default
             sudo systemctl reload nginx
             echo "  ✓ Nginx 已設定完成"
         else
-            echo "  ⚠ Nginx 設定有誤，請檢查 $NGINX_SITE_AVAILABLE"
+            echo "  ✗ Nginx 設定有誤，部署已中止" >&2
+
+            if [ "$SHOULD_COPY" = true ]; then
+                if [ -n "$BACKUP_PATH" ] && [ -f "$BACKUP_PATH" ]; then
+                    echo "  還原 Nginx 設定：$BACKUP_PATH"
+                    sudo cp "$BACKUP_PATH" "$NGINX_SITE_AVAILABLE"
+                elif [ "$HAS_EXISTING_SITE" = false ]; then
+                    echo "  移除本次首次部署建立的無效設定"
+                    sudo rm -f "$NGINX_SITE_ENABLED"
+                    sudo rm -f "$NGINX_SITE_AVAILABLE"
+                fi
+            fi
+
+            return 1
         fi
     fi
 }
@@ -209,6 +214,9 @@ start_app() {
 
     # 啟動
     pm2 start ecosystem.config.js
+
+    # 確認應用實際可回應，才繼續完成部署。
+    wait_for_http "$HEALTHCHECK_URL" "Next.js"
 
     # 儲存 PM2 設定（開機自啟）
     pm2 save

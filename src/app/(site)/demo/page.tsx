@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import DemoCard from "@/components/demo/DemoCard";
 import { demos } from "@/data/demos";
+import { createPageMetadata } from "@/lib/site-metadata";
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: "Demo",
   description: "遊戲、互動實驗與小型產品；每一個 Demo 都能直接打開試玩。",
-};
+  path: "/demo",
+});
 
 export default function DemoPage() {
   const [featured, ...rest] = demos;

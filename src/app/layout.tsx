@@ -1,16 +1,25 @@
 import type { Metadata } from "next";
+import {
+  DEFAULT_DESCRIPTION,
+  SITE_NAME,
+  SITE_ORIGIN,
+} from "@/lib/site-metadata";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://thelonesomeera.com"),
+  metadataBase: new URL(SITE_ORIGIN),
   title: {
-    default: "The Lonesome Era",
-    template: "%s｜The Lonesome Era",
+    default: SITE_NAME,
+    template: `%s｜${SITE_NAME}`,
   },
-  description:
-    "程式、遊戲、產品與生活觀察，一個偏離喧囂、保留好奇心的數位角落。",
+  description: DEFAULT_DESCRIPTION,
   keywords: ["前端開發", "遊戲開發", "互動設計", "WebGL", "生活觀察"],
   icons: { icon: "/favicon.ico" },
+  alternates: {
+    types: {
+      "application/rss+xml": "/rss.xml",
+    },
+  },
 };
 
 export default function RootLayout({

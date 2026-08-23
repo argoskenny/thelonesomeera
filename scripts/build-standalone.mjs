@@ -4,6 +4,18 @@ import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const allowSkip = process.argv.includes("--allow-skip");
+
+function handleMissing(message) {
+  if (allowSkip) {
+    console.warn(`${message}; skipped because --allow-skip was provided`);
+    return;
+  }
+
+  console.error(`${message}; refusing to preserve potentially stale output`);
+  console.error("Use --allow-skip only for an intentional partial local checkout.");
+  process.exit(1);
+}
 
 const tasks = [
   {
@@ -42,7 +54,7 @@ for (const task of tasks) {
   const checkPath = path.join(rootDir, task.checkPath);
 
   if (!fs.existsSync(checkPath)) {
-    console.warn(`[build:standalone] skipped ${task.name}: missing ${task.checkPath}`);
+    handleMissing(`[build:standalone] missing ${task.name}: ${task.checkPath}`);
     continue;
   }
 
@@ -58,7 +70,12 @@ for (const task of tasks) {
   }
 }
 
-const syncResult = spawnSync("npm", ["run", "sync:static"], {
+const syncArgs = ["run", "sync:static"];
+if (allowSkip) {
+  syncArgs.push("--", "--allow-skip");
+}
+
+const syncResult = spawnSync("npm", syncArgs, {
   cwd: rootDir,
   stdio: "inherit",
   shell: false,

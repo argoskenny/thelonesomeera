@@ -3,6 +3,18 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const allowSkip = process.argv.includes("--allow-skip");
+
+function handleMissing(message) {
+  if (allowSkip) {
+    console.warn(`${message}; skipped because --allow-skip was provided`);
+    return;
+  }
+
+  console.error(`${message}; refusing to preserve potentially stale output`);
+  console.error("Use --allow-skip only for an intentional partial local checkout.");
+  process.exit(1);
+}
 
 const syncTargets = [
   {
@@ -100,13 +112,15 @@ for (const target of syncTargets) {
   const targetDir = path.join(rootDir, target.targetDir);
 
   if (!fs.existsSync(sourceDir)) {
-    console.warn(`[sync-static] skipped ${target.name}: missing source directory ${target.sourceDir}`);
+    handleMissing(
+      `[sync-static] missing source directory for ${target.name}: ${target.sourceDir}`,
+    );
     continue;
   }
 
   const missingEntry = ensureEntriesExist(sourceDir, target.entries);
   if (missingEntry) {
-    console.warn(`[sync-static] skipped ${target.name}: missing ${missingEntry}`);
+    handleMissing(`[sync-static] missing entry for ${target.name}: ${missingEntry}`);
     continue;
   }
 
