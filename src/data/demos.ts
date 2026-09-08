@@ -84,6 +84,14 @@ export const demos: Demo[] = [
     href: "/showcase/xiaoming/index.html",
     tags: ["HTML", "Quiz", "Audio"],
   },
+  {
+    title: "逛夜市",
+    description:
+      "走進復古台灣夜市，在攤販、建築與環境音之間自由漫遊。",
+    image: "/showcase/taiwan_night_market/preview.png",
+    href: "/showcase/taiwan_night_market/",
+    tags: ["Three.js", "TypeScript", "FPS Walk"],
+  },
 ];
 
 export const featuredDemos = demos.slice(0, 3);

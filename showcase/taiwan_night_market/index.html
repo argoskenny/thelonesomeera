@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-Hant"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/><meta name="theme-color" content="#101b20"/><meta name="description" content="走進逛夜市。以 three.js 打造的復古台灣夜市第一人稱漫遊，搭配台北市場實地錄音。"/><title>逛夜市｜走進台灣的夜晚</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='14' y='8' width='36' height='44' rx='16' fill='%23d95032'/%3E%3Cpath d='M32 0v8m0 44v12' stroke='%23e9b768' stroke-width='4'/%3E%3C/svg%3E"/></head>
+<body>
+<canvas id="world" data-i18n-aria="worldLabel" aria-label="可自由行走的逛夜市 3D 場景"></canvas>
+<div id="shade"></div>
+<main id="menu" aria-labelledby="title">
+  <button id="language" class="outline language" aria-label="Switch to English">English</button>
+  <div class="intro"><h1 id="title" data-i18n="title">逛夜市</h1><p id="description">放慢腳步，走進台灣的夜晚。</p>
+    <button id="start" class="primary" disabled>正在載入夜市…</button>
+    <div id="loading" role="status"><span id="load-text">準備街景</span><div class="track"><i id="load-bar"></i></div></div>
+    <p class="controls desktop" data-i18n="desktopControls">WASD 移動 · 滑鼠環顧 · Esc 暫停<br><span>Shift 快走 · 方向鍵也能移動</span></p>
+    <p class="controls mobile" data-i18n="mobileControls">左側搖桿移動 · 右側拖曳環顧</p>
+    <div id="pause-options" hidden><button id="reset" class="text-button" data-i18n="reset">回到北街入口</button><label class="quality"><span data-i18n="quality">畫面品質</span> <select id="quality"><option value="auto" data-i18n="auto">自動</option><option value="low" data-i18n="low">省電</option><option value="high" data-i18n="high">清晰</option></select></label></div>
+  </div>
+  <footer><button id="credits-open" class="text-button" data-i18n="creditsOpen">♫ &nbsp;聲音來源</button><div class="sound-controls"><button id="mute" class="text-button" aria-pressed="false">環境音 <span>開啟</span></button><label class="volume-label"><span class="sr-only" data-i18n="volume">環境音音量</span><input id="volume" data-i18n-aria="volume" type="range" min="0" max="100" value="65" aria-label="環境音音量"/></label></div></footer>
+</main>
+<div id="hud" hidden><header><div><strong data-i18n="title">逛夜市</strong><div id="district">北街・攤販熱區</div></div><button id="pause" class="outline" data-i18n="pause">暫停</button></header><div id="reticle" aria-hidden="true"></div><canvas id="map" data-i18n-aria="mapLabel" width="320" height="320" aria-label="夜市地圖與目前位置"></canvas><div id="walk-hint" class="desktop" data-i18n="walkHint">WASD 移動 &nbsp;·&nbsp; Esc 暫停</div><div id="touch-controls" class="mobile"><div id="joystick" data-i18n-aria="moveLabel" aria-label="移動搖桿"><i></i></div><div id="look-pad" data-i18n-aria="lookLabel" aria-label="拖曳環顧"><i></i></div></div></div>
+<div id="notice" role="status" hidden></div>
+<dialog id="credits"><button data-i18n="close" id="credits-close" data-i18n-aria="closeLabel" class="outline close" aria-label="關閉聲音來源">關閉</button><h2 data-i18n="creditsTitle">台灣夜市的聲音</h2><p data-i18n="creditsIntro">沿著街道走，聽見攤販、人群與遊戲機的聲響。</p><article><h3 data-i18n="hulin">虎林街・傍晚市場</h3><p><a href="https://freesound.org/people/GaryBard/sounds/65763/" target="_blank" rel="noopener">HuLin_Street_ Market_GaryBard.wav</a><br><span data-i18n="hulinLocation">GaryBard · Freesound · 台北信義區</span></p></article><article><h3 data-i18n="guangzhou">廣州街・夜市與遊戲場</h3><p><a href="https://freesound.org/people/GaryBard/sounds/66598/" target="_blank" rel="noopener">Chinese_New_Year_2009_Arcade_Night Market_GaryBard.wav</a><br><span data-i18n="guangzhouLocation">GaryBard · Freesound · 台北萬華區</span></p></article><p data-i18n="license">兩段實地錄音採 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons 姓名標示 4.0</a> 授權。使用 Freesound 的 MP3 預覽版本，於遊戲中循環播放、淡化接點，並依位置混音；原作者不為本遊戲背書。</p><p class="muted" data-i18n="sceneCredit">場景：本專案既有 Blender 夜市模組。這是一段自由漫遊體驗，尚未加入行人或戰鬥。</p></dialog>
+<script type="module" src="/src/main.ts"></script></body></html>

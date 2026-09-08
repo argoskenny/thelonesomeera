@@ -35,6 +35,7 @@ test("showcase dependency installation is complete and fail closed", () => {
     "pulsesync",
     "colorful_kart",
     "mini_fantasy",
+    "taiwan_night_market",
   ]) {
     assert.match(installScript, new RegExp(`"${project}"`));
   }
@@ -62,6 +63,7 @@ test("production smoke test covers main, nested, blog, and showcase routes", () 
     "/demo/ai-hub",
     "/blog/selfie-cat-development.html",
     "/showcase/mini_fantasy/",
+    "/showcase/taiwan_night_market/",
     "/robots.txt",
     "/sitemap.xml",
   ]) {

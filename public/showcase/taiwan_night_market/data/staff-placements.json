@@ -1,0 +1,2817 @@
+{
+  "radius": 0.42,
+  "stalls": 116,
+  "shops": 38,
+  "homes": [
+    {
+      "id": "B1_SHOP_1",
+      "kind": "shop",
+      "x": -32.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "convenience",
+      "name": "榕便利商店"
+    },
+    {
+      "id": "B1_SHOP_2",
+      "kind": "shop",
+      "x": -26.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "bakery",
+      "name": "金禾麵包坊"
+    },
+    {
+      "id": "B1_SHOP_3",
+      "kind": "shop",
+      "x": -20.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pharmacy",
+      "name": "安康西藥房"
+    },
+    {
+      "id": "B1_SHOP_4",
+      "kind": "shop",
+      "x": -35.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "hardware",
+      "name": "建成五金行"
+    },
+    {
+      "id": "B1_SHOP_5",
+      "kind": "shop",
+      "x": -29.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "clothes",
+      "name": "花樣年華服飾"
+    },
+    {
+      "id": "B1_SHOP_6",
+      "kind": "shop",
+      "x": -23.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.1,
+      "maxOffset": 0.2,
+      "business": "arcade",
+      "name": "電玩基地"
+    },
+    {
+      "id": "B2_SHOP_1",
+      "kind": "shop",
+      "x": -4.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "books",
+      "name": "翻頁二手書店"
+    },
+    {
+      "id": "B2_SHOP_2",
+      "kind": "shop",
+      "x": 1.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "barber",
+      "name": "光華理髮廳"
+    },
+    {
+      "id": "B2_SHOP_3",
+      "kind": "shop",
+      "x": 7.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fruitshop",
+      "name": "青田水果行"
+    },
+    {
+      "id": "B2_SHOP_4",
+      "kind": "shop",
+      "x": -8,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        2,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "laundry",
+      "name": "泡泡自助洗衣"
+    },
+    {
+      "id": "B2_SHOP_5",
+      "kind": "shop",
+      "x": -1.5000000000000002,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "herbal",
+      "name": "百草堂中藥行"
+    },
+    {
+      "id": "B2_SHOP_6",
+      "kind": "shop",
+      "x": 4.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "record",
+      "name": "黑膠年代唱片"
+    },
+    {
+      "id": "B3_SHOP_1",
+      "kind": "shop",
+      "x": 23.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fish",
+      "name": "海港水族館"
+    },
+    {
+      "id": "B3_SHOP_2",
+      "kind": "shop",
+      "x": 29.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "hotel2",
+      "name": "榕安大旅社"
+    },
+    {
+      "id": "B3_SHOP_3",
+      "kind": "shop",
+      "x": 35.5,
+      "z": 27.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "shoes",
+      "name": "足下鞋店"
+    },
+    {
+      "id": "B3_SHOP_4",
+      "kind": "shop",
+      "x": 20.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "grocery",
+      "name": "金源雜貨店"
+    },
+    {
+      "id": "B3_SHOP_5",
+      "kind": "shop",
+      "x": 26.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "repair",
+      "name": "永興機車行"
+    },
+    {
+      "id": "B3_SHOP_6",
+      "kind": "shop",
+      "x": 32.5,
+      "z": 6.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "noodle",
+      "name": "老湯牛肉麵"
+    },
+    {
+      "id": "B4_SHOP_1",
+      "kind": "shop",
+      "x": -32.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "camera",
+      "name": "中山照相館"
+    },
+    {
+      "id": "B4_SHOP_2",
+      "kind": "shop",
+      "x": -26.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "watch",
+      "name": "陳記鐘錶眼鏡"
+    },
+    {
+      "id": "B4_SHOP_3",
+      "kind": "shop",
+      "x": -20.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "audio",
+      "name": "佳音唱片音響"
+    },
+    {
+      "id": "B4_SHOP_4",
+      "kind": "shop",
+      "x": -35.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "toys",
+      "name": "小熊玩具屋"
+    },
+    {
+      "id": "B4_SHOP_5",
+      "kind": "shop",
+      "x": -29.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "stationery",
+      "name": "文昌文具行"
+    },
+    {
+      "id": "B4_SHOP_6",
+      "kind": "shop",
+      "x": -23.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "florist",
+      "name": "海棠花坊"
+    },
+    {
+      "id": "B5_SHOP_1",
+      "kind": "shop",
+      "x": -4.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "appliances",
+      "name": "宏昌電器行"
+    },
+    {
+      "id": "B5_SHOP_2",
+      "kind": "shop",
+      "x": 1.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "salon",
+      "name": "尚美美容院"
+    },
+    {
+      "id": "B5_SHOP_3",
+      "kind": "shop",
+      "x": 7.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tailor",
+      "name": "巧手修改衣服"
+    },
+    {
+      "id": "B5_SHOP_4",
+      "kind": "shop",
+      "x": -7.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "bicycle",
+      "name": "健行自行車行"
+    },
+    {
+      "id": "B5_SHOP_5",
+      "kind": "shop",
+      "x": -1.5000000000000002,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "teashop",
+      "name": "春雨茶莊"
+    },
+    {
+      "id": "B5_SHOP_6",
+      "kind": "shop",
+      "x": 4.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "locksmith",
+      "name": "順發鎖匙刻印"
+    },
+    {
+      "id": "B6_SHOP_1",
+      "kind": "shop",
+      "x": 23.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pet",
+      "name": "福氣寵物用品"
+    },
+    {
+      "id": "B6_SHOP_2",
+      "kind": "shop",
+      "x": 29.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "print",
+      "name": "城南文印社"
+    },
+    {
+      "id": "B6_SHOP_3",
+      "kind": "shop",
+      "x": 35.5,
+      "z": -6.5,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "comics",
+      "name": "銀河漫畫出租"
+    },
+    {
+      "id": "B6_SHOP_4",
+      "kind": "shop",
+      "x": 20.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "leather",
+      "name": "阿美手工皮件"
+    },
+    {
+      "id": "B6_SHOP_5",
+      "kind": "shop",
+      "x": 26.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "bedding",
+      "name": "四季寢具行"
+    },
+    {
+      "id": "B6_SHOP_6",
+      "kind": "shop",
+      "x": 32.5,
+      "z": -27.5,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        1.5,
+        1.5
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cafe",
+      "name": "月光咖啡室"
+    },
+    {
+      "id": "RING_N4",
+      "kind": "shop",
+      "x": 2,
+      "z": -41.6,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        2,
+        -1.4
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cityhall",
+      "name": "榕安市公所"
+    },
+    {
+      "id": "RING_S4",
+      "kind": "shop",
+      "x": -1.9999999999999998,
+      "z": 41.6,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        2,
+        -1.4
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "community",
+      "name": "榕安里活動中心"
+    },
+    {
+      "id": "MARKET_001",
+      "kind": "stall",
+      "x": -36,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "luwei"
+    },
+    {
+      "id": "MARKET_002",
+      "kind": "stall",
+      "x": -32,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "ice"
+    },
+    {
+      "id": "MARKET_003",
+      "kind": "stall",
+      "x": -28,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "bags"
+    },
+    {
+      "id": "MARKET_004",
+      "kind": "stall",
+      "x": -24,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "misua"
+    },
+    {
+      "id": "MARKET_005",
+      "kind": "stall",
+      "x": -20,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "popcorn"
+    },
+    {
+      "id": "MARKET_006",
+      "kind": "stall",
+      "x": -8,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "darts"
+    },
+    {
+      "id": "MARKET_007",
+      "kind": "stall",
+      "x": -4,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "steak"
+    },
+    {
+      "id": "MARKET_008",
+      "kind": "stall",
+      "x": -2.755455298081545e-16,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "rings"
+    },
+    {
+      "id": "MARKET_009",
+      "kind": "stall",
+      "x": 3.9999999999999996,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "balloon"
+    },
+    {
+      "id": "MARKET_010",
+      "kind": "stall",
+      "x": 8,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "banana_roti"
+    },
+    {
+      "id": "MARKET_011",
+      "kind": "stall",
+      "x": 20,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "crepe"
+    },
+    {
+      "id": "MARKET_012",
+      "kind": "stall",
+      "x": 24,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "ice"
+    },
+    {
+      "id": "MARKET_013",
+      "kind": "stall",
+      "x": 28,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "peanutice"
+    },
+    {
+      "id": "MARKET_014",
+      "kind": "stall",
+      "x": 32,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "popcorn"
+    },
+    {
+      "id": "MARKET_015",
+      "kind": "stall",
+      "x": 36,
+      "z": -29.799999999999997,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pepper"
+    },
+    {
+      "id": "MARKET_016",
+      "kind": "stall",
+      "x": -36,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "quail_eggs"
+    },
+    {
+      "id": "MARKET_017",
+      "kind": "stall",
+      "x": -32,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cotton"
+    },
+    {
+      "id": "MARKET_018",
+      "kind": "stall",
+      "x": -28,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "toys"
+    },
+    {
+      "id": "MARKET_019",
+      "kind": "stall",
+      "x": -24,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "roast_sweetpotato"
+    },
+    {
+      "id": "MARKET_020",
+      "kind": "stall",
+      "x": -20,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "sweet"
+    },
+    {
+      "id": "MARKET_021",
+      "kind": "stall",
+      "x": -8,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "crepe"
+    },
+    {
+      "id": "MARKET_022",
+      "kind": "stall",
+      "x": -4,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "mahjong"
+    },
+    {
+      "id": "MARKET_023",
+      "kind": "stall",
+      "x": 4,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "skewers"
+    },
+    {
+      "id": "MARKET_024",
+      "kind": "stall",
+      "x": 8,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "misua"
+    },
+    {
+      "id": "MARKET_025",
+      "kind": "stall",
+      "x": 20,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "shawarma"
+    },
+    {
+      "id": "MARKET_026",
+      "kind": "stall",
+      "x": 24,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "rings"
+    },
+    {
+      "id": "MARKET_027",
+      "kind": "stall",
+      "x": 28,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cotton"
+    },
+    {
+      "id": "MARKET_028",
+      "kind": "stall",
+      "x": 32,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "mochi"
+    },
+    {
+      "id": "MARKET_029",
+      "kind": "stall",
+      "x": 36,
+      "z": -38.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "skewers"
+    },
+    {
+      "id": "MARKET_030",
+      "kind": "stall",
+      "x": -36,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "sausage"
+    },
+    {
+      "id": "MARKET_031",
+      "kind": "stall",
+      "x": -32,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "flowers"
+    },
+    {
+      "id": "MARKET_032",
+      "kind": "stall",
+      "x": -28,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "darts"
+    },
+    {
+      "id": "MARKET_033",
+      "kind": "stall",
+      "x": -20,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fashion"
+    },
+    {
+      "id": "MARKET_034",
+      "kind": "stall",
+      "x": -8,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pinball"
+    },
+    {
+      "id": "MARKET_035",
+      "kind": "stall",
+      "x": -4,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "sausage"
+    },
+    {
+      "id": "MARKET_036",
+      "kind": "stall",
+      "x": 4,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fashion"
+    },
+    {
+      "id": "MARKET_037",
+      "kind": "stall",
+      "x": 20,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "dumpling"
+    },
+    {
+      "id": "MARKET_038",
+      "kind": "stall",
+      "x": 28,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "popcorn"
+    },
+    {
+      "id": "MARKET_039",
+      "kind": "stall",
+      "x": 36,
+      "z": 29.799999999999997,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "quail_eggs"
+    },
+    {
+      "id": "MARKET_040",
+      "kind": "stall",
+      "x": -36,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cotton"
+    },
+    {
+      "id": "MARKET_041",
+      "kind": "stall",
+      "x": -32,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "squid"
+    },
+    {
+      "id": "MARKET_042",
+      "kind": "stall",
+      "x": -28,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "phone"
+    },
+    {
+      "id": "MARKET_043",
+      "kind": "stall",
+      "x": -24,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "mahjong"
+    },
+    {
+      "id": "MARKET_044",
+      "kind": "stall",
+      "x": -20,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "quail_eggs"
+    },
+    {
+      "id": "MARKET_045",
+      "kind": "stall",
+      "x": -8,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pinball"
+    },
+    {
+      "id": "MARKET_046",
+      "kind": "stall",
+      "x": -4,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "rings"
+    },
+    {
+      "id": "MARKET_047",
+      "kind": "stall",
+      "x": 3.9999999999999996,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "balls"
+    },
+    {
+      "id": "MARKET_048",
+      "kind": "stall",
+      "x": 8,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "takoyaki"
+    },
+    {
+      "id": "MARKET_049",
+      "kind": "stall",
+      "x": 20,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pancake"
+    },
+    {
+      "id": "MARKET_050",
+      "kind": "stall",
+      "x": 24,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "oyster"
+    },
+    {
+      "id": "MARKET_051",
+      "kind": "stall",
+      "x": 28,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "shawarma"
+    },
+    {
+      "id": "MARKET_052",
+      "kind": "stall",
+      "x": 36,
+      "z": 38.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fashion"
+    },
+    {
+      "id": "MARKET_053",
+      "kind": "stall",
+      "x": -37.8,
+      "z": 28,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "roast_sweetpotato"
+    },
+    {
+      "id": "MARKET_054",
+      "kind": "stall",
+      "x": -37.8,
+      "z": 24,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "flowers"
+    },
+    {
+      "id": "MARKET_055",
+      "kind": "stall",
+      "x": -37.8,
+      "z": 20,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "socks"
+    },
+    {
+      "id": "MARKET_056",
+      "kind": "stall",
+      "x": -37.8,
+      "z": 16,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "chicken"
+    },
+    {
+      "id": "MARKET_057",
+      "kind": "stall",
+      "x": -37.8,
+      "z": 12,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "games"
+    },
+    {
+      "id": "MARKET_058",
+      "kind": "stall",
+      "x": -37.8,
+      "z": -8,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "steamer"
+    },
+    {
+      "id": "MARKET_059",
+      "kind": "stall",
+      "x": -37.8,
+      "z": -12,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tofu"
+    },
+    {
+      "id": "MARKET_060",
+      "kind": "stall",
+      "x": -37.8,
+      "z": -20,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "mochi"
+    },
+    {
+      "id": "MARKET_061",
+      "kind": "stall",
+      "x": -37.8,
+      "z": -28,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "corn"
+    },
+    {
+      "id": "MARKET_062",
+      "kind": "stall",
+      "x": -46.2,
+      "z": 28,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "balloon"
+    },
+    {
+      "id": "MARKET_063",
+      "kind": "stall",
+      "x": -46.2,
+      "z": 24,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "toys"
+    },
+    {
+      "id": "MARKET_064",
+      "kind": "stall",
+      "x": -46.2,
+      "z": 16,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "corn"
+    },
+    {
+      "id": "MARKET_065",
+      "kind": "stall",
+      "x": -46.2,
+      "z": 8,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "skewers"
+    },
+    {
+      "id": "MARKET_066",
+      "kind": "stall",
+      "x": -46.2,
+      "z": -8,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "luwei"
+    },
+    {
+      "id": "MARKET_067",
+      "kind": "stall",
+      "x": -46.2,
+      "z": -12,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fruit"
+    },
+    {
+      "id": "MARKET_068",
+      "kind": "stall",
+      "x": -46.2,
+      "z": -16,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "rice"
+    },
+    {
+      "id": "MARKET_069",
+      "kind": "stall",
+      "x": -46.2,
+      "z": -24,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tofu"
+    },
+    {
+      "id": "MARKET_070",
+      "kind": "stall",
+      "x": -46.2,
+      "z": -28,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "balls"
+    },
+    {
+      "id": "MARKET_071",
+      "kind": "stall",
+      "x": 37.8,
+      "z": 28,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "steak"
+    },
+    {
+      "id": "MARKET_072",
+      "kind": "stall",
+      "x": 37.8,
+      "z": 24,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cotton"
+    },
+    {
+      "id": "MARKET_073",
+      "kind": "stall",
+      "x": 37.8,
+      "z": 12,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tofu"
+    },
+    {
+      "id": "MARKET_074",
+      "kind": "stall",
+      "x": 37.8,
+      "z": -8,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "corn"
+    },
+    {
+      "id": "MARKET_075",
+      "kind": "stall",
+      "x": 37.8,
+      "z": -16,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tea"
+    },
+    {
+      "id": "MARKET_076",
+      "kind": "stall",
+      "x": 37.8,
+      "z": -24,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "misua"
+    },
+    {
+      "id": "MARKET_077",
+      "kind": "stall",
+      "x": 46.2,
+      "z": 28,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "candy"
+    },
+    {
+      "id": "MARKET_078",
+      "kind": "stall",
+      "x": 46.2,
+      "z": 20,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "cotton"
+    },
+    {
+      "id": "MARKET_079",
+      "kind": "stall",
+      "x": 46.2,
+      "z": 16,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "accessory"
+    },
+    {
+      "id": "MARKET_080",
+      "kind": "stall",
+      "x": 46.2,
+      "z": 8,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "mahjong"
+    },
+    {
+      "id": "MARKET_081",
+      "kind": "stall",
+      "x": 46.2,
+      "z": -8,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "phone"
+    },
+    {
+      "id": "MARKET_082",
+      "kind": "stall",
+      "x": 46.2,
+      "z": -12,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pinball"
+    },
+    {
+      "id": "MARKET_083",
+      "kind": "stall",
+      "x": 46.2,
+      "z": -20,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "luwei"
+    },
+    {
+      "id": "MARKET_084",
+      "kind": "stall",
+      "x": 46.2,
+      "z": -28,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "dumpling"
+    },
+    {
+      "id": "MARKET_085",
+      "kind": "stall",
+      "x": -34,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fashion"
+    },
+    {
+      "id": "MARKET_086",
+      "kind": "stall",
+      "x": -30,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "peanutice"
+    },
+    {
+      "id": "MARKET_087",
+      "kind": "stall",
+      "x": -22,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fishing"
+    },
+    {
+      "id": "MARKET_088",
+      "kind": "stall",
+      "x": -6,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "steak"
+    },
+    {
+      "id": "MARKET_089",
+      "kind": "stall",
+      "x": 1.9999999999999998,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tea"
+    },
+    {
+      "id": "MARKET_090",
+      "kind": "stall",
+      "x": 22,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "sausage"
+    },
+    {
+      "id": "MARKET_091",
+      "kind": "stall",
+      "x": 26,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "bags"
+    },
+    {
+      "id": "MARKET_092",
+      "kind": "stall",
+      "x": 34,
+      "z": 4.2,
+      "yaw": 3.141592653589793,
+      "tangent": {
+        "x": -1,
+        "z": -1.2246467991473532e-16
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "takoyaki"
+    },
+    {
+      "id": "MARKET_093",
+      "kind": "stall",
+      "x": -34,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "candy"
+    },
+    {
+      "id": "MARKET_094",
+      "kind": "stall",
+      "x": -26,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "skewers"
+    },
+    {
+      "id": "MARKET_095",
+      "kind": "stall",
+      "x": -22,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "banana_roti"
+    },
+    {
+      "id": "MARKET_096",
+      "kind": "stall",
+      "x": -6,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "oyster"
+    },
+    {
+      "id": "MARKET_097",
+      "kind": "stall",
+      "x": 6,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "darts"
+    },
+    {
+      "id": "MARKET_098",
+      "kind": "stall",
+      "x": 22,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "bags"
+    },
+    {
+      "id": "MARKET_099",
+      "kind": "stall",
+      "x": 30,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "tofu"
+    },
+    {
+      "id": "MARKET_100",
+      "kind": "stall",
+      "x": 34,
+      "z": -4.2,
+      "yaw": 0,
+      "tangent": {
+        "x": 1,
+        "z": 0
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "accessory"
+    },
+    {
+      "id": "MARKET_101",
+      "kind": "stall",
+      "x": -18.2,
+      "z": 24,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "sausage"
+    },
+    {
+      "id": "MARKET_102",
+      "kind": "stall",
+      "x": -18.2,
+      "z": 20,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "banana_roti"
+    },
+    {
+      "id": "MARKET_103",
+      "kind": "stall",
+      "x": -18.2,
+      "z": -12,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "phone"
+    },
+    {
+      "id": "MARKET_104",
+      "kind": "stall",
+      "x": -18.2,
+      "z": -16,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "peanutice"
+    },
+    {
+      "id": "MARKET_105",
+      "kind": "stall",
+      "x": -18.2,
+      "z": -20,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fishing"
+    },
+    {
+      "id": "MARKET_106",
+      "kind": "stall",
+      "x": -9.8,
+      "z": 12,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fishing"
+    },
+    {
+      "id": "MARKET_107",
+      "kind": "stall",
+      "x": -9.8,
+      "z": -8,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "shawarma"
+    },
+    {
+      "id": "MARKET_108",
+      "kind": "stall",
+      "x": -9.8,
+      "z": -24,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "noodle"
+    },
+    {
+      "id": "MARKET_109",
+      "kind": "stall",
+      "x": 9.8,
+      "z": 24,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "chicken"
+    },
+    {
+      "id": "MARKET_110",
+      "kind": "stall",
+      "x": 9.8,
+      "z": 20,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "fashion"
+    },
+    {
+      "id": "MARKET_111",
+      "kind": "stall",
+      "x": 9.8,
+      "z": 12,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "pancake"
+    },
+    {
+      "id": "MARKET_112",
+      "kind": "stall",
+      "x": 9.8,
+      "z": -12,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "steamer"
+    },
+    {
+      "id": "MARKET_113",
+      "kind": "stall",
+      "x": 9.8,
+      "z": -16,
+      "yaw": 1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": -1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "phone"
+    },
+    {
+      "id": "MARKET_114",
+      "kind": "stall",
+      "x": 18.2,
+      "z": 8,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "mochi"
+    },
+    {
+      "id": "MARKET_115",
+      "kind": "stall",
+      "x": 18.2,
+      "z": -8,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "sweet"
+    },
+    {
+      "id": "MARKET_116",
+      "kind": "stall",
+      "x": 18.2,
+      "z": -24,
+      "yaw": -1.5707963267948966,
+      "tangent": {
+        "x": 6.123233995736766e-17,
+        "z": 1
+      },
+      "local": [
+        0,
+        2.25
+      ],
+      "minOffset": -0.2,
+      "maxOffset": 0.2,
+      "business": "roast_sweetpotato"
+    }
+  ]
+}

@@ -71,6 +71,12 @@ const syncTargets = [
     targetDir: "public/showcase/mini_fantasy",
     entries: ["index.html", "assets", "preview.png"],
   },
+  {
+    name: "taiwan_night_market",
+    sourceDir: "showcase/taiwan_night_market/dist",
+    targetDir: "public/showcase/taiwan_night_market",
+    entries: ["index.html", "assets", "audio", "data", "models", "preview.png"],
+  },
 ];
 
 function copyEntry(sourcePath, targetPath) {

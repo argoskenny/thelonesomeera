@@ -60,6 +60,14 @@ const nextConfig = {
         source: '/showcase/mini_fantasy/',
         destination: '/showcase/mini_fantasy/index.html',
       },
+      {
+        source: '/showcase/taiwan_night_market',
+        destination: '/showcase/taiwan_night_market/index.html',
+      },
+      {
+        source: '/showcase/taiwan_night_market/',
+        destination: '/showcase/taiwan_night_market/index.html',
+      },
     ];
   },
 };

@@ -11,6 +11,7 @@ const projects = [
   "pulsesync",
   "colorful_kart",
   "mini_fantasy",
+  "taiwan_night_market",
 ];
 
 for (const project of projects) {

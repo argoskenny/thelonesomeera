@@ -48,6 +48,11 @@ const tasks = [
     checkPath: "showcase/mini_fantasy/package.json",
     command: ["npm", "run", "build:mini_fantasy"],
   },
+  {
+    name: "taiwan_night_market",
+    checkPath: "showcase/taiwan_night_market/package.json",
+    command: ["npm", "run", "build:taiwan_night_market"],
+  },
 ];
 
 for (const task of tasks) {

@@ -1,0 +1,2324 @@
+{
+  "stalls": [
+    {
+      "row": "North_inner",
+      "position": [
+        -36,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_001",
+      "kind": "luwei",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        -32,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_002",
+      "kind": "ice",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        -28,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_003",
+      "kind": "bags",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        -24,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_004",
+      "kind": "misua",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        -20,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_005",
+      "kind": "popcorn",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        -8,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_006",
+      "kind": "darts",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        -4,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_007",
+      "kind": "steak",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        0,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_008",
+      "kind": "rings",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        4,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_009",
+      "kind": "balloon",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        8,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_010",
+      "kind": "banana_roti",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        20,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_011",
+      "kind": "crepe",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        24,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_012",
+      "kind": "ice",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        28,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_013",
+      "kind": "peanutice",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        32,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_014",
+      "kind": "popcorn",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_inner",
+      "position": [
+        36,
+        32.05
+      ],
+      "angle": 3.141592653589793,
+      "region": "north_hotspot",
+      "id": "MARKET_015",
+      "kind": "pepper",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -36,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_016",
+      "kind": "quail_eggs",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -32,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_017",
+      "kind": "cotton",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -28,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_018",
+      "kind": "toys",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -24,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_019",
+      "kind": "roast_sweetpotato",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -20,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_020",
+      "kind": "sweet",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -8,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_021",
+      "kind": "crepe",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        -4,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_022",
+      "kind": "mahjong",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        4,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_023",
+      "kind": "skewers",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        8,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_024",
+      "kind": "misua",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        20,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_025",
+      "kind": "shawarma",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        24,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_026",
+      "kind": "rings",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        28,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_027",
+      "kind": "cotton",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        32,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_028",
+      "kind": "mochi",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "North_outer",
+      "position": [
+        36,
+        35.95
+      ],
+      "angle": 0,
+      "region": "north_hotspot",
+      "id": "MARKET_029",
+      "kind": "skewers",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        -36,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_030",
+      "kind": "sausage",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        -32,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_031",
+      "kind": "flowers",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        -28,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_032",
+      "kind": "darts",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        -20,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_033",
+      "kind": "fashion",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        -8,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_034",
+      "kind": "pinball",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        -4,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_035",
+      "kind": "sausage",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        4,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_036",
+      "kind": "fashion",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        20,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_037",
+      "kind": "dumpling",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        28,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_038",
+      "kind": "popcorn",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_inner",
+      "position": [
+        36,
+        -32.05
+      ],
+      "angle": 0,
+      "region": "south",
+      "id": "MARKET_039",
+      "kind": "quail_eggs",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -36,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_040",
+      "kind": "cotton",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -32,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_041",
+      "kind": "squid",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -28,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_042",
+      "kind": "phone",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -24,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_043",
+      "kind": "mahjong",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -20,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_044",
+      "kind": "quail_eggs",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -8,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_045",
+      "kind": "pinball",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        -4,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_046",
+      "kind": "rings",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        4,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_047",
+      "kind": "balls",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        8,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_048",
+      "kind": "takoyaki",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        20,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_049",
+      "kind": "pancake",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        24,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_050",
+      "kind": "oyster",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        28,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_051",
+      "kind": "shawarma",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "South_outer",
+      "position": [
+        36,
+        -35.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "south",
+      "id": "MARKET_052",
+      "kind": "fashion",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        -28
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_053",
+      "kind": "roast_sweetpotato",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        -24
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_054",
+      "kind": "flowers",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        -20
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_055",
+      "kind": "socks",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        -16
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_056",
+      "kind": "chicken",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        -12
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_057",
+      "kind": "games",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        8
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_058",
+      "kind": "steamer",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        12
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_059",
+      "kind": "tofu",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        20
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_060",
+      "kind": "mochi",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "West_inner",
+      "position": [
+        -40.05,
+        28
+      ],
+      "angle": -1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_061",
+      "kind": "corn",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        -28
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_062",
+      "kind": "balloon",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        -24
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_063",
+      "kind": "toys",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        -16
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_064",
+      "kind": "corn",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        -8
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_065",
+      "kind": "skewers",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        8
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_066",
+      "kind": "luwei",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        12
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_067",
+      "kind": "fruit",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        16
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_068",
+      "kind": "rice",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        24
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_069",
+      "kind": "tofu",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "West_outer",
+      "position": [
+        -43.95,
+        28
+      ],
+      "angle": 1.5707963267948966,
+      "region": "west",
+      "id": "MARKET_070",
+      "kind": "balls",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_inner",
+      "position": [
+        40.05,
+        -28
+      ],
+      "angle": 1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_071",
+      "kind": "steak",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "East_inner",
+      "position": [
+        40.05,
+        -24
+      ],
+      "angle": 1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_072",
+      "kind": "cotton",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_inner",
+      "position": [
+        40.05,
+        -12
+      ],
+      "angle": 1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_073",
+      "kind": "tofu",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_inner",
+      "position": [
+        40.05,
+        8
+      ],
+      "angle": 1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_074",
+      "kind": "corn",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_inner",
+      "position": [
+        40.05,
+        16
+      ],
+      "angle": 1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_075",
+      "kind": "tea",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_inner",
+      "position": [
+        40.05,
+        24
+      ],
+      "angle": 1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_076",
+      "kind": "misua",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        -28
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_077",
+      "kind": "candy",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        -20
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_078",
+      "kind": "cotton",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        -16
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_079",
+      "kind": "accessory",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        -8
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_080",
+      "kind": "mahjong",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        8
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_081",
+      "kind": "phone",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        12
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_082",
+      "kind": "pinball",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        20
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_083",
+      "kind": "luwei",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "East_outer",
+      "position": [
+        43.95,
+        28
+      ],
+      "angle": -1.5707963267948966,
+      "region": "east",
+      "id": "MARKET_084",
+      "kind": "dumpling",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        -34,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_085",
+      "kind": "fashion",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        -30,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_086",
+      "kind": "peanutice",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        -22,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_087",
+      "kind": "fishing",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        -6,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_088",
+      "kind": "steak",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        2,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_089",
+      "kind": "tea",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        22,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_090",
+      "kind": "sausage",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        26,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_091",
+      "kind": "bags",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_south",
+      "position": [
+        34,
+        -1.95
+      ],
+      "angle": 3.141592653589793,
+      "region": "interior",
+      "id": "MARKET_092",
+      "kind": "takoyaki",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        -34,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_093",
+      "kind": "candy",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        -26,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_094",
+      "kind": "skewers",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        -22,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_095",
+      "kind": "banana_roti",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        -6,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_096",
+      "kind": "oyster",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        6,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_097",
+      "kind": "darts",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        22,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_098",
+      "kind": "bags",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        30,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_099",
+      "kind": "tofu",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Center_north",
+      "position": [
+        34,
+        1.95
+      ],
+      "angle": 0,
+      "region": "interior",
+      "id": "MARKET_100",
+      "kind": "accessory",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_W_left",
+      "position": [
+        -15.95,
+        -24
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_101",
+      "kind": "sausage",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_W_left",
+      "position": [
+        -15.95,
+        -20
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_102",
+      "kind": "banana_roti",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Lane_W_left",
+      "position": [
+        -15.95,
+        12
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_103",
+      "kind": "phone",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_W_left",
+      "position": [
+        -15.95,
+        16
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_104",
+      "kind": "peanutice",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Lane_W_left",
+      "position": [
+        -15.95,
+        20
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_105",
+      "kind": "fishing",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_W_right",
+      "position": [
+        -12.05,
+        -12
+      ],
+      "angle": -1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_106",
+      "kind": "fishing",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_W_right",
+      "position": [
+        -12.05,
+        8
+      ],
+      "angle": -1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_107",
+      "kind": "shawarma",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Lane_W_right",
+      "position": [
+        -12.05,
+        24
+      ],
+      "angle": -1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_108",
+      "kind": "noodle",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_left",
+      "position": [
+        12.05,
+        -24
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_109",
+      "kind": "chicken",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_left",
+      "position": [
+        12.05,
+        -20
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_110",
+      "kind": "fashion",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_left",
+      "position": [
+        12.05,
+        -12
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_111",
+      "kind": "pancake",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_left",
+      "position": [
+        12.05,
+        12
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_112",
+      "kind": "steamer",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_left",
+      "position": [
+        12.05,
+        16
+      ],
+      "angle": 1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_113",
+      "kind": "phone",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_right",
+      "position": [
+        15.95,
+        -8
+      ],
+      "angle": -1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_114",
+      "kind": "mochi",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    },
+    {
+      "row": "Lane_E_right",
+      "position": [
+        15.95,
+        8
+      ],
+      "angle": -1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_115",
+      "kind": "sweet",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": false
+    },
+    {
+      "row": "Lane_E_right",
+      "position": [
+        15.95,
+        24
+      ],
+      "angle": -1.5707963267948966,
+      "region": "interior",
+      "id": "MARKET_116",
+      "kind": "roast_sweetpotato",
+      "frontage_m": 3.85,
+      "depth_m": 1.7,
+      "new_type": true
+    }
+  ],
+  "vending_banks": [
+    {
+      "id": "VN1",
+      "position": [
+        -28,
+        40.8
+      ],
+      "angle": 0,
+      "count": 3,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_01",
+        "VEND_02",
+        "VEND_03"
+      ]
+    },
+    {
+      "id": "VN2",
+      "position": [
+        27,
+        40.8
+      ],
+      "angle": 0,
+      "count": 3,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_04",
+        "VEND_05",
+        "VEND_06"
+      ]
+    },
+    {
+      "id": "VN3",
+      "position": [
+        -7,
+        40.8
+      ],
+      "angle": 0,
+      "count": 2,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_07",
+        "VEND_08"
+      ]
+    },
+    {
+      "id": "VS1",
+      "position": [
+        -28,
+        -40.8
+      ],
+      "angle": 3.141592653589793,
+      "count": 3,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_09",
+        "VEND_10",
+        "VEND_11"
+      ]
+    },
+    {
+      "id": "VS2",
+      "position": [
+        24,
+        -40.8
+      ],
+      "angle": 3.141592653589793,
+      "count": 2,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_12",
+        "VEND_13"
+      ]
+    },
+    {
+      "id": "VW1",
+      "position": [
+        -49.7,
+        -18
+      ],
+      "angle": 1.5707963267948966,
+      "count": 3,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_14",
+        "VEND_15",
+        "VEND_16"
+      ]
+    },
+    {
+      "id": "VE1",
+      "position": [
+        49.7,
+        18
+      ],
+      "angle": -1.5707963267948966,
+      "count": 2,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_17",
+        "VEND_18"
+      ]
+    },
+    {
+      "id": "VI1",
+      "position": [
+        -10,
+        -27
+      ],
+      "angle": -1.5707963267948966,
+      "count": 1,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_19"
+      ]
+    },
+    {
+      "id": "VI2",
+      "position": [
+        38,
+        -3.1
+      ],
+      "angle": 1.5707963267948966,
+      "count": 1,
+      "spacing_m": 1.18,
+      "machines": [
+        "VEND_20"
+      ]
+    }
+  ],
+  "vending_machines": [
+    {
+      "id": "VEND_01",
+      "bank": "VN1",
+      "kind": "drink",
+      "position": [
+        -29.18,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_02",
+      "bank": "VN1",
+      "kind": "snack",
+      "position": [
+        -28.0,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_03",
+      "bank": "VN1",
+      "kind": "coffee",
+      "position": [
+        -26.82,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_04",
+      "bank": "VN2",
+      "kind": "ice",
+      "position": [
+        25.82,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_05",
+      "bank": "VN2",
+      "kind": "drink",
+      "position": [
+        27.0,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_06",
+      "bank": "VN2",
+      "kind": "capsule",
+      "position": [
+        28.18,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_07",
+      "bank": "VN3",
+      "kind": "coffee",
+      "position": [
+        -7.59,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_08",
+      "bank": "VN3",
+      "kind": "snack",
+      "position": [
+        -6.41,
+        40.8
+      ],
+      "angle": 0
+    },
+    {
+      "id": "VEND_09",
+      "bank": "VS1",
+      "kind": "drink",
+      "position": [
+        -26.82,
+        -40.8
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "id": "VEND_10",
+      "bank": "VS1",
+      "kind": "ice",
+      "position": [
+        -28.0,
+        -40.8
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "id": "VEND_11",
+      "bank": "VS1",
+      "kind": "snack",
+      "position": [
+        -29.18,
+        -40.8
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "id": "VEND_12",
+      "bank": "VS2",
+      "kind": "capsule",
+      "position": [
+        24.59,
+        -40.8
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "id": "VEND_13",
+      "bank": "VS2",
+      "kind": "coffee",
+      "position": [
+        23.41,
+        -40.8
+      ],
+      "angle": 3.141592653589793
+    },
+    {
+      "id": "VEND_14",
+      "bank": "VW1",
+      "kind": "drink",
+      "position": [
+        -49.7,
+        -19.18
+      ],
+      "angle": 1.5707963267948966
+    },
+    {
+      "id": "VEND_15",
+      "bank": "VW1",
+      "kind": "ice",
+      "position": [
+        -49.7,
+        -18.0
+      ],
+      "angle": 1.5707963267948966
+    },
+    {
+      "id": "VEND_16",
+      "bank": "VW1",
+      "kind": "coffee",
+      "position": [
+        -49.7,
+        -16.82
+      ],
+      "angle": 1.5707963267948966
+    },
+    {
+      "id": "VEND_17",
+      "bank": "VE1",
+      "kind": "snack",
+      "position": [
+        49.7,
+        18.59
+      ],
+      "angle": -1.5707963267948966
+    },
+    {
+      "id": "VEND_18",
+      "bank": "VE1",
+      "kind": "capsule",
+      "position": [
+        49.7,
+        17.41
+      ],
+      "angle": -1.5707963267948966
+    },
+    {
+      "id": "VEND_19",
+      "bank": "VI1",
+      "kind": "drink",
+      "position": [
+        -10.0,
+        -27.0
+      ],
+      "angle": -1.5707963267948966
+    },
+    {
+      "id": "VEND_20",
+      "bank": "VI2",
+      "kind": "ice",
+      "position": [
+        38.0,
+        -3.1
+      ],
+      "angle": 1.5707963267948966
+    }
+  ],
+  "streetlights": [
+    {
+      "id": "CURB_LAMP_01",
+      "pole": [
+        -30.2,
+        40.3,
+        0
+      ],
+      "arm_end": [
+        -30.2,
+        38.29999923706055,
+        7.0
+      ],
+      "road_target": [
+        -30.2,
+        34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_01_Roadlight",
+      "pole_distance_to_road_center_m": 6.299999999999997
+    },
+    {
+      "id": "CURB_LAMP_02",
+      "pole": [
+        29,
+        40.3,
+        0
+      ],
+      "arm_end": [
+        29.0,
+        38.29999923706055,
+        7.0
+      ],
+      "road_target": [
+        29,
+        34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_02_Roadlight",
+      "pole_distance_to_road_center_m": 6.299999999999997
+    },
+    {
+      "id": "CURB_LAMP_03",
+      "pole": [
+        -10.4,
+        29.5,
+        0
+      ],
+      "arm_end": [
+        -10.399999618530273,
+        31.5,
+        7.0
+      ],
+      "road_target": [
+        -10.4,
+        34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_03_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_04",
+      "pole": [
+        17.7,
+        29.5,
+        0
+      ],
+      "arm_end": [
+        17.700000762939453,
+        31.5,
+        7.0
+      ],
+      "road_target": [
+        17.7,
+        34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_04_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_05",
+      "pole": [
+        -30,
+        -40.3,
+        0
+      ],
+      "arm_end": [
+        -30.0,
+        -38.29999923706055,
+        7.0
+      ],
+      "road_target": [
+        -30,
+        -34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_05_Roadlight",
+      "pole_distance_to_road_center_m": 6.299999999999997
+    },
+    {
+      "id": "CURB_LAMP_06",
+      "pole": [
+        28,
+        -40.3,
+        0
+      ],
+      "arm_end": [
+        28.0,
+        -38.29999923706055,
+        7.0
+      ],
+      "road_target": [
+        28,
+        -34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_06_Roadlight",
+      "pole_distance_to_road_center_m": 6.299999999999997
+    },
+    {
+      "id": "CURB_LAMP_07",
+      "pole": [
+        -10.4,
+        -29.5,
+        0
+      ],
+      "arm_end": [
+        -10.399999618530273,
+        -31.5,
+        7.0
+      ],
+      "road_target": [
+        -10.4,
+        -34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_07_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_08",
+      "pole": [
+        17.7,
+        -29.5,
+        0
+      ],
+      "arm_end": [
+        17.700000762939453,
+        -31.5,
+        7.0
+      ],
+      "road_target": [
+        17.7,
+        -34,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_08_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_09",
+      "pole": [
+        -49,
+        -20,
+        0
+      ],
+      "arm_end": [
+        -47.0,
+        -20.0,
+        7.0
+      ],
+      "road_target": [
+        -42,
+        -20,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_09_Roadlight",
+      "pole_distance_to_road_center_m": 7.0
+    },
+    {
+      "id": "CURB_LAMP_10",
+      "pole": [
+        -49,
+        20,
+        0
+      ],
+      "arm_end": [
+        -47.0,
+        20.0,
+        7.0
+      ],
+      "road_target": [
+        -42,
+        20,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_10_Roadlight",
+      "pole_distance_to_road_center_m": 7.0
+    },
+    {
+      "id": "CURB_LAMP_11",
+      "pole": [
+        -37.5,
+        7,
+        0
+      ],
+      "arm_end": [
+        -39.5,
+        7.0,
+        7.0
+      ],
+      "road_target": [
+        -42,
+        7,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_11_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_12",
+      "pole": [
+        49,
+        -22,
+        0
+      ],
+      "arm_end": [
+        47.0,
+        -22.0,
+        7.0
+      ],
+      "road_target": [
+        42,
+        -22,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_12_Roadlight",
+      "pole_distance_to_road_center_m": 7.0
+    },
+    {
+      "id": "CURB_LAMP_13",
+      "pole": [
+        49,
+        22,
+        0
+      ],
+      "arm_end": [
+        47.0,
+        22.0,
+        7.0
+      ],
+      "road_target": [
+        42,
+        22,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_13_Roadlight",
+      "pole_distance_to_road_center_m": 7.0
+    },
+    {
+      "id": "CURB_LAMP_14",
+      "pole": [
+        37.5,
+        -7,
+        0
+      ],
+      "arm_end": [
+        39.5,
+        -7.0,
+        7.0
+      ],
+      "road_target": [
+        42,
+        -7,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_14_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_15",
+      "pole": [
+        -18,
+        -4.5,
+        0
+      ],
+      "arm_end": [
+        -18.0,
+        -2.5,
+        7.0
+      ],
+      "road_target": [
+        -18,
+        0,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_15_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_16",
+      "pole": [
+        18,
+        4.5,
+        0
+      ],
+      "arm_end": [
+        18.0,
+        2.5,
+        7.0
+      ],
+      "road_target": [
+        18,
+        0,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_16_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_17",
+      "pole": [
+        -9.5,
+        -8,
+        0
+      ],
+      "arm_end": [
+        -11.5,
+        -8.0,
+        7.0
+      ],
+      "road_target": [
+        -14,
+        -8,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_17_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    },
+    {
+      "id": "CURB_LAMP_18",
+      "pole": [
+        9.5,
+        22,
+        0
+      ],
+      "arm_end": [
+        11.5,
+        22.0,
+        7.0
+      ],
+      "road_target": [
+        14,
+        22,
+        0.25
+      ],
+      "light_name": "CURB_LAMP_18_Roadlight",
+      "pole_distance_to_road_center_m": 4.5
+    }
+  ],
+  "base_scene": "TW_NightMarket_Unique",
+  "hotspot": "North road, y=34; both sides, junction and civic entrance gaps"
+}

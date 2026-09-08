@@ -31,7 +31,7 @@ test("rendering does not depend on runtime Google Fonts imports", () => {
 });
 
 test("production showcase bundles do not publish source maps", () => {
-  for (const project of ["colorful_kart", "mini_fantasy", "room"]) {
+  for (const project of ["colorful_kart", "mini_fantasy", "room", "taiwan_night_market"]) {
     const config = readFileSync(
       path.join(repoRoot, "showcase", project, "vite.config.ts"),
       "utf8",

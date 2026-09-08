@@ -1,0 +1,14 @@
+{
+  "public/models/night-market.glb": {
+    "bytes": 32750232,
+    "sha256": "8775040622c99e22736dcf0fbf608ceee128e387c505f2fb455199a219d5b61f"
+  },
+  "public/audio/hulin-market.mp3": {
+    "bytes": 2478384,
+    "sha256": "85ced1c773fda5ed1caf745f69acbcfaa6a7ff69b4246213a7c94ce058f093d2"
+  },
+  "public/audio/guangzhou-night-market.mp3": {
+    "bytes": 1172376,
+    "sha256": "f8ddfdc1653175d044b4aecb2ac74e87e5f81bcc6b248af98d816ab068e46089"
+  }
+}

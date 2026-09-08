@@ -31,6 +31,7 @@ jobs:
             showcase/pulsesync/package-lock.json
             showcase/colorful_kart/package-lock.json
             showcase/mini_fantasy/package-lock.json
+            showcase/taiwan_night_market/package-lock.json
 
       - name: Install main dependencies
         run: npm ci

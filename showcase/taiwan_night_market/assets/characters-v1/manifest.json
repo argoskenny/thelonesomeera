@@ -1,0 +1,84 @@
+{
+  "characters": [
+    {
+      "id": "visitor_mina",
+      "name": "小晴",
+      "name_en": "Mina",
+      "role": "visitor",
+      "skin": "light_skin",
+      "top": "purple",
+      "bottom": "navy",
+      "triangles": 980,
+      "bones": 16,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Wave",
+        "Browse"
+      ],
+      "glb": "public/models/characters/visitor_mina.glb",
+      "sha256": "e07868e6ffc5f6389a456aed215b816bc35af2d9d74bc39a84a090dc12a343ce"
+    },
+    {
+      "id": "visitor_bao",
+      "name": "阿寶",
+      "name_en": "Bao",
+      "role": "visitor",
+      "skin": "peach",
+      "top": "teal",
+      "bottom": "navy",
+      "triangles": 1028,
+      "bones": 16,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Wave",
+        "Browse"
+      ],
+      "glb": "public/models/characters/visitor_bao.glb",
+      "sha256": "92e95e2d16cf67ba6091c1e1a1716f7c2708a6ac5af567526aa9ceb9badbfa52"
+    },
+    {
+      "id": "vendor_lin",
+      "name": "阿霖",
+      "name_en": "Lin",
+      "role": "vendor",
+      "skin": "peach",
+      "top": "cream",
+      "bottom": "navy",
+      "triangles": 968,
+      "bones": 16,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Wave",
+        "Browse"
+      ],
+      "glb": "public/models/characters/vendor_lin.glb",
+      "sha256": "02f79d3be3adbe15c630ca8645569795211e84c691b219ef8215b69e5e4d55d9"
+    },
+    {
+      "id": "vendor_mei",
+      "name": "美美",
+      "name_en": "Mei",
+      "role": "vendor",
+      "skin": "light_skin",
+      "top": "white",
+      "bottom": "blue",
+      "triangles": 992,
+      "bones": 16,
+      "animations": [
+        "Idle",
+        "Walk",
+        "Wave",
+        "Browse"
+      ],
+      "glb": "public/models/characters/vendor_mei.glb",
+      "sha256": "bcc10fe539bca05eae6b2798dfed2793b56ad2048beb3f68b31a5b1edb517a43"
+    }
+  ],
+  "reference": "https://www.bandainamcoent.com/games/once-upon-a-katamari",
+  "scope": "4 original rigged characters; source assets retained separately from environment",
+  "license": "Original project assets; no third-party character meshes or textures used",
+  "blender": "5.0.1"
+}
