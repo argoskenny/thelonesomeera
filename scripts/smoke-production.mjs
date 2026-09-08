@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import { createServer as createNetServer } from "node:net";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -7,7 +8,37 @@ import { setTimeout as delay } from "node:timers/promises";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const serverPath = path.join(repoRoot, ".next", "standalone", "server.js");
 const hostname = "127.0.0.1";
-const port = process.env.SMOKE_PORT || "3100";
+const configuredPort = process.env.SMOKE_PORT?.trim();
+
+async function findAvailablePort() {
+  if (configuredPort) {
+    return configuredPort;
+  }
+
+  const probe = createNetServer();
+  const port = await new Promise((resolve, reject) => {
+    probe.once("error", reject);
+    probe.listen(0, hostname, () => {
+      const address = probe.address();
+      if (!address || typeof address === "string") {
+        reject(new Error("Could not determine an available smoke-test port."));
+        return;
+      }
+
+      probe.close((error) => {
+        if (error) {
+          reject(error);
+          return;
+        }
+        resolve(String(address.port));
+      });
+    });
+  });
+
+  return port;
+}
+
+const port = await findAvailablePort();
 const baseUrl = `http://${hostname}:${port}`;
 
 if (!fs.existsSync(serverPath)) {
@@ -26,6 +57,11 @@ const server = spawn(process.execPath, [serverPath], {
   stdio: ["ignore", "pipe", "pipe"],
 });
 
+let serverSpawnError = null;
+server.once("error", (error) => {
+  serverSpawnError = error;
+});
+
 let serverOutput = "";
 let serverExited = false;
 for (const stream of [server.stdout, server.stderr]) {
@@ -39,6 +75,11 @@ server.once("exit", () => {
 
 function hasServerExited() {
   return serverExited || server.exitCode !== null || server.signalCode !== null;
+}
+
+function serverFailureDetails() {
+  const spawnError = serverSpawnError ? `${serverSpawnError}\n` : "";
+  return `${spawnError}${serverOutput}`;
 }
 
 function waitForExit(timeoutMs) {
@@ -85,7 +126,7 @@ async function stopServer() {
 async function waitUntilReady() {
   for (let attempt = 1; attempt <= 40; attempt += 1) {
     if (hasServerExited()) {
-      throw new Error(`Production server exited early.\n${serverOutput}`);
+      throw new Error(`Production server exited early.\n${serverFailureDetails()}`);
     }
 
     try {
@@ -102,7 +143,7 @@ async function waitUntilReady() {
     await delay(250);
   }
 
-  throw new Error(`Production server did not become ready.\n${serverOutput}`);
+  throw new Error(`Production server did not become ready.\n${serverFailureDetails()}`);
 }
 
 const checks = [
@@ -119,6 +160,7 @@ const checks = [
 ];
 
 try {
+  console.log(`[smoke] testing ${baseUrl}`);
   await waitUntilReady();
 
   for (const [route, expectedText] of checks) {
@@ -132,7 +174,12 @@ try {
       throw new Error(`${route} returned HTTP ${response.status}`);
     }
     if (!body.includes(expectedText)) {
-      throw new Error(`${route} did not include expected text: ${expectedText}`);
+      const preview = body.replace(/\s+/g, " ").slice(0, 240);
+      throw new Error(
+        `${route} did not include expected text: ${expectedText}\n` +
+          `Response URL: ${response.url}\n` +
+          `Body preview: ${preview}`,
+      );
     }
 
     console.log(`[smoke] ${route} -> ${response.status}`);
