@@ -11,6 +11,7 @@ const footerNavigation = [
 export default function Footer() {
   return (
     <footer className="site-footer">
+      <div className="footer-wordmark" aria-hidden="true">THE LONESOME ERA<span>↗</span></div>
       <div className="site-footer__inner">
         <div>
           <p className="site-footer__brand">The Lonesome Era</p>

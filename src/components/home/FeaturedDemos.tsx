@@ -4,11 +4,11 @@ import { featuredDemos } from "@/data/demos";
 
 export default function FeaturedDemos() {
   return (
-    <section className="home-section page-container reveal-section">
-      <SectionHeading title="最近在玩" href="/demo" linkLabel="前往 Demo" />
+    <section id="playgrounds" className="home-section page-container reveal-section">
+      <SectionHeading title="Selected playgrounds" href="/demo" linkLabel="前往 Demo" />
       <div className="home-demo-grid">
-        {featuredDemos.map((demo) => (
-          <DemoCard key={demo.title} demo={demo} />
+        {featuredDemos.map((demo, index) => (
+          <DemoCard key={demo.title} demo={demo} wide={index === 0} />
         ))}
       </div>
     </section>

@@ -13,12 +13,8 @@ export default function BlogPage() {
   return (
     <main className="page-container page-main">
       <header className="page-intro page-intro--blog">
-        <h1>
-          把做過的事，
-          <br />
-          寫成之後還看得懂的<span>筆記</span>。
-        </h1>
-        <p>關於前端、遊戲、產品與那些值得慢慢想的細節。</p>
+        <h1 className="display-title">FIELD<br />NOTES<span>.</span></h1>
+        <p>寫給未來的自己。<br />關於前端、遊戲、產品與那些值得慢慢想的細節。</p>
       </header>
 
       <section className="blog-index" aria-label="文章列表">

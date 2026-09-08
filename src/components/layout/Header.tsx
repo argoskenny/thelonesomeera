@@ -52,6 +52,12 @@ export default function Header() {
         <details
           key={pathname}
           className="mobile-navigation"
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              event.currentTarget.open = false;
+              event.currentTarget.querySelector("summary")?.focus();
+            }
+          }}
         >
           <summary
             className="menu-button"

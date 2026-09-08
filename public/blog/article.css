@@ -1,18 +1,18 @@
 :root {
   color-scheme: dark;
-  --ink: #07111d;
-  --ink-deep: #040911;
-  --surface: #0d1a27;
-  --bone: #f1dfcf;
-  --bone-soft: #d6c7bb;
-  --muted: #9ca8b3;
-  --copper: #f28a4b;
-  --copper-bright: #ffad78;
+  --ink: #08090b;
+  --ink-deep: #08090b;
+  --surface: #121316;
+  --bone: #f5f5f4;
+  --bone-soft: #c5c7cb;
+  --muted: #a0a2a7;
+  --copper: #d8ff62;
+  --copper-bright: #e4ff96;
   --lilac: #b9a7ff;
   --cyan: #66d9e8;
-  --line: rgba(241, 223, 207, 0.14);
-  --line-strong: rgba(242, 138, 75, 0.42);
-  --code-bg: #050c14;
+  --line: #292b2f;
+  --line-strong: #3a3c41;
+  --code-bg: #0c0d10;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-display: "Avenir Next", Avenir, "SF Pro Display", "PingFang TC", "Microsoft JhengHei", sans-serif;
   --font-mono: "SFMono-Regular", "Cascadia Code", Consolas, "Liberation Mono", monospace;
@@ -33,10 +33,7 @@ html {
 body {
   min-width: 320px;
   margin: 0;
-  background:
-    radial-gradient(circle at 12% 4%, rgba(102, 217, 232, 0.1), transparent 28rem),
-    radial-gradient(circle at 88% 18%, rgba(242, 138, 75, 0.12), transparent 32rem),
-    linear-gradient(180deg, var(--ink-deep), var(--ink) 28rem, #091522);
+  background: var(--ink);
   color: var(--bone);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -649,4 +646,25 @@ a:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Shared Digital Singularities reading palette. */
+body::before, body::after { display: none; }
+::selection { background: var(--copper); color: var(--ink); }
+a:focus-visible { outline: 2px solid var(--copper); outline-offset: 5px; }
+.site-header, .site-footer { background: #08090be8; }
+.site-nav { width: min(calc(100% - 48px), 1400px); }
+.brand { font: 700 12px var(--font-sans); letter-spacing: .14em; text-transform: uppercase; }
+.brand-signal { width: 10px; height: 10px; background: var(--copper); border: 0; border-radius: 50%; box-shadow: none; }
+.brand-signal::before, .brand-signal::after, .article-container::before { display: none; }
+.nav-links a[aria-current="page"] { background: none; box-shadow: none; color: var(--copper); }
+.article-shell { width: min(calc(100% - 48px), 980px); }
+.article-container { padding: 0; background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
+.article-title { line-height: 1.25; font-weight: 700; }
+.article-content pre, .article-content table, .article-content img { border-color: var(--line); border-radius: 0; }
+.article-content blockquote { background: var(--surface); border-color: var(--line); border-left-color: var(--copper); border-radius: 0; color: var(--bone); }
+@media (max-width: 600px) {
+  .article-shell { padding-top: 35px; }
+  .article-title { font-size: 32px; }
+  .back-button { margin-bottom: 32px; }
 }

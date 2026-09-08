@@ -15,14 +15,8 @@ export default function DemoPage() {
   return (
     <main className="page-container page-main">
       <header className="page-intro">
-        <h1>
-          把想法做成<span>可以玩的東西</span>。
-        </h1>
-        <p>
-          遊戲、互動實驗與小型產品。
-          <br />
-          每一個 Demo 都能直接打開、親手試試。
-        </p>
+        <h1 className="display-title">PLAY<br />GROUND<span>.</span></h1>
+        <p>把想法做成可以玩的東西。<br />遊戲、互動實驗與小型產品，直接打開、親手試試。</p>
       </header>
 
       <section aria-label="精選 Demo" className="demo-featured">

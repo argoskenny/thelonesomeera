@@ -1,36 +1,23 @@
-import Image from "next/image";
+import Link from "next/link";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
+import SingularArt from "@/components/ui/SingularArt";
 import ButtonLink from "@/components/ui/ButtonLink";
 
 export default function HomeHero() {
   return (
     <section className="home-hero page-container">
+      <SingularArt interactive />
       <div className="home-hero__copy">
-        <h1>
-          在程式與生活之間，
-          <br />
-          做一些<span>好玩的東西</span>。
-        </h1>
-        <p>
-          The Lonesome Era 記錄 Web 實驗、遊戲作品與開發筆記。
-          一個偏離喧囂、保留好奇心的數位角落。
-        </p>
+        <h1><span>MAKE THE</span><span>UNEXPECTED.</span></h1>
+        <p>把好奇心，變成可以體驗的世界。</p>
         <div className="home-hero__actions">
-          <ButtonLink href="/demo">看看 Demo</ButtonLink>
-          <ButtonLink href="/blog" variant="secondary">
-            閱讀 Blog
-          </ButtonLink>
+          <ButtonLink href="/demo">探索 Demo</ButtonLink>
+          <Link className="text-link" href="/blog">閱讀 Blog <ArrowUpRight aria-hidden="true" /></Link>
         </div>
       </div>
-
-      <div className="home-hero__visual">
-        <Image
-          src="/images/creative-studio.png"
-          alt="藍調城市夜景前，放著透明電腦、筆記本與咖啡的創作工作桌"
-          fill
-          loading="eager"
-          fetchPriority="high"
-          sizes="(max-width: 760px) 100vw, 48vw"
-        />
+      <div className="hero-foot">
+        <a href="#playgrounds"><ArrowDown aria-hidden="true" /> SCROLL TO EXPLORE</a>
+        <span>程式、遊戲與創作筆記</span>
       </div>
     </section>
   );

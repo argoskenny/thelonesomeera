@@ -6,12 +6,14 @@ import type { Demo } from "@/data/demos";
 type DemoCardProps = {
   demo: Demo;
   featured?: boolean;
+  wide?: boolean;
   headingLevel?: 2 | 3;
 };
 
 export default function DemoCard({
   demo,
   featured = false,
+  wide = false,
   headingLevel = 3,
 }: DemoCardProps) {
   const Heading = headingLevel === 2 ? "h2" : "h3";
@@ -24,9 +26,9 @@ export default function DemoCard({
           alt={`${demo.title} 預覽`}
           fill
           sizes={
-            featured
-              ? "(max-width: 760px) 100vw, 62vw"
-              : "(max-width: 760px) 100vw, 32vw"
+            featured || wide
+              ? "(max-width: 760px) 100vw, 90vw"
+              : "(max-width: 760px) 100vw, 45vw"
           }
           style={{ objectPosition: demo.imagePosition }}
         />

@@ -20,7 +20,6 @@ export default function BlogRow({
       href={getBlogHref(post.slug)}
       className={compact ? "blog-row blog-row--compact" : "blog-row"}
     >
-      <span className="blog-row__accent" aria-hidden="true" />
       <div className="blog-row__content">
         <Heading>{post.title}</Heading>
         <p>{post.excerpt}</p>

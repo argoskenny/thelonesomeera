@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Image from "next/image";
+import SingularArt from "@/components/ui/SingularArt";
 import { ArrowRight, Mail } from "lucide-react";
 import { createPageMetadata } from "@/lib/site-metadata";
 
@@ -36,26 +36,14 @@ export default function AboutPage() {
     <main className="page-container page-main about-page">
       <section className="about-hero">
         <div className="about-hero__copy">
-          <h1>
-            在快速變動的科技裡，
-            <br />
-            保留一點<span>自己的節奏</span>。
-          </h1>
+          <h1 className="display-title">STAY<br />CURIOUS<span>.</span></h1>
+          <p className="about-tagline">在快速變動的科技裡，保留一點自己的節奏。</p>
           <p>
             The Lonesome Era 是一個關於程式、遊戲、產品與生活觀察的個人數位空間。
             技術是工具，創作是過程，思考才是核心。
           </p>
         </div>
-        <div className="about-hero__visual">
-          <Image
-            src="/images/creative-studio.png"
-            alt="夜晚城市窗景前的創作工作桌"
-            fill
-            loading="eager"
-            fetchPriority="high"
-            sizes="(max-width: 760px) 100vw, 48vw"
-          />
-        </div>
+        <SingularArt />
       </section>
 
       <section className="manifesto reveal-section">
