@@ -1,7 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
-import { once } from "node:events";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
 
@@ -28,29 +27,64 @@ const server = spawn(process.execPath, [serverPath], {
 });
 
 let serverOutput = "";
+let serverExited = false;
 for (const stream of [server.stdout, server.stderr]) {
   stream.on("data", (chunk) => {
     serverOutput = `${serverOutput}${chunk}`.slice(-12_000);
   });
 }
+server.once("exit", () => {
+  serverExited = true;
+});
+
+function hasServerExited() {
+  return serverExited || server.exitCode !== null || server.signalCode !== null;
+}
+
+function waitForExit(timeoutMs) {
+  if (hasServerExited()) {
+    return Promise.resolve(true);
+  }
+
+  return new Promise((resolve) => {
+    const timeout = setTimeout(() => {
+      cleanup();
+      resolve(hasServerExited());
+    }, timeoutMs);
+
+    const handleExit = () => {
+      cleanup();
+      resolve(true);
+    };
+
+    const cleanup = () => {
+      clearTimeout(timeout);
+      server.off("exit", handleExit);
+    };
+
+    server.once("exit", handleExit);
+  });
+}
 
 async function stopServer() {
-  if (server.exitCode !== null) {
+  if (hasServerExited()) {
     return;
   }
 
   server.kill("SIGTERM");
-  await Promise.race([once(server, "exit"), delay(3_000)]);
+  if (await waitForExit(3_000)) {
+    return;
+  }
 
-  if (server.exitCode === null) {
+  if (!hasServerExited()) {
     server.kill("SIGKILL");
-    await once(server, "exit");
+    await waitForExit(1_000);
   }
 }
 
 async function waitUntilReady() {
   for (let attempt = 1; attempt <= 40; attempt += 1) {
-    if (server.exitCode !== null) {
+    if (hasServerExited()) {
       throw new Error(`Production server exited early.\n${serverOutput}`);
     }
 
@@ -74,7 +108,7 @@ async function waitUntilReady() {
 const checks = [
   ["/", "The Lonesome Era"],
   ["/demo", "把想法做成"],
-  ["/blog", "把做過的事"],
+  ["/blog", "寫給未來的自己"],
   ["/about", "做能被使用的東西"],
   ["/demo/ai-hub", "AI Hub"],
   ["/blog/selfie-cat-development.html", "Selfie Cat"],
