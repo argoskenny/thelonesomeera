@@ -10,6 +10,14 @@ export type Demo = {
 
 export const demos: Demo[] = [
   {
+    title: "逛夜市",
+    description:
+      "走進復古台灣夜市，在攤販、建築與環境音之間自由漫遊。",
+    image: "/images/demos/taiwan-night-market-street.png",
+    href: "/showcase/taiwan_night_market/",
+    tags: ["Three.js", "TypeScript", "FPS Walk"],
+  },
+  {
     title: "Mini Fantasy",
     description:
       "像素風小冒險遊戲，探索、對話、收集與戰鬥，一段輕鬆的奇幻旅程。",
@@ -83,14 +91,6 @@ export const demos: Demo[] = [
     image: "/showcase/xiaoming/assets/imgs/mvp.png",
     href: "/showcase/xiaoming/index.html",
     tags: ["HTML", "Quiz", "Audio"],
-  },
-  {
-    title: "逛夜市",
-    description:
-      "走進復古台灣夜市，在攤販、建築與環境音之間自由漫遊。",
-    image: "/showcase/taiwan_night_market/preview.png",
-    href: "/showcase/taiwan_night_market/",
-    tags: ["Three.js", "TypeScript", "FPS Walk"],
   },
 ];
 

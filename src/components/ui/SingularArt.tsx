@@ -2,11 +2,44 @@
 
 import BlackHoleCanvas from "@/components/ui/BlackHoleCanvas";
 import { Pause, Play } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function SingularArt({ interactive = false }: { interactive?: boolean }) {
   const frame = useRef<HTMLDivElement>(null);
   const [paused, setPaused] = useState(false);
+
+  useEffect(() => {
+    const element = frame.current;
+    const section = element?.closest("section");
+    if (!element || !section) return;
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)");
+    let scheduled = 0;
+    const update = () => {
+      scheduled = 0;
+      if (reduced.matches) {
+        element.style.setProperty("--art-zoom", "1");
+        return;
+      }
+      if (paused) return;
+      const bounds = section.getBoundingClientRect();
+      const progress = Math.max(0, Math.min(1, -bounds.top / Math.max(bounds.height, 1)));
+      const range = innerWidth <= 760 ? 0.3 : 0.55;
+      element.style.setProperty("--art-zoom", String(1 + progress * range));
+    };
+    const schedule = () => {
+      if (!scheduled && !document.hidden) scheduled = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    reduced.addEventListener("change", schedule);
+    return () => {
+      cancelAnimationFrame(scheduled);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      reduced.removeEventListener("change", schedule);
+    };
+  }, [paused]);
 
   return (
     <div className={`singular-art${paused ? " is-paused" : ""}`} ref={frame}

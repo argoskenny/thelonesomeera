@@ -33,9 +33,12 @@ const fragmentSource = `
     float energy = 1.0 + plasma * (0.065 * sin(angle * 5.0 - u_time * 0.7 + r * 24.0)
       + 0.025 * sin(angle * 13.0 + u_time * 1.1));
     color *= energy;
-    // Blend to the site's exact background without tinting the plasma.
+    // Transparent surroundings expose the independent, full-page star field.
     float edge = 1.0 - smoothstep(0.42, 0.51, max(abs(p.x), abs(p.y)));
-    gl_FragColor = vec4(mix(vec3(8.0, 9.0, 11.0) / 255.0, color, edge), 1.0);
+    float shadow = 1.0 - smoothstep(0.17, 0.24, r);
+    float plasmaAlpha = smoothstep(0.025, 0.15, max(color.r, max(color.g, color.b)));
+    float alpha = max(shadow, plasmaAlpha) * edge;
+    gl_FragColor = vec4(color * alpha, alpha);
   }
 `;
 
@@ -53,7 +56,7 @@ export default function BlackHoleCanvas({ paused }: { paused: boolean }) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const gl = canvas.getContext("webgl", { alpha: false, antialias: false, depth: false, powerPreference: "low-power" });
+    const gl = canvas.getContext("webgl", { alpha: true, antialias: false, depth: false, powerPreference: "low-power" });
     if (!gl) return;
     const compile = (type: number, source: string) => {
       const shader = gl.createShader(type)!;

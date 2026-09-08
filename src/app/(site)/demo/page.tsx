@@ -1,3 +1,4 @@
+import CosmicBackdrop from "@/components/ui/CosmicBackdrop";
 import type { Metadata } from "next";
 import DemoCard from "@/components/demo/DemoCard";
 import { demos } from "@/data/demos";
@@ -13,7 +14,8 @@ export default function DemoPage() {
   const [featured, ...rest] = demos;
 
   return (
-    <main className="page-container page-main">
+    <main className="page-container page-main cosmic-page cosmic-page--galaxy">
+      <CosmicBackdrop variant="galaxy" />
       <header className="page-intro">
         <h1 className="display-title">PLAY<br />GROUND<span>.</span></h1>
         <p>把想法做成可以玩的東西。<br />遊戲、互動實驗與小型產品，直接打開、親手試試。</p>

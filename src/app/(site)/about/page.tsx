@@ -1,3 +1,4 @@
+import CosmicBackdrop from "@/components/ui/CosmicBackdrop";
 import type { Metadata } from "next";
 import SingularArt from "@/components/ui/SingularArt";
 import { ArrowRight, Mail } from "lucide-react";
@@ -33,7 +34,8 @@ const practices = [
 
 export default function AboutPage() {
   return (
-    <main className="page-container page-main about-page">
+    <main className="page-container page-main about-page cosmic-page cosmic-page--singularity">
+      <CosmicBackdrop variant="nebula" />
       <section className="about-hero">
         <div className="about-hero__copy">
           <h1 className="display-title">STAY<br />CURIOUS<span>.</span></h1>

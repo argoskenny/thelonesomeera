@@ -1,3 +1,5 @@
+import { resolveLocale } from './locale.mjs';
+
 export type Locale = 'zh-Hant' | 'en';
 const zh = {
   title:'逛夜市', pageTitle:'逛夜市｜走進台灣的夜晚', description:'放慢腳步，走進台灣的夜晚。',
@@ -38,11 +40,10 @@ const en: Record<MessageKey,string> = {
   license:'Both field recordings are licensed under <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">Creative Commons Attribution 4.0</a>. This game uses the Freesound MP3 previews, with loop crossfades and location-based mixing. The original creator does not endorse this game.',
   sceneCredit:'Scene: this project’s existing Blender night market assets. 44 original low-poly character designs: 102 browsing pedestrians and 154 stall and shop workers. Shopping is an ambient animation; transactions and combat are not included.',
 };
-let locale: Locale = 'zh-Hant';
 const requested=new URLSearchParams(location.search).get('lang');
 let saved:string|null=null;
 try { saved=localStorage.getItem('night-market-language'); } catch { /* Direct language links still work without storage. */ }
-locale=requested==='en'?'en':requested==='zh'||requested==='zh-Hant'?'zh-Hant':saved==='en'?'en':'zh-Hant';
+let locale: Locale = resolveLocale(requested, saved, navigator.languages, navigator.language);
 export const getLocale=()=>locale;
 export const t=(key:MessageKey)=>(locale==='en'?en:zh)[key];
 export function translatePage(){

@@ -25,6 +25,7 @@ export default function DemoCard({
           src={demo.image}
           alt={`${demo.title} 預覽`}
           fill
+          loading={featured ? "eager" : "lazy"}
           sizes={
             featured || wide
               ? "(max-width: 760px) 100vw, 90vw"

@@ -4,7 +4,7 @@ import { featuredDemos } from "@/data/demos";
 
 export default function FeaturedDemos() {
   return (
-    <section id="playgrounds" className="home-section page-container reveal-section">
+    <section id="playgrounds" className="home-section page-container reveal-section cosmic-section">
       <SectionHeading title="Selected playgrounds" href="/demo" linkLabel="前往 Demo" />
       <div className="home-demo-grid">
         {featuredDemos.map((demo, index) => (

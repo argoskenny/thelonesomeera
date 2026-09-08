@@ -1,3 +1,4 @@
+import CosmicBackdrop from "@/components/ui/CosmicBackdrop";
 import type { Metadata } from "next";
 import BlogRow from "@/components/blog/BlogRow";
 import { blogPosts } from "@/data/blog-posts";
@@ -11,7 +12,8 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function BlogPage() {
   return (
-    <main className="page-container page-main">
+    <main className="page-container page-main cosmic-page cosmic-page--nebula">
+      <CosmicBackdrop variant="nebula" />
       <header className="page-intro page-intro--blog">
         <h1 className="display-title">FIELD<br />NOTES<span>.</span></h1>
         <p>寫給未來的自己。<br />關於前端、遊戲、產品與那些值得慢慢想的細節。</p>

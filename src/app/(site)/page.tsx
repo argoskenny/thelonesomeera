@@ -1,3 +1,4 @@
+import CosmicBackdrop from "@/components/ui/CosmicBackdrop";
 import type { Metadata } from "next";
 import HomeHero from "@/components/home/HomeHero";
 import FeaturedDemos from "@/components/home/FeaturedDemos";
@@ -15,7 +16,8 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function HomePage() {
   return (
-    <main>
+    <main className="cosmic-page cosmic-page--singularity">
+      <CosmicBackdrop variant="galaxy" />
       <HomeHero />
       <FeaturedDemos />
       <LatestPosts />
