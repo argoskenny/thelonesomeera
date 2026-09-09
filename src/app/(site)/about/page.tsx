@@ -98,10 +98,14 @@ export default function AboutPage() {
           <span>聯絡我</span>
           <span>／ CONTACT</span>
         </div>
-        <a href="mailto:argoskenny@gmail.com">
+        <a
+          href="https://forms.gle/ehkQSPCS9AAaCJ5H6"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <Mail aria-hidden="true" />
           <span>合作、交流或任何想法，歡迎來信</span>
-          <strong>argoskenny@gmail.com</strong>
+          <strong>Google 聯絡表單</strong>
           <ArrowRight aria-hidden="true" />
         </a>
       </section>
