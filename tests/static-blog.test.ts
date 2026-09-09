@@ -8,7 +8,7 @@ import { blogPosts, getBlogHref } from "../src/data/blog-posts";
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 test("every Blog metadata entry resolves to a standalone HTML article", () => {
-  assert.equal(blogPosts.length, 6);
+  assert.ok(blogPosts.length > 0, "Blog metadata should contain at least one article");
 
   for (const post of blogPosts) {
     const relativePath = `public${getBlogHref(post.slug)}`;

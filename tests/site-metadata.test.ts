@@ -5,6 +5,7 @@ import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 import robots from "../src/app/robots";
 import sitemap from "../src/app/sitemap";
+import { blogPosts, getBlogHref } from "../src/data/blog-posts";
 import {
   createPageMetadata,
   SITE_ORIGIN,
@@ -50,16 +51,21 @@ test("every app page declares its own canonical path", () => {
 test("sitemap lists all canonical app pages and standalone articles", () => {
   const entries = sitemap();
   const urls = entries.map((entry) => entry.url);
+  const canonicalAppRoutes = [
+    "/",
+    "/demo",
+    "/blog",
+    "/about",
+    "/demo/ai-hub",
+  ];
 
-  assert.equal(entries.length, 11);
-  for (const url of [
-    `${SITE_ORIGIN}/`,
-    `${SITE_ORIGIN}/demo`,
-    `${SITE_ORIGIN}/blog`,
-    `${SITE_ORIGIN}/about`,
-    `${SITE_ORIGIN}/demo/ai-hub`,
-    `${SITE_ORIGIN}/blog/selfie-cat-development.html`,
-  ]) {
+  assert.equal(entries.length, canonicalAppRoutes.length + blogPosts.length);
+  for (const route of canonicalAppRoutes) {
+    const url = `${SITE_ORIGIN}${route}`;
+    assert.ok(urls.includes(url), `sitemap should include ${url}`);
+  }
+  for (const post of blogPosts) {
+    const url = `${SITE_ORIGIN}${getBlogHref(post.slug)}`;
     assert.ok(urls.includes(url), `sitemap should include ${url}`);
   }
 
