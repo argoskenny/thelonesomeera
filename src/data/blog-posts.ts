@@ -10,6 +10,16 @@ export type BlogPost = {
 
 export const blogPosts: BlogPost[] = [
   {
+    title: "🌙 和 GPT 6 Astra 一起逛夜市：用 Blender × Three.js 做一個 3D 漫遊世界",
+    slug: "taiwan-night-market-development",
+    excerpt:
+      "記錄 GPT 6 Astra 以 medium 推理等級，結合 Blender 與 Three.js，從台灣夜市 3D 場景一路做到可在瀏覽器漫遊的逛夜市 Demo。",
+    category: "AI × 3D",
+    date: "2026-09-09",
+    dateLabel: "2026 / 09 / 09",
+    readingTime: "8 分鐘",
+  },
+  {
     title: "🐾 貓掌按快門！我開發「自拍貓 Selfie Cat」App 的小故事",
     slug: "selfie-cat-development",
     excerpt:

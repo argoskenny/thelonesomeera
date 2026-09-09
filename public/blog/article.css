@@ -499,6 +499,37 @@ a {
   border-radius: 1rem;
 }
 
+.article-content figure {
+  margin: 2.5rem 0;
+}
+
+.article-content figure img {
+  width: 100%;
+  margin: 0;
+}
+
+.article-content figcaption {
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.65;
+  text-align: center;
+}
+
+.article-content .article-hero {
+  margin-top: 2rem;
+}
+
+.article-content .article-hero img {
+  border-color: var(--line-strong);
+  box-shadow: 0 20px 46px rgba(0, 0, 0, 0.28);
+}
+
+.article-content .prompt-reference img {
+  background: #111;
+}
+
 .article-content hr {
   height: 1px;
   margin: 3rem 0;

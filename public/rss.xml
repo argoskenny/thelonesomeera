@@ -5,10 +5,19 @@
     <link>https://thelonesomeera.com/blog</link>
     <description>前端開發、遊戲製作與科技生活的實作筆記。</description>
     <language>zh-TW</language>
-    <lastBuildDate>Tue, 11 Aug 2026 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 09 Sep 2026 10:00:00 +0800</lastBuildDate>
     <atom:link href="https://thelonesomeera.com/rss.xml" rel="self" type="application/rss+xml" />
     <generator>The Lonesome Era</generator>
     <copyright>Copyright 2026, The Lonesome Era</copyright>
+
+    <item>
+      <title>🌙 和 GPT 6 Astra 一起逛夜市：用 Blender × Three.js 做一個 3D 漫遊世界</title>
+      <link>https://thelonesomeera.com/blog/taiwan-night-market-development.html</link>
+      <description>記錄 GPT 6 Astra 以 medium 推理等級，結合 Blender 與 Three.js，從台灣夜市 3D 場景一路做到可在瀏覽器漫遊的逛夜市 Demo。</description>
+      <pubDate>Wed, 09 Sep 2026 10:00:00 +0800</pubDate>
+      <guid isPermaLink="true">https://thelonesomeera.com/blog/taiwan-night-market-development.html</guid>
+      <category>AI × 3D</category>
+    </item>
 
     <item>
       <title>🐾 貓掌按快門！我開發「自拍貓 Selfie Cat」App 的小故事</title>

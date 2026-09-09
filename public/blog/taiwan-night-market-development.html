@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="記錄 GPT 6 Astra 以 medium 推理等級，結合 Blender 與 Three.js，從台灣夜市 3D 場景一路做到可在瀏覽器漫遊的逛夜市 Demo。">
+  <meta name="keywords" content="GPT 6 Astra,Blender,Three.js,TypeScript,Vite,WebGL,3D遊戲,台灣夜市,AI開發">
+  <meta name="theme-color" content="#07111d">
+  <meta name="color-scheme" content="dark">
+  <link rel="canonical" href="https://thelonesomeera.com/blog/taiwan-night-market-development.html">
+  <link rel="alternate" type="application/rss+xml" title="The Lonesome Era Blog RSS" href="/rss.xml">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:site_name" content="The Lonesome Era">
+  <meta property="og:title" content="🌙 和 GPT 6 Astra 一起逛夜市：用 Blender × Three.js 做一個 3D 漫遊世界 | The Lonesome Era">
+  <meta property="og:description" content="記錄 GPT 6 Astra 以 medium 推理等級，結合 Blender 與 Three.js，從台灣夜市 3D 場景一路做到可在瀏覽器漫遊的逛夜市 Demo。">
+  <meta property="og:url" content="https://thelonesomeera.com/blog/taiwan-night-market-development.html">
+  <meta property="og:image" content="https://thelonesomeera.com/images/demos/taiwan-night-market-street.png">
+  <meta property="og:image:alt" content="逛夜市 Three.js 台灣夜市場景街景">
+  <meta property="article:published_time" content="2026-09-09T00:00:00+08:00">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="🌙 和 GPT 6 Astra 一起逛夜市：用 Blender × Three.js 做一個 3D 漫遊世界 | The Lonesome Era">
+  <meta name="twitter:description" content="記錄 GPT 6 Astra 以 medium 推理等級，結合 Blender 與 Three.js，從台灣夜市 3D 場景一路做到可在瀏覽器漫遊的逛夜市 Demo。">
+  <meta name="twitter:image" content="https://thelonesomeera.com/images/demos/taiwan-night-market-street.png">
+  <meta name="twitter:image:alt" content="逛夜市 Three.js 台灣夜市場景街景">
+  <title>🌙 和 GPT 6 Astra 一起逛夜市：用 Blender × Three.js 做一個 3D 漫遊世界 | The Lonesome Era</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/blog/article.css">
+</head>
+<body>
+  <a class="skip-link" href="#article">跳至文章內容</a>
+  <header class="site-header">
+    <nav class="site-nav" aria-label="主要導覽">
+      <a class="brand" href="/" aria-label="The Lonesome Era 首頁">
+        <span class="brand-signal" aria-hidden="true"></span>
+        <span class="brand-label">The Lonesome Era</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">首頁</a></li>
+        <li><a href="/demo">Demo</a></li>
+        <li><a href="/blog" aria-current="page">Blog</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="article" class="article-shell">
+    <article class="article-container">
+      <a href="/blog" class="back-button">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>返回 Blog</span>
+      </a>
+
+      <h1 class="article-title">🌙 和 GPT 6 Astra 一起逛夜市：用 Blender × Three.js 做一個 3D 漫遊世界</h1>
+
+      <div class="article-meta">
+        <time class="article-date" datetime="2026-09-09">2026年9月9日</time>
+        <span class="article-category">AI × 3D</span>
+        <span class="article-reading-time">約 8 分鐘閱讀</span>
+      </div>
+
+      <div class="article-content">
+        <p>有些作品從功能清單開始，有些作品則是先從一個畫面開始。這次的「逛夜市」就是後者：我先想像一條有中文招牌、攤販燈光和老街建築的台灣夜市，再請 GPT 6 Astra 協助把它一步一步變成可以在瀏覽器裡走進去的 3D 世界。</p>
+
+        <p>這篇文章記錄整個過程。GPT 6 Astra 在這個專案裡的推理等級全程使用 <strong>medium</strong>，工作分成兩條線：用 Blender 建立與整理場景資產，再用 Three.js、TypeScript 和 Vite 把模型變成可操作的網頁漫遊體驗。</p>
+
+        <figure class="article-hero">
+          <img src="/images/demos/taiwan-night-market-street.png" alt="逛夜市 Demo 的台灣夜市場景街道，兩側有攤販與夜間燈籠" width="1672" height="941">
+          <figcaption>逛夜市／SAY YACHI：從靜態街景出發，最後變成可以自己走的夜市。</figcaption>
+        </figure>
+
+        <p>現在可以直接開啟 <a href="/showcase/taiwan_night_market/">「逛夜市」Demo</a>。桌面版使用 WASD 或方向鍵移動、滑鼠環顧，手機版則提供虛擬搖桿與拖曳視角。</p>
+
+        <hr>
+
+        <h2>一、先把「想做的夜市」說清楚</h2>
+
+        <p>第一個提示詞沒有急著談程式，而是先描述作品的氣質：以台灣夜市為背景、帶有 2000 年代遊戲的復古低多邊形風格，同時保留真實台灣夜市的招牌、攤位和街道尺度。最初的想像甚至包含冒險與戰鬥，但實作時先把環境本身做好，讓「走進去」成為第一個可驗證的目標。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893236.png" alt="提示詞截圖 01：要求以 Blender MCP 建立台灣夜市復古 3D 場景" width="1518" height="1286" loading="lazy" decoding="async">
+          <figcaption>提示詞 01｜2026-09-08 21:32:36：先定義台灣夜市、復古遊戲風格與 Blender 場景方向。</figcaption>
+        </figure>
+
+        <h2>二、先做一塊街區，再擴成完整夜市</h2>
+
+        <p>第一版先驗證一小塊可讀的街景：約 3 × 2 個街區、36 棟建築、24 種攤販與 20 台販賣機。這一步的重點不是數量，而是確認道路、入口和建築的比例能不能支撐後續的第一人稱視角。</p>
+
+        <p>當場景從一張渲染圖變成可以被走進去的空間，留出中央道路與入口就很重要。畫面可以塞滿物件，但玩家不能一開始就被攤位或建築堵住。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893249.png" alt="提示詞截圖 02：將夜市場景擴充為 3 乘 2 街區並增加建築、攤販與販賣機" width="1558" height="1616" loading="lazy" decoding="async">
+          <figcaption>提示詞 02｜2026-09-08 21:32:49：先建立可閱讀的街區尺度，再增加建築與街邊細節。</figcaption>
+        </figure>
+
+        <h2>三、用密度讓夜市看起來像夜市</h2>
+
+        <p>有了基本街區後，下一個問題是「夜市的熱鬧感從哪裡來？」答案不只是把模型數量加大，而是讓攤位沿著道路形成有節奏的密度。新增不同的小吃攤、外圍建築、住宅、公寓、公共設施與老街建物，並在街區四周保留道路和店面入口。</p>
+
+        <p>這一輪把規模推到約 140 × 126 公尺，攤販增加到 58 座，並用不同高度、屋頂和立面，讓俯視時不再像幾個重複的方塊。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893300.png" alt="提示詞截圖 03：增加台灣夜市常見攤販與多種類型建築，擴大到六個街區" width="1536" height="1734" loading="lazy" decoding="async">
+          <figcaption>提示詞 03｜2026-09-08 21:33:00：擴大街區、攤販與建築類型，開始處理整個夜市的空間密度。</figcaption>
+        </figure>
+
+        <h2>四、同一條街，不能長得像複製貼上</h2>
+
+        <p>生成場景很容易先得到「數量」，卻不一定得到「地方感」。當街上的建築重複率太高，玩家走幾步就會失去方向，也會覺得整個夜市只是同一棟房子被複製了很多次。</p>
+
+        <p>因此這一輪把建築當成一組組有個性的街景角色：保留榕安大旅社作為七層地標，再調整每棟建築的樓層、窗型、陽台、屋頂、招牌文字、色系與牆面材質。原本的攤販、販賣機和道路配置則維持不變，避免為了增加變化而破壞已經能走的路線。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893310.png" alt="提示詞截圖 04：要求降低榕安大旅社與其它建築的重複性，讓 58 棟建築各自不同" width="1534" height="1280" loading="lazy" decoding="async">
+          <figcaption>提示詞 04｜2026-09-08 21:33:10：保留道路與既有內容，集中處理 58 棟建築的識別度。</figcaption>
+        </figure>
+
+        <h2>五、讓攤位熱區有自己的節奏</h2>
+
+        <p>下一個調整是把「平均分布」改成比較像真實逛夜市的節奏：北側道路形成兩側緊密相連的攤販熱區，其它街段保留疏密不同的段落。攤位最後來到 116 座、46 種類型；販賣機則用三台、兩台和獨立機台組成幾個小群組，不把它們均勻散落在每個角落。</p>
+
+        <p>路燈也從道路中央移到路邊，燈臂和照射方向朝向街道中心。這類小調整不一定會出現在一張總覽圖裡，卻會直接影響玩家在第一人稱視角下感受到的道路尺度與光線方向。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893321.png" alt="提示詞截圖 05：增加攤位密度、販賣機群組與道路兩側的路燈配置" width="1534" height="1360" loading="lazy" decoding="async">
+          <figcaption>提示詞 05｜2026-09-08 21:33:21：把攤販、販賣機和路燈從平均分布調整成有熱區與留白的街道節奏。</figcaption>
+        </figure>
+
+        <hr>
+
+        <h2>六、從 Blender 模型變成可以走的網頁世界</h2>
+
+        <p>場景穩定後，工作重心從 Blender 移到 Three.js。這不是單純把 GLB 放到網頁上，而是要替它補上「玩家如何進入、如何移動、如何知道自己在哪裡」這些互動層。</p>
+
+        <ul>
+          <li><strong>場景載入</strong>：以 Vite 載入 GLB、建築資料、攤位配置與碰撞框。</li>
+          <li><strong>第一人稱視角</strong>：桌面支援滑鼠環顧，瀏覽器不允許 Pointer Lock 時提供拖曳替代方案。</li>
+          <li><strong>移動與碰撞</strong>：使用匯出的物件碰撞框、空間索引和小步進，讓玩家沿著障礙物滑行而不是穿牆。</li>
+          <li><strong>介面與回饋</strong>：加入載入進度、暫停、重置入口、小地圖、畫質與音量設定。</li>
+          <li><strong>環境聲音</strong>：使用台北市場的免費實地錄音，依所在街區做簡單混音，讓不同位置有不同的夜市氛圍。</li>
+        </ul>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893331.png" alt="提示詞截圖 06：把 Blender 夜市 3D 場景改造成使用 three.js 的第一人稱網頁漫遊遊戲" width="1522" height="1704" loading="lazy" decoding="async">
+          <figcaption>提示詞 06｜2026-09-08 21:33:31：把場景接到 Three.js，補上移動、碰撞、小地圖、音量與響應式操作。</figcaption>
+        </figure>
+
+        <h2>七、先把角色加入流程，而不是一次做完所有系統</h2>
+
+        <p>從這裡開始，提示詞也變成一種工作分界。Blender 負責模型、骨架、材質與動畫；網站程式負責載入、碰撞、路線、互動與狀態。先把兩邊的責任分清楚，再用小批次循環，比一開始就同時做角色、車輛、交易和戰鬥更容易驗證。</p>
+
+        <p>同一輪也處理了產品表面：中文標題改成「逛夜市」，英文標題是「SAY YACHI」，並讓全區光源在進入前就準備完成。名稱、語言與燈光不是獨立的裝飾，它們會影響使用者第一次看到入口時，是否能理解這個作品要帶他去哪裡。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893342.png" alt="提示詞截圖 07：確認 Blender 製作模型、匯出 GLB、Three.js 加入行為與互動的分工流程" width="1506" height="1688" loading="lazy" decoding="async">
+          <figcaption>提示詞 07｜2026-09-08 21:33:42：把 Blender 與網站程式的責任拆開，採小批次完成與測試。</figcaption>
+        </figure>
+
+        <h2>八、角色不是貼上去，而是要走得像人在逛</h2>
+
+        <p>第一批角色先做四種：兩位路人、兩位攤販或店家工作人員。路人需要有骨架、走路、停下來看攤位再繼續前進；工作人員則留在攤位或店家附近招呼，偶爾小範圍移動，但不能走出自己的工作位置。</p>
+
+        <p>這個順序很實際：先驗證一個人能不能正確載入、走路、停看，以及能不能和玩家互相碰撞，再擴大角色造型與人數。否則一次加入大量人物後，問題會很難判斷究竟來自模型、動畫、行為還是碰撞。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893353.png" alt="提示詞截圖 08：先製作四種有骨架的人物，加入路人與攤販工作人員的行走和停看行為" width="1524" height="1418" loading="lazy" decoding="async">
+          <figcaption>提示詞 08｜2026-09-08 21:33:53：先用小批次角色驗證骨架、行為、攤位工作範圍與玩家碰撞。</figcaption>
+        </figure>
+
+        <h2>九、用人群把夜市從場景變成地方</h2>
+
+        <p>小批次驗證通過後，才把人群擴大：新增 30 種路人造型，涵蓋大人、學生、孩童與長輩；再增加五種走路狀態，讓腳步、膝蓋彎曲、擺臂和速度不會全部一模一樣。工作人員也增加不同服裝與角色類型，分配到攤販、店家和服務據點。</p>
+
+        <p>目前場景共有 44 種原創低多邊形人物設計、102 位逛街路人和 154 位攤販與店家工作人員。這些數字的意義不只是「場上有很多人」，而是每個人都必須在可接受的更新成本下持續行動，並且不能堵住玩家的主要路線。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893403.png" alt="提示詞截圖 09：增加三十種路人造型、五種步態、一百位路人與更多工作人員" width="1548" height="1488" loading="lazy" decoding="async">
+          <figcaption>提示詞 09｜2026-09-08 21:34:03：從四名角色擴充到多樣人群，讓不同街區都有自己的活動感。</figcaption>
+        </figure>
+
+        <h2>十、最後的微調：腳步、天空與瀏覽器裡的感覺</h2>
+
+        <p>最後一輪很像打磨遊戲手感。先修正路人的膝蓋彎曲方向，確保腿部動作看起來是向前走；再替天空加上少量星星、雲和月亮，讓玩家抬頭時不會只看到一片平色背景。</p>
+
+        <p>這些變更都必須同步更新 Blender 原始資產與網頁版 GLB，然後重新做骨架測試、場景載入、碰撞、桌面與手機版瀏覽器檢查。只有在靜態畫面好看，還不代表第一人稱漫遊真的舒服。</p>
+
+        <figure class="prompt-reference">
+          <img src="/blog/taiwan-night-market/2026090893407.png" alt="提示詞截圖 10：修正人物腳步與膝蓋方向，並加入星星、雲和月亮的夜空" width="1518" height="1466" loading="lazy" decoding="async">
+          <figcaption>提示詞 10｜2026-09-08 21:34:07：以玩家視角做最後的步態與夜空微調，完成 Blender 與網頁資產同步。</figcaption>
+        </figure>
+
+        <hr>
+
+        <h2>這次的工作方式：AI 是方向盤，迭代才是引擎</h2>
+
+        <p>這個專案讓我更清楚看到，AI 協作最有價值的地方不只是「幫忙寫一段程式」，而是能在不同尺度之間來回切換：一方面討論夜市應該有什麼樣的街景，另一方面又能落到碰撞半徑、GLB 匯出、載入流程和測試案例。</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>階段</th>
+              <th>Blender／資產側</th>
+              <th>Three.js／網站側</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>環境</td>
+              <td>建築、攤位、招牌、燈具與場景比例</td>
+              <td>GLB 載入、材質轉換、固定光照與相機</td>
+            </tr>
+            <tr>
+              <td>可行走空間</td>
+              <td>保留道路、入口與物件位置</td>
+              <td>碰撞框、空間索引、移動與滑行</td>
+            </tr>
+            <tr>
+              <td>人群</td>
+              <td>角色造型、骨架與走路動畫</td>
+              <td>路線、停看行為、工作範圍與玩家碰撞</td>
+            </tr>
+            <tr>
+              <td>體驗</td>
+              <td>天空、燈光方向與視覺層次</td>
+              <td>響應式控制、小地圖、音效與畫質設定</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>每次只推進一個可以驗證的批次，讓畫面、資料、程式與測試一起前進，這比追求一次生成「完整遊戲」更可靠。這也是 medium 推理等級在這個專案裡的實際節奏：由人決定方向與取捨，讓 AI 協助拆解、實作、檢查，再根據瀏覽器裡真正看見的結果繼續修正。</p>
+
+        <h2>目前完成了什麼？</h2>
+
+        <p>「逛夜市／SAY YACHI」現在是一個以復古台灣夜市為主題的第一人稱網頁漫遊 Demo，包含六個街區、58 棟不同建築、116 個攤位、20 台販賣機、全區固定照明，以及 44 種人物設計組成的路人與工作人員人群。玩家可以在桌面或手機瀏覽器裡探索，切換繁體中文與 English，調整環境音和畫面品質，也能用小地圖確認自己所在的位置。</p>
+
+        <p>它目前仍然是一段漫遊體驗：購物是情境動畫，尚未加入實際交易、跳躍或戰鬥。保留這個界線，反而讓作品的核心更清楚——先把「走進一個有地方感的台灣夜市」做好。</p>
+
+        <blockquote>
+          <p><strong>從一句提示詞到一條可以走的街，真正重要的不是一次生成完成，而是每一輪都能看見、測試並修正。</strong></p>
+        </blockquote>
+
+        <p>如果你想親自走一圈，歡迎開啟 <a href="/showcase/taiwan_night_market/">逛夜市 Demo</a>。也可以回到 <a href="/blog">Blog</a>，看看其它前端、遊戲與產品實作筆記。</p>
+      </div>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div>
+        <a class="brand" href="/">
+          <span class="brand-signal" aria-hidden="true"></span>
+          <span class="brand-label">The Lonesome Era</span>
+        </a>
+        <p class="footer-copy">寫程式，也保留生活的溫度。</p>
+      </div>
+      <ul class="footer-nav" aria-label="頁尾導覽">
+        <li><a href="/">首頁</a></li>
+        <li><a href="/demo">Demo</a></li>
+        <li><a href="/blog" aria-current="page">Blog</a></li>
+        <li><a href="/about">About</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
