@@ -1,0 +1,2 @@
+export const arrow = `<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15M12 5l7 7-7 7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+export const mark = `<svg class="brand-mark" viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M2 2h6a7 7 0 0 1 7 7v6H9a7 7 0 0 1-7-7zM30 2v6a7 7 0 0 1-7 7h-6V9a7 7 0 0 1 7-7zM30 30h-6a7 7 0 0 1-7-7v-6h6a7 7 0 0 1 7 7zM2 30v-6a7 7 0 0 1 7-7h6v6a7 7 0 0 1-7 7z"/></svg>`;

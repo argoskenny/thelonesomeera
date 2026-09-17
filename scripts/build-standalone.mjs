@@ -34,6 +34,11 @@ const tasks = [
     command: ["npm", "run", "build:rooms"],
   },
   {
+    name: "untamed",
+    checkPath: "showcase/untamed/package.json",
+    command: ["npm", "run", "build:untamed"],
+  },
+  {
     name: "pulsesync",
     checkPath: "showcase/pulsesync/package.json",
     command: ["npm", "run", "build:pulsesync"],

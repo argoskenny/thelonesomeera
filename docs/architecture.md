@@ -59,6 +59,7 @@ Source-backed apps currently follow these paths:
 | SOX FPS | `showcase/sox/` | `public/showcase/sox/` | Static sync |
 | COD2 FPS | `showcase/cod2/` | `public/showcase/cod2/` | Vite build, then sync |
 | Room | `showcase/room/` | `public/showcase/room/` | Vite build, then sync |
+| UNTAMED | `showcase/untamed/` | `public/showcase/untamed/` | Vite build, then sync |
 | PulseSync | `showcase/pulsesync/` | `public/showcase/pulsesync/` | Vite build, then sync |
 | Mythic Match | `showcase/mma/` | `public/showcase/mma/` | Static sync |
 | Colorful Kart | `showcase/colorful_kart/` | `public/showcase/colorful_kart/` | Vite build, then sync |

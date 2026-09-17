@@ -8,6 +8,7 @@ const projects = [
   "androidtest",
   "cod2",
   "room",
+  "untamed",
   "pulsesync",
   "colorful_kart",
   "mini_fantasy",

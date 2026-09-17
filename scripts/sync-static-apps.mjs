@@ -42,6 +42,12 @@ const syncTargets = [
     entries: ["index.html", "assets", "og.png"],
   },
   {
+    name: "untamed",
+    sourceDir: "showcase/untamed/dist",
+    targetDir: "public/showcase/untamed",
+    entries: ["index.html", "favicon.svg", "assets", "images"],
+  },
+  {
     name: "pulsesync",
     sourceDir: "showcase/pulsesync/dist",
     targetDir: "public/showcase/pulsesync",

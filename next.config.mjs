@@ -29,6 +29,14 @@ const nextConfig = {
         destination: '/showcase/room/index.html',
       },
       {
+        source: '/showcase/untamed',
+        destination: '/showcase/untamed/index.html',
+      },
+      {
+        source: '/showcase/untamed/',
+        destination: '/showcase/untamed/index.html',
+      },
+      {
         source: '/showcase/mma',
         destination: '/showcase/mma/index.html',
       },

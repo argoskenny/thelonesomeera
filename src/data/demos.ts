@@ -18,6 +18,15 @@ export const demos: Demo[] = [
     tags: ["Three.js", "TypeScript", "FPS Walk"],
   },
   {
+    title: "UNTAMED",
+    description:
+      "在叢林、動態排版與程序化植物之間，探索設計、程式與動態如何一起生長。",
+    image: "/showcase/untamed/images/jungle.webp",
+    href: "/showcase/untamed/",
+    tags: ["Vite", "Three.js", "Creative Coding"],
+    imagePosition: "center 52%",
+  },
+  {
     title: "Mini Fantasy",
     description:
       "像素風小冒險遊戲，探索、對話、收集與戰鬥，一段輕鬆的奇幻旅程。",
