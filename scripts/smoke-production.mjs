@@ -155,6 +155,7 @@ const checks = [
   ["/blog/selfie-cat-development.html", "Selfie Cat"],
   ["/showcase/mini_fantasy/", "迷你奇境"],
   ["/showcase/untamed/", "UNTAMED"],
+  ["/showcase/easylog/", "easylog — Every layer tells a story."],
   ["/showcase/taiwan_night_market/", "逛夜市"],
   ["/robots.txt", "Sitemap: https://thelonesomeera.com/sitemap.xml"],
   ["/sitemap.xml", "<lastmod>2025-05-20</lastmod>"],

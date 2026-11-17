@@ -19,6 +19,11 @@ function handleMissing(message) {
 
 const tasks = [
   {
+    name: "easylog",
+    checkPath: "showcase/easylog/package.json",
+    command: ["npm", "run", "build:easylog"],
+  },
+  {
     name: "androidtest",
     checkPath: "showcase/androidtest/package.json",
     command: ["npm", "run", "build:androidtest"],

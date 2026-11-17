@@ -1,9 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
+  images: {
+    remotePatterns: [{ protocol: 'https', hostname: 'assets.uberdesigner.ai', pathname: '/easylog/**' }],
+  },
   allowedDevOrigins: ['127.0.0.1'],
   async rewrites() {
     return [
+      { source: "/showcase/easylog", destination: "/showcase/easylog/index.html" },
+      { source: "/showcase/easylog/", destination: "/showcase/easylog/index.html" },
       {
         source: '/showcase/cod2',
         destination: '/showcase/cod2/index.html',

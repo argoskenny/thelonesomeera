@@ -11,7 +11,7 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "ci:showcases": "node scripts/ci-showcases.mjs",
     "lint:showcases": "npm --prefix showcase/pulsesync run lint",
-    "typecheck:showcases": "npm --prefix showcase/colorful_kart run typecheck && npm --prefix showcase/mini_fantasy run typecheck && npm --prefix showcase/pulsesync run typecheck && npm --prefix showcase/room run typecheck && npm --prefix showcase/taiwan_night_market run typecheck && npm --prefix showcase/untamed run typecheck",
+    "typecheck:showcases": "npm --prefix showcase/colorful_kart run typecheck && npm --prefix showcase/mini_fantasy run typecheck && npm --prefix showcase/pulsesync run typecheck && npm --prefix showcase/room run typecheck && npm --prefix showcase/taiwan_night_market run typecheck && npm --prefix showcase/untamed run typecheck && npm --prefix showcase/easylog run typecheck",
     "test:showcases": "npm --prefix showcase/colorful_kart test && npm --prefix showcase/mini_fantasy test && npm --prefix showcase/pulsesync test && npm --prefix showcase/room test && npm --prefix showcase/bpd test && npm --prefix showcase/taiwan_night_market test && npm --prefix showcase/untamed test",
     "verify:root": "npm run lint && npm run typecheck && npm test",
     "verify:showcases": "npm run lint:showcases && npm run typecheck:showcases && npm run test:showcases",
@@ -31,7 +31,9 @@
     "dev:mini_fantasy": "npm --prefix showcase/mini_fantasy run dev",
     "build:mini_fantasy": "npm --prefix showcase/mini_fantasy run build",
     "sync:static": "node scripts/sync-static-apps.mjs",
-    "build:standalone": "node scripts/build-standalone.mjs"
+    "build:standalone": "node scripts/build-standalone.mjs",
+    "dev:easylog": "npm --prefix showcase/easylog run dev",
+    "build:easylog": "npm --prefix showcase/easylog run build"
   },
   "dependencies": {
     "lucide-react": "^0.460.0",

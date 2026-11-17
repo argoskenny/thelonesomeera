@@ -1,0 +1,2 @@
+.cursor { display: none; position: fixed; top: 0; left: 0; width: calc(40 * var(--u)); height: calc(40 * var(--u)); border-radius: var(--pill); background: var(--cursor); backdrop-filter: blur(4px); pointer-events: none; z-index: 10; opacity: 0; transition: opacity 200ms linear; will-change: transform; }
+@media (hover: hover) and (pointer: fine) { .cursor { display: block; } }

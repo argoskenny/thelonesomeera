@@ -1,0 +1,15 @@
+:root {
+  --u: min(100vw / 1440, 100svh / 760);
+  --sky-0: #c8e6ff; --sky-1: #a3cae6; --sky-2: #7eadcd; --sky-3: #5799cf; --sky-4: #3085d2;
+  --white: #fff; --lime: #d0f24b; --ink: #17242b; --black: #000;
+  --glass: rgba(255,255,255,.06); --glass-strong: rgba(255,255,255,.15);
+  --edge: rgba(255,255,255,.75); --edge-soft: rgba(255,255,255,.12); --cursor: rgba(255,255,255,.5);
+  --sans: 'Instrument Sans', sans-serif; --serif: 'Instrument Serif', serif;
+  --page-edge: calc(28 * var(--u)); --serif-size: calc(184 * var(--u)); --sans-size: calc(170 * var(--u));
+  --body-size: calc(20 * var(--u)); --body-leading: calc(22 * var(--u)); --small-size: calc(18 * var(--u)); --nav-size: calc(14 * var(--u));
+  --pill: 99px; --ease: cubic-bezier(.22,1,.36,1);
+  --background: radial-gradient(ellipse 100% 100% at 50% 100%,var(--sky-0) 0%,var(--sky-1) 27.5%,var(--sky-2) 55%,var(--sky-3) 77.5%,var(--sky-4) 100%);
+}
+@media (max-width: 1023px) {
+  :root { --u: min(100vw / 415,100svh / 760); --page-edge: calc(20 * var(--u)); --serif-size: calc(79.3 * var(--u)); --sans-size: calc(73.2 * var(--u)); --body-size: calc(16 * var(--u)); --body-leading: calc(20 * var(--u)); --small-size: calc(16 * var(--u)); --nav-size: calc(16 * var(--u)); --background: radial-gradient(ellipse 263% 100% at 50% 100%,var(--sky-0) 0%,var(--sky-1) 15.9%,var(--sky-2) 31.8%,var(--sky-3) 58.4%,var(--sky-4) 85%); }
+}

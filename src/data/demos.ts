@@ -10,6 +10,14 @@ export type Demo = {
 
 export const demos: Demo[] = [
   {
+    title: "easylog",
+    description:
+      "滑動游標讓苔蘚沿著木紋生長，探索像素載入、動態字體與自然材質的互動實驗。",
+    image: "https://assets.uberdesigner.ai/easylog/log-moss.webp",
+    href: "/showcase/easylog/",
+    tags: ["React", "Canvas", "GSAP"],
+  },
+  {
     title: "逛夜市",
     description:
       "走進復古台灣夜市，在攤販、建築與環境音之間自由漫遊。",
