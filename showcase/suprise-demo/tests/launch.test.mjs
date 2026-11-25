@@ -1,0 +1,6 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {LaunchSequence} from '../src/scenes/ignition/launch.ts';
+test('launch can be cancelled before ignition and cannot be started twice',()=>{const s=new LaunchSequence();assert.equal(s.start(),true);s.update(6);assert.equal(s.start(),false);assert.equal(s.phase,'countdown');assert.ok(s.arm>0);assert.equal(s.altitude,0);assert.equal(s.cancel(),true);s.update(40);assert.equal(s.phase,'standby');assert.equal(s.arm,0);});
+test('ignition precedes ascent, altitude increases, and reset restores the complete vehicle state',()=>{const s=new LaunchSequence();s.start();s.update(10.5);assert.equal(s.phase,'ignition');assert.equal(s.altitude,0);assert.ok(s.throttle>0);assert.equal(s.cancel(),false);s.update(5);assert.equal(s.phase,'ascent');const first=s.altitude;s.update(10);assert.ok(s.altitude>first);s.update(50);assert.equal(s.phase,'complete');assert.equal(s.throttle,0);s.reset();assert.deepEqual([s.phase,s.elapsed,s.altitude,s.throttle,s.arm],['standby',0,0,0,0]);assert.equal(s.start(),true);});
+test('invalid deltas cannot corrupt the sequence',()=>{const s=new LaunchSequence();s.start();for(const dt of [NaN,Infinity,-1,0])s.update(dt);assert.equal(s.elapsed,0);});

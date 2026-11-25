@@ -7,6 +7,8 @@ const nextConfig = {
   allowedDevOrigins: ['127.0.0.1'],
   async rewrites() {
     return [
+      { source: "/showcase/suprise-demo", destination: "/showcase/suprise-demo/index.html" },
+      { source: "/showcase/suprise-demo/:scene(afterlight|night-market|vertigo|ignition|aerie|summertide|aurelia|neo-taipei|kowloon|raohe)", destination: "/showcase/suprise-demo/:scene/index.html" },
       { source: "/showcase/easylog", destination: "/showcase/easylog/index.html" },
       { source: "/showcase/easylog/", destination: "/showcase/easylog/index.html" },
       {

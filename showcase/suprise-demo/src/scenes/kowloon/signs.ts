@@ -1,0 +1,10 @@
+import * as T from 'three';
+import { GeometryBatch,seededRandom } from '../../shared/geometry';
+import type { Materials } from './materials';
+export function signMaterial(text:string,vertical=false,lit=false,sub=''){const canvas=document.createElement('canvas');canvas.width=vertical?320:1024;canvas.height=vertical?1200:340;const c=canvas.getContext('2d')!,rand=seededRandom(text.length*841+3);
+ c.fillStyle=lit?'#100d08':'#bcb398';c.fillRect(0,0,canvas.width,canvas.height);for(let i=0;i<6500;i++){const x=rand()*canvas.width,y=rand()*canvas.height;c.fillStyle=`rgba(${rand()>.5?'23,28,20':'235,221,183'},${rand()*.19})`;c.fillRect(x,y,1+rand()*14,1+rand()*7);}
+ c.strokeStyle=lit?'#ef852f':'#524430';c.lineWidth=7;c.strokeRect(9,9,canvas.width-18,canvas.height-18);c.textAlign='center';c.textBaseline='middle';c.fillStyle=lit?'#ff6a21':'#642c22';c.shadowColor='#ff4d12';c.shadowBlur=lit?9:0;
+ if(vertical){const chars=[...text];c.font=`700 ${Math.min(205,970/chars.length*.85)}px "Kaiti TC","Songti TC",serif`;chars.forEach((ch,i)=>{const y=120+(i+.5)*920/chars.length;if(lit){c.strokeStyle='#ff6828';c.lineWidth=3.2;c.strokeText(ch,160,y);c.save();c.shadowBlur=0;c.fillStyle='#33130c';c.fillText(ch,160,y);c.restore();}else c.fillText(ch,160,y);});}
+ else{c.font=`700 ${Math.min(165,900/[...text].length)}px "Kaiti TC","Songti TC",serif`;c.fillText(text,512,145,950);c.font='23px "Songti TC",serif';c.fillText(sub,512,290,940);}
+ const map=new T.CanvasTexture(canvas);map.colorSpace=T.SRGBColorSpace;map.anisotropy=8;return new T.MeshStandardMaterial({map,emissiveMap:lit?map:null,emissive:lit?0xffffff:0x000000,emissiveIntensity:lit?2.3:0,roughness:.75,bumpMap:lit?null:map,bumpScale:.006});}
+export function sign(b:GeometryBatch,m:Materials,x:number,y:number,z:number,w:number,h:number,text:string,vertical=false,lit=false,ry=0,sub=''){b.at(x,z,ry,()=>{b.box(w+.16,h+.16,.15,0,y,0,m.iron,.035);b.plane(w,h,0,y,.09,signMaterial(text,vertical,lit,sub));if(lit)for(const xx of[-w/2,w/2])b.box(.025,h,.035,xx,y,.12,m.neon);});}

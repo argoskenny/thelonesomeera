@@ -10,6 +10,13 @@ export type Demo = {
 
 export const demos: Demo[] = [
   {
+    title: "ELSEWHERE 場景選集",
+    description: "十個可自由漫遊的 3D 場景，從雨夜饒河街到雲上城，每個入口皆附製作模型。",
+    image: "/showcase/suprise-demo/assets/raohe/preview.webp",
+    href: "/showcase/suprise-demo/index.html",
+    tags: ["Three.js", "3D 漫遊", "Suprise Demo"],
+  },
+  {
     title: "easylog",
     description:
       "滑動游標讓苔蘚沿著木紋生長，探索像素載入、動態字體與自然材質的互動實驗。",

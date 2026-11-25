@@ -1,0 +1,23 @@
+import * as T from 'three';
+import { Reflector } from 'three/addons/objects/Reflector.js';
+import { seededRandom,vec } from '../../shared/geometry';
+import type { Materials } from './materials';
+export function createAtmosphere(scene:T.Scene,m:Materials,mobile:boolean){
+ const wetShape=new T.Shape();const vertices=[[-26,5],[-10,5],[-10,11],[-7,11],[-7,24],[-26,24]];vertices.forEach(([x,z],i)=>i?wetShape.lineTo(x,-z):wetShape.moveTo(x,-z));wetShape.closePath();
+ const wet=new Reflector(new T.ShapeGeometry(wetShape),{textureWidth:mobile?512:1024,textureHeight:mobile?512:1024,clipBias:.003,multisample:0});wet.rotation.x=-Math.PI/2;wet.position.y=28.04;wet.renderOrder=3;scene.add(wet);
+ const wm=wet.material as T.ShaderMaterial;wm.transparent=true;wm.depthWrite=false;wm.uniforms.uNormal={value:m.waterNormal};
+ wm.vertexShader=`uniform mat4 textureMatrix;varying vec4 vCoord;varying vec3 vWorld;void main(){vWorld=(modelMatrix*vec4(position,1.)).xyz;vCoord=textureMatrix*vec4(position,1.);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
+ wm.fragmentShader=`uniform sampler2D tDiffuse;uniform sampler2D uNormal;varying vec4 vCoord;varying vec3 vWorld;
+ float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}float noise(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),mix(hash(i+vec2(0,1)),hash(i+1.),f.x),f.y);}
+ void main(){vec2 n=texture2D(uNormal,vWorld.xz*.6).xz*2.-1.;vec2 uv=vCoord.xy/vCoord.w+n*.0009;float puddle=smoothstep(.3,.7,noise(vWorld.xz*.7));vec3 c=texture2D(tDiffuse,uv).rgb*.6;c+=texture2D(tDiffuse,uv+vec2(.001,0)).rgb*.1;c+=texture2D(tDiffuse,uv-vec2(.001,0)).rgb*.1;c+=texture2D(tDiffuse,uv+vec2(0,.001)).rgb*.1;c+=texture2D(tDiffuse,uv-vec2(0,.001)).rgb*.1;float f=pow(1.-abs(normalize(cameraPosition-vWorld).y),3.);gl_FragColor=vec4(c,(.07+puddle*.28+f*.16));
+ #include <tonemapping_fragment>
+ #include <colorspace_fragment>
+ }`;
+ const mirror=wet.onBeforeRender.bind(wet);wet.onBeforeRender=(...args)=>{if(!scene.overrideMaterial)mirror(...args);};
+ const root=new T.Group();scene.add(root);const texCanvas=document.createElement('canvas');texCanvas.width=texCanvas.height=128;const ctx=texCanvas.getContext('2d')!,grad=ctx.createRadialGradient(64,64,0,64,64,64);grad.addColorStop(0,'#b8cadf99');grad.addColorStop(.45,'#adbed84d');grad.addColorStop(1,'#8798b400');ctx.fillStyle=grad;ctx.fillRect(0,0,128,128);const mistMap=new T.CanvasTexture(texCanvas);mistMap.colorSpace=T.SRGBColorSpace;
+ const rand=seededRandom(45),steam:T.Sprite[]=[];for(let i=0;i<(mobile?35:65);i++){const s=new T.Sprite(new T.SpriteMaterial({map:mistMap,transparent:true,depthWrite:false,opacity:.27,color:i%3===0?0xffe1b1:0xb7d1ea}));s.userData.seed=[rand(),rand(),rand()];s.userData.source=i<18?vec(-8,28,13):i<35?vec(12,14,-62):vec(-5+rand()*13,3+rand()*20,-20-rand()*90);root.add(s);steam.push(s);}
+ const shafts=new T.Group();root.add(shafts);const shaftMat=new T.ShaderMaterial({transparent:true,depthWrite:false,side:T.DoubleSide,blending:T.AdditiveBlending,uniforms:{amount:{value:1}},vertexShader:`varying vec2 vUv;varying vec3 vView;varying vec3 vN;void main(){vUv=uv;vec4 mv=modelViewMatrix*vec4(position,1.);vView=-mv.xyz;vN=normalize(normalMatrix*normal);gl_Position=projectionMatrix*mv;}`,fragmentShader:`uniform float amount;varying vec2 vUv;varying vec3 vView;varying vec3 vN;void main(){float edge=pow(abs(dot(normalize(vN),normalize(vView))),1.8);float fade=sin(vUv.y*3.14159);gl_FragColor=vec4(.59,.76,1.,edge*fade*.016*amount);}`});
+ for(let i=0;i<5;i++){const start=vec(4+i*2,110,-35-i*7),end=vec(-3+i,15,-10-i*5),dir=start.clone().sub(end),cone=new T.Mesh(new T.CylinderGeometry(.55,3.5,dir.length(),32,1,true),shaftMat);cone.position.copy(start).add(end).multiplyScalar(.5);cone.quaternion.setFromUnitVectors(vec(0,1,0),dir.normalize());shafts.add(cone);}
+ const dustCount=mobile?300:900,positions=new Float32Array(dustCount*3);for(let i=0;i<dustCount;i++)positions.set([-5+rand()*17,15+rand()*90,-110+rand()*130],i*3);const dg=new T.BufferGeometry();dg.setAttribute('position',new T.BufferAttribute(positions,3));const dust=new T.Points(dg,new T.PointsMaterial({color:0xe0d4bd,size:.035,transparent:true,opacity:.38,depthWrite:false}));root.add(dust);
+ return{root,wet,update(t:number,mood:number){steam.forEach((s,i)=>{const [a,b,c]=s.userData.seed,age=(t*.09+a)%1;s.position.copy(s.userData.source).add(vec(Math.sin(t*.23+i)*(.4+age),age*(5+b*5),Math.cos(t*.2+i)*age));s.scale.setScalar((1.3+age*3.2)*(i<18?.75:1.8));(s.material as T.SpriteMaterial).opacity=Math.sin(age*Math.PI)*(.18+mood*.1);});shaftMat.uniforms.amount.value=1-mood*.6;dust.rotation.y=Math.sin(t*.01)*.02;}};
+}

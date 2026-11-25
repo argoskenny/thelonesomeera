@@ -1,0 +1,30 @@
+{
+  "asset": "Pink scooter from supplied single-view photograph",
+  "native_file": "pink_scooter.blend",
+  "portable_file": "pink_scooter.glb",
+  "mesh_objects": 413,
+  "evaluated_triangles": 436844,
+  "dimensions_metres": [
+    0.7527791261672974,
+    2.0259511470794678,
+    1.5417332649230957
+  ],
+  "renders": [
+    "preview_front.png",
+    "preview_side.png",
+    "preview_rear.png"
+  ],
+  "source_image": "3342060-4_xxl.jpg",
+  "limitations": [
+    "Single-view visual reconstruction; unseen surfaces inferred.",
+    "Approximate dimensions, not CAD or manufacturing measurements.",
+    "Procedural microtexture is retained in native Blender materials; GLB uses portable PBR material parameters."
+  ],
+  "verification": {
+    "glb_reimport": "passed",
+    "mesh_objects_after_import": 413,
+    "finite_vertex_coordinates": true,
+    "all_meshes_have_materials": true,
+    "studio_excluded": true
+  }
+}

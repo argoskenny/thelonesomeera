@@ -1,0 +1,71 @@
+import * as T from 'three';
+import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { GTAOPass } from 'three/addons/postprocessing/GTAOPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { Navigation } from '../../shared/navigation';
+import { bindNavigationUI } from '../../shared/navigation-ui';
+import { mountUI,toast } from '../../shared/ui';
+import { assetUrl } from '../../shared/assets';
+import { loadMaterials } from './materials';
+import { buildCity } from './world';
+import { createAtmosphere } from './atmosphere';
+import { createWaterfalls } from './waterfalls';
+import { createMagic } from './magic';
+import { AureliaAudio } from './audio';
+import { views,bounds } from './views';
+import '../../shared/experience.css';
+import './style.css';
+
+mountUI({className:'aurelia',description:'AURELIA 曦光城塞，可自由探索的文藝復興魔法城邦',brand:'<svg class="aurelia-emblem" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1"><path d="M24 3v42M3 24h42M24 9l4 11 11 4-11 4-4 11-4-11-11-4 11-4Z"/></svg><span class="wordmark">AURELIA</span>',homeLabel:'回到紫藤拱廊',title:'Where wonder takes root.',subtitle:'曦光城塞 · 在光與魔法之間',exploreLabel:'探索這個場景',soundLabel:'開啟瀑布、風聲與遠方鐘聲',soundTip:'環境音',otherScene:{href:'../aerie/',label:'雲上城'},locationPrompt:'循著光，走進城塞。',views,moodAttribute:'weather',moods:[{key:'golden',label:'夕照'},{key:'blue',label:'暮藍'}],loadingName:'AURELIA',loadingCopy:'花影與鐘聲，正在等你。'});
+const $=<E extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as E;
+const mobile=matchMedia('(pointer:coarse)').matches||innerWidth<760,reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+async function init(){
+  const renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.2:1.5));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=.94;renderer.shadowMap.enabled=true;renderer.shadowMap.type=T.PCFSoftShadowMap;
+  const canvas=renderer.domElement;canvas.tabIndex=0;canvas.setAttribute('aria-label','曦光城塞 3D 場景。WASD 移動、拖曳或滑鼠轉頭，F 切換飛行，Q 與 E 升降。');$('canvas-wrap').append(canvas);
+  const scene=new T.Scene(),camera=new T.PerspectiveCamera(mobile?70:68,innerWidth/innerHeight,.2,2800);camera.position.copy(views[0].position);
+  scene.fog=new T.FogExp2(0xa8b9c4,.0021);
+  $('loading-bar').style.width='12%';
+  const [materials,hdr,panorama]=await Promise.all([loadMaterials(renderer),new HDRLoader().loadAsync(assetUrl('shared','sky.hdr')),new T.TextureLoader().loadAsync(assetUrl('aurelia','sky.jpg'))]);panorama.colorSpace=T.SRGBColorSpace;panorama.wrapS=T.RepeatWrapping;panorama.minFilter=T.LinearFilter;panorama.generateMipmaps=false;
+  const pmrem=new T.PMREMGenerator(renderer),env=pmrem.fromEquirectangular(hdr);scene.environment=env.texture;scene.environmentIntensity=.42;hdr.dispose();pmrem.dispose();
+  const hemi=new T.HemisphereLight(0xc1d6ec,0x70634b,.85);scene.add(hemi);
+  const sun=new T.DirectionalLight(0xffd3a0,4.8);sun.position.set(-150,220,110);sun.target.position.set(20,70,-70);sun.castShadow=true;sun.shadow.mapSize.set(mobile?1024:4096,mobile?1024:4096);Object.assign(sun.shadow.camera,{left:-205,right:205,top:205,bottom:-190,near:20,far:620});sun.shadow.normalBias=.085;sun.shadow.bias=-.00015;scene.add(sun,sun.target);
+  $('loading-bar').style.width='35%';
+  const world=buildCity(scene,materials,mobile),atmosphere=createAtmosphere(scene,mobile,panorama),waterfalls=createWaterfalls(scene,mobile),magic=createMagic(scene,materials),audio=new AureliaAudio();
+  // Cache static architecture shadows to keep dense foliage affordable.
+  renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
+  const nav=new Navigation(camera,canvas,world.obstacles,views,bounds,world.surfaces,true);nav.setMode('fly');bindNavigationUI(nav);
+  const changed=nav.onChange;nav.onChange=()=>{changed();$('explore').textContent=nav.active?'暫停探索':'探索這個場景';if(nav.active&&document.pointerLockElement!==canvas&&!matchMedia('(pointer:coarse)').matches)$('movement-help').textContent='WASD 移動 · 拖曳環顧 · Shift 加速 · F 切換 · Q / E 升降';};nav.onChange();
+  const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+  const ao=new GTAOPass(scene,camera,innerWidth,innerHeight);ao.enabled=!mobile;ao.blendIntensity=.65;ao.updateGtaoMaterial({radius:.8,thickness:.6,samples:8,distanceExponent:1.4});ao.updatePdMaterial({radius:3,samples:8,rings:2});
+  const aoRender=ao.render.bind(ao);ao.render=(...args)=>{atmosphere.sky.visible=atmosphere.clouds.visible=waterfalls.root.visible=magic.root.visible=false;try{aoRender(...args);}finally{atmosphere.sky.visible=atmosphere.clouds.visible=waterfalls.root.visible=magic.root.visible=true;}};composer.addPass(ao);
+  composer.addPass(new UnrealBloomPass(new T.Vector2(innerWidth,innerHeight),.22,.45,1.35));composer.addPass(new OutputPass());if(!mobile)composer.addPass(new SMAAPass());
+  const menu=$('locations'),locationButton=$('location');const close=()=>{menu.hidden=true;locationButton.setAttribute('aria-expanded','false');};
+  locationButton.addEventListener('click',()=>{menu.hidden=!menu.hidden;locationButton.setAttribute('aria-expanded',String(!menu.hidden));});
+  document.addEventListener('pointerdown',e=>{if(!(e.target as HTMLElement).closest('.location-control'))close();});document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+  function goTo(i:number){if(i===0||i===5)nav.setMode('fly');nav.goTo(i);$('location-number').textContent=`0${i+1}`;$('location-name').textContent=views[i].name;document.querySelectorAll<HTMLElement>('[data-view]').forEach(el=>el.setAttribute('aria-current',String(Number(el.dataset.view)===i)));close();}
+  document.querySelectorAll<HTMLButtonElement>('[data-view]').forEach(b=>b.addEventListener('click',()=>goTo(Number(b.dataset.view))));$('home').addEventListener('click',()=>goTo(0));
+  let targetMood=0,mood=0;
+  document.querySelectorAll<HTMLButtonElement>('[data-weather]').forEach(b=>b.addEventListener('click',()=>{targetMood=Number(b.dataset.weather==='blue');document.querySelectorAll('[data-weather]').forEach(el=>el.setAttribute('aria-pressed',String(el===b)));}));
+  $('sound').addEventListener('click',async()=>{try{const enabled=await audio.toggle();$('sound').setAttribute('aria-pressed',String(enabled));$('sound').setAttribute('aria-label',enabled?'關閉瀑布、風聲與遠方鐘聲':'開啟瀑布、風聲與遠方鐘聲');}catch{toast('目前無法開啟環境音，請稍後再試。');}});
+  if(!document.fullscreenEnabled)$('fullscreen').hidden=true;
+  $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await $('experience').requestFullscreen();}catch{toast('目前瀏覽器不支援全螢幕。');}});document.addEventListener('fullscreenchange',()=>$('fullscreen').setAttribute('aria-pressed',String(!!document.fullscreenElement)));
+  $('photo').addEventListener('click',()=>{composer.render();canvas.toBlob(blob=>{if(!blob){toast('暫時無法儲存照片。');return;}const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`AURELIA-${Date.now()}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),15000);toast('照片已下載。');},'image/png');});
+  let elapsed=0,last=performance.now(),fps=60,lost=false;
+  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();lost=true;toast('繪圖連線中斷，正在恢復。');});canvas.addEventListener('webglcontextrestored',()=>location.reload());
+  document.addEventListener('visibilitychange',()=>{last=performance.now();audio.setPageVisible();});
+  function animate(now:number){requestAnimationFrame(animate);if(document.hidden||lost){last=now;return;}const raw=(now-last)/1000,dt=Math.min(raw,.05);last=now;elapsed+=dt;nav.update(dt);mood=T.MathUtils.lerp(mood,targetMood,1-Math.exp(-dt*.65));
+    (scene.fog as T.FogExp2).density=.0021+mood*.0006+Math.max(0,-5-camera.position.y)*.00015;
+    (scene.fog as T.FogExp2).color.set(0xa8b9c4).lerp(new T.Color(0x536c8b),mood);
+    sun.intensity=4.8-mood*4.4;hemi.intensity=.64-mood*.31;scene.environmentIntensity=.28-mood*.14;
+    atmosphere.update(reduced?0:elapsed,mood,camera);waterfalls.update(reduced?0:elapsed,mood);magic.update(reduced?0:elapsed);world.update(reduced?0:elapsed,mood);composer.render();if(raw>0&&raw<.5)fps=T.MathUtils.lerp(fps,1/raw,.025);
+  }
+  window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);});
+  $('loading-bar').style.width='80%';atmosphere.update(0,0,camera);waterfalls.update(0,0);magic.update(0);world.update(0,0);await renderer.compileAsync(scene,camera);composer.render();$('loading-bar').style.width='100%';requestAnimationFrame(animate);setTimeout(()=>{$('loading').classList.add('done');setTimeout(()=>$('loading').hidden=true,1100);},150);
+  Object.defineProperty(window,'aurelia',{value:{get state(){return {ready:true,camera:camera.position.toArray(),rotation:camera.rotation.toArray().slice(0,3),mode:nav.mode,active:nav.active,mood:targetMood?'blue':'golden',fps:Math.round(fps),...world.stats,walkSurfaces:world.surfaces.length,waterfalls:waterfalls.count};}}});
+}
+init().catch(e=>{console.error(e);$('loading').hidden=true;$('error').hidden=false;$('error-copy').textContent='請確認瀏覽器已開啟硬體加速，並重新載入場景。';});

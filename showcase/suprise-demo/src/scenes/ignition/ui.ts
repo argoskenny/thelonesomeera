@@ -1,0 +1,7 @@
+import { mountUI } from '../../shared/ui';
+import { views } from './views';
+export function mountLaunchUI(){
+  mountUI({className:'ignition',description:'向天，可自由探索與發射火箭的海岸基地 3D 環境',
+    brand:`<svg class="ignition-emblem" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width=".8"><ellipse cx="24" cy="24" rx="12" ry="23" transform="rotate(35 24 24)"/><ellipse cx="24" cy="24" rx="23" ry="10" transform="rotate(-35 24 24)"/><circle cx="37" cy="6" r="2" fill="currentColor"/></svg><span class="wordmark">IGNITION<small>向 天</small></span>`,homeLabel:'回到基地全景',title:'The sky is not the limit.',subtitle:'在海風與倒數之間，向天。',exploreLabel:'探索這個場景',soundLabel:'開啟海風與引擎聲',soundTip:'海風與引擎',otherScene:{href:'../vertigo/',label:'懸城'},locationPrompt:'從海岸走向天空',views,moodAttribute:'time',moods:[{key:'sunset',label:'夕照'},{key:'blue',label:'藍調'}],loadingName:'IGNITION',loadingCopy:'海風掠過鋼鐵，下一站是天空。'});
+  document.querySelector('#experience')!.insertAdjacentHTML('beforeend',`<section class="launch-panel" aria-label="地面發射控制"><p class="launch-heading">地面發射控制</p><div class="launch-readout"><span id="launch-phase" role="status" aria-live="polite">STANDBY</span><span id="launch-clock">T − 10</span></div><p id="launch-detail">前往地面控制台，啟動發射程序。</p><button id="launch-action" type="button">前往發射開關 <span aria-hidden="true">↗</span></button><div class="launch-secondary"><button id="launch-cancel" hidden>取消倒數</button><button id="launch-reset" hidden>重置火箭</button><button id="launch-follow" hidden aria-pressed="false">跟隨火箭</button></div></section>`);
+}

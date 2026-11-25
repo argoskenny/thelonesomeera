@@ -18,6 +18,7 @@ function handleMissing(message) {
 }
 
 const tasks = [
+  { name: "suprise-demo", checkPath: "showcase/suprise-demo/package.json", command: ["npm", "--prefix", "showcase/suprise-demo", "run", "build"] },
   {
     name: "easylog",
     checkPath: "showcase/easylog/package.json",

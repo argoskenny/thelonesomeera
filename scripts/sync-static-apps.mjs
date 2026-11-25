@@ -18,6 +18,12 @@ function handleMissing(message) {
 
 const syncTargets = [
   {
+    name: "suprise-demo",
+    sourceDir: "showcase/suprise-demo/dist",
+    targetDir: "public/showcase/suprise-demo",
+    entries: ["index.html", "assets", "afterlight", "night-market", "vertigo", "ignition", "aerie", "summertide", "aurelia", "neo-taipei", "kowloon", "raohe"],
+  },
+  {
     name: "sox",
     sourceDir: "showcase/sox",
     targetDir: "public/showcase/sox",

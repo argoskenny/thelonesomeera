@@ -147,6 +147,8 @@ async function waitUntilReady() {
 }
 
 const checks = [
+  ["/showcase/suprise-demo/index.html", "ELSEWHERE"],
+  ["/showcase/suprise-demo/raohe/index.html", "GPT 6.2 Astra"],
   ["/", "The Lonesome Era"],
   ["/demo", "把想法做成"],
   ["/blog", "寫給未來的自己"],
