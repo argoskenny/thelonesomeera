@@ -1,0 +1,20 @@
+@import '../raohe/style.css';
+
+:root{--paper:#fcfaf4;--glass:rgba(28,39,33,.72);--border:rgba(248,247,237,.39);color:var(--paper);background:#40473e}
+.shade{background:linear-gradient(180deg,rgba(20,29,30,.19),transparent 15%,transparent 76%,rgba(24,29,24,.41))}
+.collection{filter:drop-shadow(0 1px 4px #17201d80)}
+header .tools{gap:8px}
+#intro{filter:drop-shadow(0 1px 6px #29372a);color:white}
+#intro p{font-weight:550;letter-spacing:.36em}
+#intro h1{font-weight:500;letter-spacing:.13em}
+#intro small{display:block;font:500 9px/1.4 Arial,sans-serif;letter-spacing:.09em;margin-top:8px}
+.choices button[aria-pressed=true],#explore{background:var(--paper);color:#28392e}
+.tools #locations{background:#25342ce8}
+.tools #locations button[aria-current=true]:after{background:#e6abc0}
+.tools button:hover,.choices button:hover{background:#526155de}
+.choices button[aria-pressed=true]:hover,#explore:hover{background:white}
+#controls-hint{color:var(--paper)}
+#toast{background:#263b2fe6}
+#loading,#error{background:#e6e8df;color:#344438}
+.loader{border-color:#68726140;border-top-color:#875b6d}
+@media(max-width:640px){header .tools{gap:4px}#intro h1{font-size:37px}#intro small{margin-top:5px}.shade{background:linear-gradient(180deg,#15211a33,transparent 13%,transparent 67%,#17231aa8)}}

@@ -1,0 +1,8 @@
+@import '../raohe/style.css';
+:root{--edge:clamp(19px,3vw,54px);--glass:rgba(32,24,18,.65);--paper:#f7efd9}
+.shade{background:linear-gradient(180deg,#20160c45,transparent 14%,transparent 70%,#170d0882)}
+h1{font-family:"Songti TC","Songti SC","Noto Serif TC",serif;font-weight:500;font-size:clamp(35px,4.1vw,61px);letter-spacing:.14em}
+#intro p{font-family:"Baskerville","Georgia",serif;font-weight:400;font-size:12px;letter-spacing:.265em}
+#intro p::before{content:"";display:inline-block;vertical-align:middle;width:22px;height:1px;background:#f8e8b8;margin-right:11px}
+#intro{color:#fff3da}.walking header{opacity:.68}.walking header:hover,.walking header:focus-within{opacity:1}
+@media(max-width:640px){.bottom{gap:12px}#intro p{font-size:10px}h1{font-size:37px}}

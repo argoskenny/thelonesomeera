@@ -1,0 +1,12 @@
+@import '../raohe/style.css';
+:root{--paper:#f1f0df;--border:#edf0e365;--glass:#15251ed1}
+.shade{background:linear-gradient(to bottom,#10170d40,transparent 14%,transparent 78%,#10190f65)}
+.tools button:hover,.choices button:hover{background:#39493ee8}
+.tools #locations{background:#1b2921ee}.tools #locations button[aria-current=true]:after{background:#db9553}
+#intro p{font-weight:650;font-size:10px;letter-spacing:.26em;margin-bottom:7px}
+#intro h1{font-size:clamp(29px,3.25vw,50px);letter-spacing:.085em}
+.choices button[aria-pressed=true]{background:#eeefdc;color:#253428}
+#explore{color:#233329}.navigation #controls-hint{color:#fffdf1}
+#loading,#error{background:#17281e;color:var(--paper)}
+.loader{border-color:#b6b89955;border-top-color:#de9c59}
+@media(max-width:640px){#intro h1{font-size:30px}.bottom{gap:13px}.shade{background:linear-gradient(to bottom,#13201644,transparent 16%,transparent 67%,#12201499)}}

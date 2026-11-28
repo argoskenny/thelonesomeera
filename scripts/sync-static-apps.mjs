@@ -21,7 +21,7 @@ const syncTargets = [
     name: "suprise-demo",
     sourceDir: "showcase/suprise-demo/dist",
     targetDir: "public/showcase/suprise-demo",
-    entries: ["index.html", "assets", "afterlight", "night-market", "vertigo", "ignition", "aerie", "summertide", "aurelia", "neo-taipei", "kowloon", "raohe"],
+    entries: ["index.html", "assets", "afterlight", "night-market", "vertigo", "ignition", "aerie", "summertide", "aurelia", "neo-taipei", "kowloon", "raohe", "kurobe", "shirasagi", "tsukikage", "hanami"],
   },
   {
     name: "sox",

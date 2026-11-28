@@ -8,7 +8,7 @@ const nextConfig = {
   async rewrites() {
     return [
       { source: "/showcase/suprise-demo", destination: "/showcase/suprise-demo/index.html" },
-      { source: "/showcase/suprise-demo/:scene(afterlight|night-market|vertigo|ignition|aerie|summertide|aurelia|neo-taipei|kowloon|raohe)", destination: "/showcase/suprise-demo/:scene/index.html" },
+      { source: "/showcase/suprise-demo/:scene(afterlight|night-market|vertigo|ignition|aerie|summertide|aurelia|neo-taipei|kowloon|raohe|kurobe|shirasagi|tsukikage|hanami)", destination: "/showcase/suprise-demo/:scene/index.html" },
       { source: "/showcase/easylog", destination: "/showcase/easylog/index.html" },
       { source: "/showcase/easylog/", destination: "/showcase/easylog/index.html" },
       {

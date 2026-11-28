@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head><base href="/showcase/suprise-demo/kurobe/">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#253529"/>
+  <meta name="description" content="沿著橙色列車走過月台，從紅色拱橋俯瞰秋日的峽谷與溪流。"/>
+  <title>黑部峽谷鐵道 KUROBE — ELSEWHERE</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='8' fill='%23243128'/%3E%3Cellipse cx='20' cy='20' rx='11' ry='12' fill='%23c47034'/%3E%3Cpath d='M17 7h6m-6 26h6' stroke='%23eee0bc' stroke-width='2'/%3E%3C/svg%3E"/>
+  <script type="module" crossorigin src="../assets/kurobe-DjiQ70oa.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/three-engine-YweJjeWE.js">
+  <link rel="modulepreload" crossorigin href="../assets/procedural-b_dQjD_s.js">
+  <link rel="modulepreload" crossorigin href="../assets/contact-shadows-9RJb8K07.js">
+  <link rel="modulepreload" crossorigin href="../assets/geometry-CByMS_gn.js">
+  <link rel="modulepreload" crossorigin href="../assets/assets-BY1cYdyh.js">
+  <link rel="stylesheet" crossorigin href="../assets/kurobe-BJaOxtBd.css">
+</head>
+<body>
+  <main id="experience" aria-label="自由漫遊黑部峽谷鐵道">
+    <div id="stage"></div>
+    <div class="shade"></div>
+    <header>
+      <a class="collection" href="../" aria-label="回到 ELSEWHERE 場景選集">
+        <svg viewBox="0 0 41 27" fill="none" stroke="currentColor" aria-hidden="true"><circle cx="14" cy="13.5" r="11"/><circle cx="27" cy="13.5" r="11"/></svg>
+        <span>ELSEWHERE</span>
+      </a>
+      <div class="tools">
+        <button class="icon" id="audio" type="button" aria-pressed="false" aria-label="開啟河谷環境音" title="環境音">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m11 5-5 4H3v6h3l5 4z"/><path class="waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="muted" d="m16 10 5 5m0-5-5 5"/></svg>
+        </button>
+        <button class="icon" id="photo" type="button" aria-label="儲存目前視角的照片" title="拍照"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7h5l2-3h4l2 3h5v13H3z"/><circle cx="12" cy="13" r="4"/></svg></button>
+        <button class="icon" id="fullscreen" type="button" hidden aria-label="進入全螢幕" aria-pressed="false" title="全螢幕"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg></button>
+        <div class="spots">
+          <button id="location" type="button" aria-controls="locations" aria-expanded="false" title="選擇觀景點">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2"/></svg>
+            <span id="current-spot">車站俯瞰</span><span class="chevron">⌄</span>
+          </button>
+          <div id="locations" hidden aria-label="選擇觀景點"></div>
+        </div>
+      </div>
+    </header>
+    <div class="bottom">
+      <div id="intro"><p lang="en">KUROBE GORGE RAILWAY</p><h1>黑部峽谷鐵道</h1></div>
+      <div class="navigation">
+        <div class="choices" role="group" aria-label="移動模式">
+          <button data-movement="walk" aria-pressed="true">步行</button><button data-movement="fly" aria-pressed="false">飛行</button>
+        </div>
+        <button id="explore" type="button">開始漫遊</button>
+        <p id="controls-hint"></p>
+        <span class="sr-only" id="mode-status"></span>
+      </div>
+    </div>
+    <div id="walk-instructions" hidden><span></span><p id="movement-help"></p></div>
+    <div id="crosshair" hidden></div>
+    <div id="joystick" aria-label="移動搖桿" hidden><span></span></div>
+    <div id="elevation" aria-label="飛行高度" hidden><button data-elevation="1" aria-label="向上飛行">↑</button><button data-elevation="-1" aria-label="向下飛行">↓</button></div>
+    <div id="toast" role="status"></div>
+    <div id="loading" role="status"><div class="loader"></div><p>正在載入峽谷鐵道</p></div>
+    <div id="error" hidden><p id="error-text"></p><button onclick="location.reload()">重新載入</button><a href="../">回到場景選集</a></div>
+  </main>
+</body>
+</html>

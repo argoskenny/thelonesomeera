@@ -11,7 +11,7 @@ export type Demo = {
 export const demos: Demo[] = [
   {
     title: "ELSEWHERE 場景選集",
-    description: "十個可自由漫遊的 3D 場景，從雨夜饒河街到雲上城，每個入口皆附製作模型。",
+    description: "十四個可自由漫遊的 3D 場景，從雨夜饒河街到雲上城，每個入口皆附製作模型。",
     image: "/showcase/suprise-demo/assets/raohe/preview.webp",
     href: "/showcase/suprise-demo/index.html",
     tags: ["Three.js", "3D 漫遊", "Suprise Demo"],

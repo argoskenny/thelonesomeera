@@ -1,6 +1,6 @@
 # ELSEWHERE — 場景選集
 
-A scene-selection homepage and ten independently loaded, freely explorable Three.js environments. TypeScript + Vite.
+A scene-selection homepage and independently loaded, freely explorable Three.js environments. TypeScript + Vite.
 
 ```sh
 npm install
@@ -14,6 +14,7 @@ npm run dev
 - `/` — ELSEWHERE, the scene-selection homepage.
 - `/afterlight/` — 餘光美術館 AFTERLIGHT, the coastal pavilion.
 - `/night-market/` — 夜市未眠 NIGHTFALL, the Taiwan-inspired night market without people.
+- `/shirasagi/` — 白壁天守 SHIRASAGI, an autumn castle keep, stone rampart and walkable walled grounds based on the supplied photograph.
 - `/raohe/` — 饒河街夜市 RAOHE, the lantern gate, cooking stalls and wet street reconstructed from the supplied reference.
 - `/vertigo/` — 懸城 VERTIGO, a vertical coastal city with suspended walkways and skybridge homes.
 - `/ignition/` — 向天 IGNITION, a coastal launch base with a working ground launch switch.
@@ -23,7 +24,7 @@ npm run dev
 - `/aurelia/` — 曦光城塞 AURELIA, a Renaissance fantasy citadel with a wisteria loggia, cathedral piazza, valley bridges, waterfalls and celestial rings.
 - `/aerie/` — 雲上城 AERIE, a classical city above a moving cloud sea, with connected promenades and flying sailships.
 
-Each scene links back to the homepage. The homepage uses actual scene captures and loads no 3D engine; a scene is initialized only after entering its page. All eleven pages are emitted by the same build. Serve the entire `dist/` directory, including the ten scene subdirectories. Directory URLs and their `index.html` equivalents are supported, also when the whole site is hosted beneath a subdirectory.
+Each scene links back to the homepage. The homepage uses actual scene captures and loads no 3D engine; a scene is initialized only after entering its page. Vite emits the homepage and all scene entries in one build. Serve the entire `dist/` directory, including the scene subdirectories. Directory URLs and their `index.html` equivalents are supported, also when the whole site is hosted beneath a subdirectory.
 
 ## Project layout
 
